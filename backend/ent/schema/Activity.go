@@ -15,6 +15,7 @@ func (Activity) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("ACTIVITYNAME"),
 		field.Time("ADDED"),
+		field.Time("HOURS"),
 	}
 }
 
