@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "12"
+    "node": "14.15.1"
   },
   "scripts": {
     "start": "yarn workspace app start",
@@ -42,8 +42,5 @@
     "*.{json,md}": [
       "prettier --write"
     ]
-  },
-  "dependencies": {
-    "sweetalert2": "^10.5.0"
   }
 }
