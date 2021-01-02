@@ -3,6 +3,7 @@ package schema
 import (
 	"github.com/facebookincubator/ent"
 	"github.com/facebookincubator/ent/schema/field"
+	"github.com/facebookincubator/ent/schema/edge"
 )
 
 // Activity holds the schema definition for the Activity entity.
@@ -21,5 +22,11 @@ func (Activity) Fields() []ent.Field {
 
 // Edges of the Activity.
 func (Activity) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.From("acti_stud", Student.Type).Ref("stud_acti").Unique(),
+		edge.From("acti_place", Place.Type).Ref("place_acti").Unique(),
+		edge.From("acti_agen", Agency.Type).Ref("agen_acti").Unique(),
+		edge.From("acti_term", Term.Type).Ref("term_acti").Unique(),
+		edge.From("acti_year", Year.Type),
+	}
 }
