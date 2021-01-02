@@ -23,6 +23,6 @@ func (Province) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("district", District.Type).Ref("province").Unique(),
 		edge.From("subdistrict", Subdistrict.Type).Ref("province").Unique(),
-		edge.From("student", Student.Type).Ref("province").Unique(),
+		edge.From("postal_number", Postal_number.Type).Ref("province").Unique(),
 	}
 }
