@@ -23,7 +23,7 @@ func (Degree) Fields() []ent.Field {
 // Edges of the  Degree.
 func (Degree) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("course", Course.Type),
+		edge.To("deg_course", Course.Type),
 		
 	}
 }
