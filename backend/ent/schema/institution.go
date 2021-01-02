@@ -23,7 +23,7 @@ func (Institution) Fields() []ent.Field {
 // Edges of the Institution.
 func (Institution) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("course", Course.Type),
+		edge.To("ins_course", Course.Type),
 		
 	}
 }
