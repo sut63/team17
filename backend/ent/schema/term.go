@@ -14,13 +14,14 @@ type Term struct {
 // Fields of the Term.
 func (Term) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("TERM").NotEmpty(),
+		field.Int("semester").Positive(),
 	}
 }
 
 // Edges of the Term.
 func (Term) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("year", Year.Type),
+		edge.To("term_year", Year.Type),
+		edge.To("year_acti", Activity.Type),
 	}
 }
