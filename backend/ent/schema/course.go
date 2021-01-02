@@ -21,9 +21,11 @@ func (Course) Fields() []ent.Field {
 // Edges of the Course.
 func (Course) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("degree", Degree.Type).Ref("course").Unique(),
-		edge.From("faculty", Faculty.Type).Ref("course").Unique(),
-		edge.From("institution", School.Type).Ref("course").Unique(),
-		edge.From("creditfaculty", Creditfaculty.Type).Ref("course").Unique(),
+		edge.From("course_fac", Faculty.Type).
+			Ref("fac_course").Unique(),
+		edge.From("course_deg", Degree.Type).
+			Ref("deg_course").Unique(),
+		edge.From("course_ins", Institution.Type).
+			Ref("ins_course").Unique(),
     }
 }
