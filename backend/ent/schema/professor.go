@@ -14,18 +14,20 @@ type Professor struct {
 // Fields of the Professor.
 func (Professor) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("name").NotEmpty(),
+		field.String("name"),
+		field.String("tel"),
+		field.String("email"),
 	}
 }
 
 // Edges of the Professor.
 func (Professor) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("prefix", Prefix.Type).
-			Ref("professors").Unique(),
-		edge.From("faculty", Faculty.Type).
-			Ref("professors").Unique(),
-		edge.From("professorship", Professorship.Type).
-			Ref("professors").Unique(),
+		edge.From("prof_pre", Prefix.Type).
+			Ref("pre_prof").Unique(),
+		edge.From("course_fac", Faculty.Type).
+			Ref("fac_course").Unique(),
+		edge.From("prof_pros", Professorship.Type).
+			Ref("pros_prof").Unique(),
 	}
 }
