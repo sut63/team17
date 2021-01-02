@@ -23,6 +23,6 @@ func (Subject) Fields() []ent.Field {
 // Edges of the Subject.
 func (Subject) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("subject1", Results.Type),
+		edge.To("subj_resu", Results.Type),
 	}
 }
