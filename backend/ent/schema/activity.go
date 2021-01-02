@@ -26,7 +26,6 @@ func (Activity) Edges() []ent.Edge {
 		edge.From("acti_stud", Student.Type).Ref("stud_acti").Unique(),
 		edge.From("acti_place", Place.Type).Ref("place_acti").Unique(),
 		edge.From("acti_agen", Agency.Type).Ref("agen_acti").Unique(),
-		edge.From("acti_term", Term.Type).Ref("term_acti").Unique(),
-		edge.From("acti_year", Year.Type),
+		edge.From("acti_year", Year.Type).Ref("year_acti").Unique(),
 	}
 }
