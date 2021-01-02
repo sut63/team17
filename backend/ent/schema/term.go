@@ -1,8 +1,10 @@
 package schema
 
-import "github.com/facebookincubator/ent"
-import "github.com/facebookincubator/ent/schema/field"
-import "github.com/facebookincubator/ent/schema/edge"
+import (
+	"github.com/facebookincubator/ent"
+	"github.com/facebookincubator/ent/schema/edge"
+	"github.com/facebookincubator/ent/schema/field"
+)
 
 // Term holds the schema definition for the Term entity.
 type Term struct {
@@ -19,6 +21,6 @@ func (Term) Fields() []ent.Field {
 // Edges of the Term.
 func (Term) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("term_acti", Activity.Type),
+		edge.To("year", Year.Type),
 	}
 }
