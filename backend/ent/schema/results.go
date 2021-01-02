@@ -21,8 +21,8 @@ func (Results) Fields() []ent.Field {
 // Edges of the Results.
 func (Results) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("YearID", Year.Type).Ref("year1").Unique(),
-		edge.From("SubjectID", Subject.Type).Ref("subject1").Unique(),
-		edge.From("StudentID", Student.Type).Ref("stud_resu").Unique(),
+		edge.From("resu_year", Year.Type).Ref("year_resu").Unique(),
+		edge.From("resu_subj", Subject.Type).Ref("subj_resu").Unique(),
+		edge.From("resu_stud", Student.Type).Ref("stud_resu").Unique(),
 	}
 }
