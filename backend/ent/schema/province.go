@@ -21,8 +21,7 @@ func (Province) Fields() []ent.Field {
 // Edges of the Province.
 func (Province) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("district", District.Type).Ref("province").Unique(),
-		edge.From("subdistrict", Subdistrict.Type).Ref("province").Unique(),
-		edge.From("postal_number", Postal_number.Type).Ref("province").Unique(),
+		edge.To("prov_dist", District.Type),
+		edge.From("prov_regi", Region.Type).Ref("regi_prov").Unique(),
 	}
 }
