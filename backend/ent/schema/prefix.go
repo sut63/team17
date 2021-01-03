@@ -21,6 +21,7 @@ func (Prefix) Fields() []ent.Field {
 func (Prefix) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("pre_prof", Professor.Type).StorageKey(edge.Column("prefix_ID")),
+		edge.To("pref_stud", Student.Type),
 	}
 
 }
