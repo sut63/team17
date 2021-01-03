@@ -24,6 +24,7 @@ func (Faculty) Fields() []ent.Field {
 func (Faculty) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("fac_course", Course.Type),
+		edge.To("fac_prof", Professor.Type),
 		
 	}
 }
