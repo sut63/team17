@@ -21,6 +21,6 @@ func (Postal_number) Fields() []ent.Field {
 // Edges of the Postal_number.
 func (Postal_number) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("province", Province.Type).StorageKey(edge.Column("postal_number")),
+		edge.To("post_dist", Districts.Type),
 	}
 }
