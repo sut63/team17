@@ -25,8 +25,8 @@ func (Professor) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("prof_pre", Prefix.Type).
 			Ref("pre_prof").Unique(),
-		edge.From("course_fac", Faculty.Type).
-			Ref("fac_course").Unique(),
+		edge.From("prof_fac", Faculty.Type).
+			Ref("fac_prof").Unique(),
 		edge.From("prof_pros", Professorship.Type).
 			Ref("pros_prof").Unique(),
 	}
