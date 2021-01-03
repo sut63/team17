@@ -21,6 +21,6 @@ func (Subdistrict) Fields() []ent.Field {
 // Edges of the Subdistrict.
 func (Subdistrict) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("province", Province.Type).StorageKey(edge.Column("subdistrict")),
+		edge.To("subd_dist", District.Type),
 	}
 }
