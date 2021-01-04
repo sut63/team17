@@ -202,7 +202,7 @@ func (ctl *SubjectController) UpdateSubject(c *gin.Context) {
 	c.JSON(200, u)
 }
 
-// NewSubjectController creates and registers handles for the subject controller
+// NewSubjectController creates and registers handles for the subject controller eiei
 func NewSubjectController(router gin.IRouter, client *ent.Client) *SubjectController {
 	ggs := &SubjectController{
 		client: client,
