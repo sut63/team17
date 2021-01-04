@@ -109,8 +109,7 @@ func (ctl *TermController) register() {
 	terms.GET("", ctl.ListTerm)
 
 	// CRUD
-	terms.POST("", ctl.CreateTerm)
+
 	terms.GET(":id", ctl.GetTerm)
-	terms.PUT(":id", ctl.UpdateTerm)
-	terms.DELETE(":id", ctl.DeleteTerm)
+
 }
