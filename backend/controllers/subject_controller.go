@@ -2,7 +2,10 @@ package controllers
 
 import (
 	"context"
+<<<<<<< HEAD
 	"fmt"
+=======
+>>>>>>> fdd74cb1... ทำ controller ของ subject - close #116
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -16,6 +19,7 @@ type SubjectController struct {
 	router gin.IRouter
 }
 
+<<<<<<< HEAD
 // CreateSubject handles POST requests for adding subject entities
 // @Summary Create subject
 // @Description Create subject
@@ -52,6 +56,8 @@ func (ctl *SubjectController) CreateSubject(c *gin.Context) {
 	c.JSON(200, u)
 }
 
+=======
+>>>>>>> fdd74cb1... ทำ controller ของ subject - close #116
 // GetSubject handles GET requests to retrieve a subject entity
 // @Summary Get a subject entity by ID
 // @Description get subject by ID
@@ -129,6 +135,7 @@ func (ctl *SubjectController) ListSubject(c *gin.Context) {
 	c.JSON(200, subjects)
 }
 
+<<<<<<< HEAD
 // DeleteSubject handles DELETE requests to delete a subject entity
 // @Summary Delete a subject entity by ID
 // @Description get subject by ID
@@ -203,6 +210,9 @@ func (ctl *SubjectController) UpdateSubject(c *gin.Context) {
 }
 
 // NewSubjectController creates and registers handles for the subject controller eiei
+=======
+// NewSubjectController creates and registers handles for the subject controller
+>>>>>>> fdd74cb1... ทำ controller ของ subject - close #116
 func NewSubjectController(router gin.IRouter, client *ent.Client) *SubjectController {
 	ggs := &SubjectController{
 		client: client,
@@ -219,8 +229,14 @@ func (ctl *SubjectController) register() {
 	subjects.GET("", ctl.ListSubject)
 
 	// CRUD
+<<<<<<< HEAD
 	subjects.POST("", ctl.CreateSubject)
 	subjects.GET(":id", ctl.GetSubject)
 	subjects.PUT(":id", ctl.UpdateSubject)
 	subjects.DELETE(":id", ctl.DeleteSubject)
+=======
+
+	subjects.GET(":id", ctl.GetSubject)
+
+>>>>>>> fdd74cb1... ทำ controller ของ subject - close #116
 }
