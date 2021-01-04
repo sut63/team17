@@ -23,7 +23,7 @@ func (Degree) Fields() []ent.Field {
 // Edges of the  Degree.
 func (Degree) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("course", Course.Type),
 		edge.From("degr_stud", Student.Type).Ref("stud_degr").Unique(),
+		edge.To("degr_cour", Course.Type),
 	}
 }
