@@ -1,9 +1,9 @@
 package schema
 
 import (
-		"github.com/facebookincubator/ent"
-		"github.com/facebookincubator/ent/schema/edge"
-		"github.com/facebookincubator/ent/schema/field"
+	"github.com/facebookincubator/ent"
+	"github.com/facebookincubator/ent/schema/edge"
+	"github.com/facebookincubator/ent/schema/field"
 )
 
 // Institution holds the schema definition for the Institution entity.
@@ -15,7 +15,7 @@ type Institution struct {
 // Fields of the Institution.
 func (Institution) Fields() []ent.Field {
 	return []ent.Field{
-		
+
 		field.String("institution").NotEmpty(),
 	}
 }
@@ -23,7 +23,6 @@ func (Institution) Fields() []ent.Field {
 // Edges of the Institution.
 func (Institution) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("ins_course", Course.Type),
-		
+		edge.To("inst_cour", Course.Type),
 	}
 }
