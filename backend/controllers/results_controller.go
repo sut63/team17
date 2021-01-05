@@ -80,9 +80,9 @@ func (ctl *ResultsController) CreateResults(c *gin.Context) {
 	t, err := ctl.client.Results.
 		Create().
 		SetGrade(obj.grade).
-		SetStudentID(std).
-		SetYearID(yea).
-		SetSubjectID(subj).
+		SetResuStud(std).
+		SetResuYear(yea).
+		SetResuSubj(subj).
 		Save(context.Background())
 	if err != nil {
 		c.JSON(400, gin.H{
