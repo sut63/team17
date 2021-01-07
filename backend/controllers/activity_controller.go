@@ -7,11 +7,11 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/toeilakkhana/app/ent"
-	"github.com/toeilakkhana/app/ent/agency"
-	"github.com/toeilakkhana/app/ent/place"
-	"github.com/toeilakkhana/app/ent/student"
-	"github.com/toeilakkhana/app/ent/year"
+	"github.com/sut63/team17/app/ent"
+	"github.com/sut63/team17/app/ent/agency"
+	"github.com/sut63/team17/app/ent/place"
+	"github.com/sut63/team17/app/ent/student"
+	"github.com/sut63/team17/app/ent/year"
 )
 
 // ActivityController defines the struct for the activity controller
@@ -107,6 +107,7 @@ func (ctl *ActivityController) CreateActivity(c *gin.Context) {
 		SetHOURS(obj.Hours).
 		SetActiYear(y).
 		SetActiStud(st)
+
 	Save(context.Background())
 
 	if err != nil {

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/toeilakkhana/app/ent"
-	"github.com/toeilakkhana/app/ent/agency"
+	"github.com/sut63/team17/app/ent"
+	"github.com/sut63/team17/app/ent/agency"
 	"github.com/gin-gonic/gin"
 )
 // AgencyController defines the struct for the agency controller
