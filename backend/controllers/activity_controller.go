@@ -49,6 +49,7 @@ func (ctl *ActivityController) CreateActivity(c *gin.Context) {
 			"error": "activity binding failed",
 		})
 		return
+		
 	}
 
 	ag, err := ctl.client.Agency.
