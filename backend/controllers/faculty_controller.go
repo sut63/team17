@@ -6,9 +6,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/se63/team17/app/ent"
-	"github.com/se63/team17/app/ent/course"
-	"github.com/se63/team17/app/ent/faculty"
+	"github.com/sut63/team17/app/ent"
+	"github.com/sut63/team17/app/ent/faculty"
 )
 
 // FacultyController defines the struct for the faculty controller
@@ -43,21 +42,9 @@ func (ctl *FacultyController) CreateFaculty(c *gin.Context) {
 		return
 	}
 
-	co, err := ctl.client.Course.
-		Query().
-		Where(course.IDEQ(int(obj.id))).
-		Only(context.Background())
-
-	if err != nil {
-		c.JSON(400, gin.H{
-			"error": "course not found",
-		})
-		return
-	}
 	fa, err := ctl.client.Faculty.
 		Create().
 		SetFaculty(obj.Faculty).
-		SetCourse(co).
 		Save(context.Background())
 
 	if err != nil {
@@ -91,7 +78,6 @@ func (ctl *FacultyController) GetFaculty(c *gin.Context) {
 	}
 	fa, err := ctl.client.Faculty.
 		Query().
-		WithCourse().
 		Where(faculty.IDEQ(int(id))).
 		Only(context.Background())
 
@@ -137,7 +123,6 @@ func (ctl *FacultyController) ListFaculty(c *gin.Context) {
 
 	facultys, err := ctl.client.Faculty.
 		Query().
-		WithCourse().
 		Limit(limit).
 		Offset(offset).
 		All(context.Background())
