@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/ASUS/app/ent"
-	"github.com/ASUS/app/ent/course"
-	"github.com/ASUS/app/ent/institution"
 	"github.com/gin-gonic/gin"
+	"github.com/se63/team17/app/ent"
+	"github.com/se63/team17/app/ent/course"
+	"github.com/se63/team17/app/ent/institution"
 )
 
 // InstitutionController defines the struct for the institution controller
