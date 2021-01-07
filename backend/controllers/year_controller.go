@@ -2,12 +2,11 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/grazi/app/ent"
-	"github.com/grazi/app/ent/year"
+	"github.com/se63/team17/app/ent"
+	"github.com/se63/team17/app/ent/year"
 )
 
 // YearController defines the struct for the year controller
@@ -15,7 +14,6 @@ type YearController struct {
 	client *ent.Client
 	router gin.IRouter
 }
-
 
 // GetYear handles GET requests to retrieve a year entity
 // @Summary Get a year entity by ID
