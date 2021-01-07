@@ -5,8 +5,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/grazi/app/ent"
-	"github.com/grazi/app/ent/term"
+	"github.com/se63/team17/app/ent"
+	"github.com/se63/team17/app/ent/term"
 )
 
 // TermController defines the struct for the term controller
