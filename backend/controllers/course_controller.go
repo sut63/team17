@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/se63/team17/app/ent"
-	"github.com/se63/team17/app/ent/course"
-	"github.com/se63/team17/app/ent/institution"
-	"github.com/se63/team17/app/ent/degree"
-	"github.com/se63/team17/app/ent/faculty"
 	"github.com/gin-gonic/gin"
+	"github.com/se63/team17/app/ent/course"
+	"github.com/sut63/team17/app/ent"
+	"github.com/sut63/team17/app/ent/degree"
+	"github.com/sut63/team17/app/ent/faculty"
+	"github.com/sut63/team17/app/ent/institution"
 )
 
 // CourseController defines the struct for the course controller
@@ -21,11 +21,11 @@ type CourseController struct {
 
 // Course defines the struct for the course
 type Course struct {
-	Course      string
+	Coursename  string
 	id          int
-	Degree      string
-	Institution string
-	Faculty     string
+	Degree      int
+	Institution int
+	Faculty     int
 }
 
 // CreateCourse handles POST requests for adding course entities
@@ -48,9 +48,48 @@ func (ctl *CourseController) CreateCourse(c *gin.Context) {
 		return
 	}
 
-	ex, err := ctl.client.Course.
+	fa, err := ctl.client.Faculty.
+		Query().
+		Where(faculty.IDEQ(int(obj.Faculty))).
+		Only(context.Background())
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "faculty not found",
+		})
+		return
+	}
+
+	de, err := ctl.client.Degree.
+		Query().
+		Where(degree.IDEQ(int(obj.Degree))).
+		Only(context.Background())
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "degree not found",
+		})
+		return
+	}
+
+	in, err := ctl.client.Institution.
+		Query().
+		Where(institution.IDEQ(int(obj.Institution))).
+		Only(context.Background())
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "institution not found",
+		})
+		return
+	}
+
+	save, err := ctl.client.Course.
 		Create().
-		SetCourse(obj.Course).
+		Setcourse(obj.Coursename).
+		Setfaculty(fa).
+		Setdegree(de).
+		Setinstitution(in).
 		Save(context.Background())
 
 	if err != nil {
@@ -60,7 +99,7 @@ func (ctl *CourseController) CreateCourse(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, ex)
+	c.JSON(200, save)
 }
 
 // GetCourse handles GET requests to retrieve a course entity
@@ -82,7 +121,7 @@ func (ctl *CourseController) GetCourse(c *gin.Context) {
 		})
 		return
 	}
-	ex, err := ctl.client.Course.
+	co, err := ctl.client.Course.
 		Query().
 		Where(course.IDEQ(int(id))).
 		Only(context.Background())
@@ -94,7 +133,7 @@ func (ctl *CourseController) GetCourse(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, ex)
+	c.JSON(200, co)
 }
 
 // ListCourse handles request to get a list of course entities
@@ -129,6 +168,9 @@ func (ctl *CourseController) ListCourse(c *gin.Context) {
 
 	courses, err := ctl.client.Course.
 		Query().
+		WithFaculty().
+		WithDegree().
+		WithInstitution().
 		Limit(limit).
 		Offset(offset).
 		All(context.Background())
@@ -165,7 +207,7 @@ func (ctl *CourseController) DeleteCourse(c *gin.Context) {
 
 	err = ctl.client.Course.
 		DeleteOneID(int(id)).
-		Exec(context.Background())
+		Coec(context.Background())
 	if err != nil {
 		c.JSON(404, gin.H{
 			"error": err.Error(),
@@ -178,13 +220,13 @@ func (ctl *CourseController) DeleteCourse(c *gin.Context) {
 
 // NewCourseController creates and registers handles for the course controller
 func NewCourseController(router gin.IRouter, client *ent.Client) *CourseController {
-	exc := &CourseController{
+	coc := &CourseController{
 		client: client,
 		router: router,
 	}
 
-	exc.register()
-	return exc
+	coc.register()
+	return coc
 
 }
 
