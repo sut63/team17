@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/ASUS/app/ent"
-	"github.com/ASUS/app/ent/course"
-	"github.com/ASUS/app/ent/faculty"
 	"github.com/gin-gonic/gin"
+	"github.com/se63/team17/app/ent"
+	"github.com/se63/team17/app/ent/course"
+	"github.com/se63/team17/app/ent/faculty"
 )
 
 // FacultyController defines the struct for the faculty controller
