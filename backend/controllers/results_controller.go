@@ -6,13 +6,13 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/grazi/app/ent"
-	"github.com/grazi/app/ent/results"
-	"github.com/grazi/app/ent/year"
+	"github.com/se63/team17/app/ent"
+	"github.com/se63/team17/app/ent/results"
+	"github.com/se63/team17/app/ent/year"
 
-	//"github.com/grazi/app/ent/term"
-	"github.com/grazi/app/ent/student"
-	"github.com/grazi/app/ent/subject"
+	//"github.com/se63/team17/app/ent/term"
+	"github.com/se63/team17/app/ent/student"
+	"github.com/se63/team17/app/ent/subject"
 )
 
 // ResultsController defines the struct for the results controller
@@ -23,11 +23,11 @@ type ResultsController struct {
 
 // Results struct eiei
 type Results struct {
-	grade     float
-	studentID int
-	yearID    int
+	Grade     float
+	StudentID int
+	YearID    int
 	//termID   	int
-	subjectID int
+	SubjectID int
 }
 
 // CreateResults handles POST requests for adding results entities
@@ -52,7 +52,7 @@ func (ctl *ResultsController) CreateResults(c *gin.Context) {
 
 	yea, err := ctl.client.Year.
 		Query().
-		Where(year.IDEQ(int(obj.yearID))).
+		Where(year.IDEQ(int(obj.YearID))).
 		Only(context.Background())
 
 	if err != nil {
@@ -61,7 +61,7 @@ func (ctl *ResultsController) CreateResults(c *gin.Context) {
 	}
 	subj, err := ctl.client.Subject.
 		Query().
-		Where(subject.IDEQ(int(obj.subjectID))).
+		Where(subject.IDEQ(int(obj.SubjectID))).
 		Only(context.Background())
 
 	if err != nil {
@@ -70,7 +70,7 @@ func (ctl *ResultsController) CreateResults(c *gin.Context) {
 	}
 	std, err := ctl.client.Student.
 		Query().
-		Where(student.IDEQ(int(obj.studentID))).
+		Where(student.IDEQ(int(obj.StudentID))).
 		Only(context.Background())
 
 	if err != nil {
@@ -79,7 +79,7 @@ func (ctl *ResultsController) CreateResults(c *gin.Context) {
 	}
 	t, err := ctl.client.Results.
 		Create().
-		SetGrade(obj.grade).
+		SetGrade(obj.Grade).
 		SetResuStud(std).
 		SetResuYear(yea).
 		SetResuSubj(subj).
