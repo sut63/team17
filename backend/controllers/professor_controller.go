@@ -5,10 +5,10 @@ import (
 	"strconv"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/akkara0606/app/ent"
-	"github.com/akkara0606/app/ent/faculty"
-	"github.com/akkara0606/ent/prefix"
-	"github.com/akkara0606/ent/professorship"
+	"github.com/sut63/team17/app/ent"
+	"github.com/sut63/team17/app/ent/faculty"
+	"github.com/sut63/team17/ent/prefix"
+	"github.com/sut63/team17/ent/professorship"
 )
 
 type ProfessorController struct {
