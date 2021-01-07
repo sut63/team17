@@ -6,9 +6,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/se63/team17/app/ent"
-	"github.com/se63/team17/app/ent/course"
-	"github.com/se63/team17/app/ent/institution"
+	"github.com/sut63/team17/app/ent"
+	"github.com/sut63/team17/app/ent/institution"
 )
 
 // InstitutionController defines the struct for the institution controller
@@ -43,21 +42,9 @@ func (ctl *InstitutionController) CreateInstitution(c *gin.Context) {
 		return
 	}
 
-	co, err := ctl.client.Course.
-		Query().
-		Where(course.IDEQ(int(obj.id))).
-		Only(context.Background())
-
-	if err != nil {
-		c.JSON(400, gin.H{
-			"error": "course not found",
-		})
-		return
-	}
 	fa, err := ctl.client.Institution.
 		Create().
 		SetInstitution(obj.Institution).
-		SetCourse(co).
 		Save(context.Background())
 
 	if err != nil {
@@ -91,7 +78,6 @@ func (ctl *InstitutionController) GetInstitution(c *gin.Context) {
 	}
 	fa, err := ctl.client.Institution.
 		Query().
-		WithCourse().
 		Where(institution.IDEQ(int(id))).
 		Only(context.Background())
 
@@ -137,7 +123,6 @@ func (ctl *InstitutionController) ListInstitution(c *gin.Context) {
 
 	institutions, err := ctl.client.Institution.
 		Query().
-		WithCourse().
 		Limit(limit).
 		Offset(offset).
 		All(context.Background())
