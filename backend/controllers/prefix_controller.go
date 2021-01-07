@@ -5,8 +5,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/akkara0606/app/ent"
-	"github.com/akkara0606/app/ent/prefix"
+	"github.com/sut63/team17/app/ent"
+	"github.com/sut63/team17/app/ent/prefix"
 )
 type PrefixController struct {
 	client *ent.Client
