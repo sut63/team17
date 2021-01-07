@@ -5,8 +5,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/akkara0606/app/ent"
-	"github.com/akkara0606/app/ent/professorship"
+	"github.com/sut63/team17/app/ent"
+	"github.com/sut63/team17/app/ent/professorship"
 )
 type ProfessorshipController struct {
 	client *ent.Client

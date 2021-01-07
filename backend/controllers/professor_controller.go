@@ -2,13 +2,14 @@ package controllers
 
 import (
 	"context"
-	"strconv"
 	"fmt"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/sut63/team17/app/ent"
 	"github.com/sut63/team17/app/ent/faculty"
-	"github.com/sut63/team17/ent/prefix"
-	"github.com/sut63/team17/ent/professorship"
+	"github.com/sut63/team17/app/ent/prefix"
+	"github.com/sut63/team17/app/ent/professorship"
 )
 
 type ProfessorController struct {
@@ -17,7 +18,7 @@ type ProfessorController struct {
 }
 
 type Professor struct {
-	Tel			  string
+	Tel           string
 	Email         string
 	Name          string
 	Prefix        int
@@ -80,7 +81,7 @@ func (ctl *ProfessorController) CreateProfessor(c *gin.Context) {
 		})
 		return
 	}
-	
+
 	p, err := ctl.client.Professor.
 		Create().
 		SetName(obj.Name).
@@ -150,8 +151,6 @@ func (ctl *ProfessorController) ListProfessor(c *gin.Context) {
 
 	c.JSON(200, professors)
 }
-
-
 
 // DeleteProfessor handles DELETE requests to delete a professor entity
 // @Summary Delete a professor entity by ID
