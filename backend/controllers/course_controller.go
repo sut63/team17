@@ -33,7 +33,7 @@ type Course struct {
 // @ID create-course
 // @Accept   json
 // @Produce  json
-// @Param course body ent.Course true "Course entity"
+// @Param course body Course true "Course entity"
 // @Success 200 {object} ent.Course
 // @Failure 400 {object} gin.H
 // @Failure 500 {object} gin.H
