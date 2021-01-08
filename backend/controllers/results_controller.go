@@ -6,13 +6,13 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/se63/team17/app/ent"
-	"github.com/se63/team17/app/ent/results"
-	"github.com/se63/team17/app/ent/year"
+	"github.com/sut63/team17/app/ent"
+	"github.com/sut63/team17/app/ent/results"
+	"github.com/sut63/team17/app/ent/year"
 
 	//"github.com/se63/team17/app/ent/term"
-	"github.com/se63/team17/app/ent/student"
-	"github.com/se63/team17/app/ent/subject"
+	"github.com/sut63/team17/app/ent/student"
+	"github.com/sut63/team17/app/ent/subject"
 )
 
 // ResultsController defines the struct for the results controller
