@@ -4,10 +4,10 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/jeeninee/app/ent/subdistrict"
+	"github.com/sut63/team17/app/ent/subdistrict"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jeeninee/app/ent"
+	"github.com/sut63/team17/app/ent"
 )
 
 // SubdistrictController defines the struct for the subdistrict controller
