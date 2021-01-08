@@ -5,9 +5,9 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jeeninee/app/ent"
-	"github.com/jeeninee/app/ent/district"
-	"github.com/jeeninee/app/ent/region"
+	"github.com/sut63/team17/app/ent"
+	"github.com/sut63/team17/app/ent/district"
+	"github.com/sut63/team17/app/ent/region"
 )
 
 type ProvinceController struct {
