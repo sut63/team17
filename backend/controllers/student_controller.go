@@ -47,7 +47,7 @@ func (ctl *StudentController) CreateStudent(c *gin.Context) {
 	}
 	s, err := ctl.client.Gender.
 		Query().
-		Where(gender.IDEQ(int(obj.sex))).
+		Where(gender.IDEQ(int(obj.Sex))).
 		Only(context.Background())
 
 	if err != nil {
@@ -59,12 +59,12 @@ func (ctl *StudentController) CreateStudent(c *gin.Context) {
 
 	save, err := ctl.client.Student.
 		Create().
-		SetFname(obj.fname).
-		SetLname(obj.lname).
-		SetRecentAddress(obj.addr).
-		SetSchool(obj.school).
-		SetEmail(obj.email).
-		SetTelephone(obj.tel).
+		SetFname(obj.Fname).
+		SetLname(obj.Lname).
+		SetRecentAddress(obj.Addr).
+		SetSchoolname(obj.School).
+		SetEmail(obj.Email).
+		SetTelephone(obj.Tel).
 		SetStudGend(s).
 		Save(context.Background())
 	if err != nil {
