@@ -23,10 +23,9 @@ type ResultsController struct {
 
 // Results struct eiei
 type Results struct {
-	Grade     float
+	Grade     float64
 	StudentID int
 	YearID    int
-	//termID   	int
 	SubjectID int
 }
 
