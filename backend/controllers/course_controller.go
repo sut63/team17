@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -85,10 +84,10 @@ func (ctl *CourseController) CreateCourse(c *gin.Context) {
 
 	save, err := ctl.client.Course.
 		Create().
-		Setcourse(obj.Coursename).
-		Setfaculty(fa).
-		Setdegree(de).
-		Setinstitution(in).
+		SetCourse(obj.Coursename).
+		SetCourFacu(fa).
+		SetCourDegr(de).
+		SetCourInst(in).
 		Save(context.Background())
 
 	if err != nil {
@@ -167,9 +166,9 @@ func (ctl *CourseController) ListCourse(c *gin.Context) {
 
 	courses, err := ctl.client.Course.
 		Query().
-		WithFaculty().
-		WithDegree().
-		WithInstitution().
+		WithCourFacu().
+		WithCourDegr().
+		WithCourInst().
 		Limit(limit).
 		Offset(offset).
 		All(context.Background())
@@ -182,39 +181,6 @@ func (ctl *CourseController) ListCourse(c *gin.Context) {
 	}
 
 	c.JSON(200, courses)
-}
-
-// DeleteCourse handles DELETE requests to delete a course entity
-// @Summary Delete a course entity by ID
-// @Description get course by ID
-// @ID delete-course
-// @Produce  json
-// @Param id path int true "Course ID"
-// @Success 200 {object} gin.H
-// @Failure 400 {object} gin.H
-// @Failure 404 {object} gin.H
-// @Failure 500 {object} gin.H
-// @Router /courses/{id} [delete]
-func (ctl *CourseController) DeleteCourse(c *gin.Context) {
-	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err != nil {
-		c.JSON(400, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	err = ctl.client.Course.
-		DeleteOneID(int(id)).
-		Coec(context.Background())
-	if err != nil {
-		c.JSON(404, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	c.JSON(200, gin.H{"result": fmt.Sprintf("ok deleted %v", id)})
 }
 
 // NewCourseController creates and registers handles for the course controller
@@ -237,6 +203,5 @@ func (ctl *CourseController) register() {
 	courses.POST("", ctl.CreateCourse)
 	courses.GET(":id", ctl.GetCourse)
 	courses.GET("", ctl.ListCourse)
-	courses.DELETE("", ctl.DeleteCourse)
 
 }
