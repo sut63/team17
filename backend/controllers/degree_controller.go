@@ -112,9 +112,7 @@ func (ctl *DegreeController) register() {
 	degrees := ctl.router.Group("/degrees")
 
 	// CRUD
-	degrees.POST("", ctl.CreateDegree)
 	degrees.GET(":id", ctl.GetDegree)
 	degrees.GET("", ctl.ListDegree)
-	degrees.DELETE("", ctl.DeleteDegree)
 
 }
