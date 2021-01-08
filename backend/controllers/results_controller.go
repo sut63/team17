@@ -35,7 +35,7 @@ type Results struct {
 // @ID create-results
 // @Accept   json
 // @Produce  json
-// @Param results body ent.Results true "Results entity"
+// @Param results body Results true "Results entity"
 // @Success 200 {object} ent.Results
 // @Failure 400 {object} gin.H
 // @Failure 500 {object} gin.H
