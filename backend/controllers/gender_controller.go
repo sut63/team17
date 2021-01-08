@@ -4,10 +4,10 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/ht101010/app/ent/gender"
+	"github.com/sut63/team17/app/ent/gender"
 
 	"github.com/gin-gonic/gin"
-	"github.com/ht101010/app/ent"
+	"github.com/sut63/team17/app/ent"
 )
 
 // GenderController defines the struct for the gender controller
