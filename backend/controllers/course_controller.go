@@ -6,8 +6,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/se63/team17/app/ent/course"
 	"github.com/sut63/team17/app/ent"
+	"github.com/sut63/team17/app/ent/course"
 	"github.com/sut63/team17/app/ent/degree"
 	"github.com/sut63/team17/app/ent/faculty"
 	"github.com/sut63/team17/app/ent/institution"
