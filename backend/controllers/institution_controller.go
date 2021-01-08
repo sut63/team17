@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -14,47 +13,6 @@ import (
 type InstitutionController struct {
 	client *ent.Client
 	router gin.IRouter
-}
-
-//Institution defines the struct for the institution
-type Institution struct {
-	Institution string
-	id          int
-}
-
-// CreateInstitution handles POST requests for adding institution entities
-// @Summary Create institution
-// @Description Create institution
-// @ID create-institution
-// @Accept   json
-// @Produce  json
-// @Param institution body ent.Institution true "Institution entity"
-// @Success 200 {object} ent.Institution
-// @Failure 400 {object} gin.H
-// @Failure 500 {object} gin.H
-// @Router /institutions [post]
-func (ctl *InstitutionController) CreateInstitution(c *gin.Context) {
-	obj := Institution{}
-	if err := c.ShouldBind(&obj); err != nil {
-		c.JSON(400, gin.H{
-			"error": "institution binding failed",
-		})
-		return
-	}
-
-	fa, err := ctl.client.Institution.
-		Create().
-		SetInstitution(obj.Institution).
-		Save(context.Background())
-
-	if err != nil {
-		c.JSON(400, gin.H{
-			"error": "saving failed",
-		})
-		return
-	}
-
-	c.JSON(200, fa)
 }
 
 // GetInstitution handles GET requests to retrieve a institution entity
@@ -135,51 +93,6 @@ func (ctl *InstitutionController) ListInstitution(c *gin.Context) {
 	}
 
 	c.JSON(200, institutions)
-}
-
-// DeleteInstitution handles DELETE requests to delete a institution entity
-// @Summary Delete a institution entity by ID
-// @Description get institution by ID
-// @ID delete-institution
-// @Produce  json
-// @Param id path int true "Institution ID"
-// @Success 200 {object} gin.H
-// @Failure 400 {object} gin.H
-// @Failure 404 {object} gin.H
-// @Failure 500 {object} gin.H
-// @Router /institutions/{id} [delete]
-func (ctl *InstitutionController) DeleteInstitution(c *gin.Context) {
-	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err != nil {
-		c.JSON(400, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	err = ctl.client.Institution.
-		DeleteOneID(int(id)).
-		Exec(context.Background())
-	if err != nil {
-		c.JSON(404, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	c.JSON(200, gin.H{"result": fmt.Sprintf("ok deleted %v", id)})
-}
-
-// NewInstitutionController creates and registers handles for the institution controller
-func NewInstitutionController(router gin.IRouter, client *ent.Client) *InstitutionController {
-	fac := &InstitutionController{
-		client: client,
-		router: router,
-	}
-
-	fac.register()
-	return fac
-
 }
 
 // InstitutionController registers routes to the main engine
