@@ -5,8 +5,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/se63/team17/app/ent"
-	"github.com/se63/team17/app/ent/year"
+	"github.com/sut63/team17/app/ent"
+	"github.com/sut63/team17/app/ent/year"
 )
 
 // YearController defines the struct for the year controller
