@@ -4,10 +4,10 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/jeeninee/app/ent/district"
+	"github.com/sut63/team17/app/ent/district"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jeeninee/app/ent"
+	"github.com/sut63/team17/app/ent"
 )
 
 // DistrictController defines the struct for the district controller
