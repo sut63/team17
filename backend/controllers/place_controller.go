@@ -8,7 +8,11 @@ import (
 	"github.com/sut63/team17/app/ent/place"
 	"github.com/gin-gonic/gin"
 )
-
+// PlaceController defines the struct for the place controller
+type PlaceController struct {
+	client *ent.Client
+	router gin.IRouter
+}
 
 // GetPlace handles GET requests to retrieve a place entity
 // @Summary Get a place entity by ID
