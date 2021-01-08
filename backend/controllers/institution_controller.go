@@ -100,9 +100,7 @@ func (ctl *InstitutionController) register() {
 	institutions := ctl.router.Group("/institutions")
 
 	// CRUD
-	institutions.POST("", ctl.CreateInstitution)
 	institutions.GET(":id", ctl.GetInstitution)
 	institutions.GET("", ctl.ListInstitution)
-	institutions.DELETE("", ctl.DeleteInstitution)
 
 }
