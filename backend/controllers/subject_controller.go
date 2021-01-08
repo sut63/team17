@@ -5,8 +5,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/se63/team17/app/ent"
-	"github.com/se63/team17/app/ent/subject"
+	"github.com/sut63/team17/app/ent"
+	"github.com/sut63/team17/app/ent/subject"
 )
 
 // SubjectController defines the struct for the subject controller
