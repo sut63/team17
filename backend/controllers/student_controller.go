@@ -5,9 +5,9 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/ht101010/app/ent"
-	"github.com/ht101010/app/ent/gender"
-	"github.com/ht101010/app/ent/student"
+	"github.com/sut63/team17/app/ent"
+	"github.com/sut63/team17/app/ent/gender"
+	"github.com/sut63/team17/app/ent/student"
 )
 
 type StudentController struct {
@@ -17,13 +17,13 @@ type StudentController struct {
 
 //Student struct
 type Student struct {
-	fname string;
-	lname string;
-	school string;
-	addr string;
-	email string;
-	tel int;
-	sex int;
+	Fname string;
+	Lname string;
+	School string;
+	Addr string;
+	Email string;
+	Tel int;
+	Sex int;
 }
 
 // CreateStudent handles POST requests for adding student entities
