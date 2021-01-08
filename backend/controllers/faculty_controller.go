@@ -112,9 +112,7 @@ func (ctl *FacultyController) register() {
 	facultys := ctl.router.Group("/facultys")
 
 	// CRUD
-	facultys.POST("", ctl.CreateFaculty)
 	facultys.GET(":id", ctl.GetFaculty)
 	facultys.GET("", ctl.ListFaculty)
-	facultys.DELETE("", ctl.DeleteFaculty)
 
 }
