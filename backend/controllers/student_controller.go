@@ -17,13 +17,13 @@ type StudentController struct {
 
 //Student struct
 type Student struct {
-	Fname string;
-	Lname string;
-	School string;
-	Addr string;
-	Email string;
-	Tel int;
-	Sex int;
+	Fname  string
+	Lname  string
+	School string
+	Addr   string
+	Email  string
+	Tel    int
+	Sex    int
 }
 
 // CreateStudent handles POST requests for adding student entities
@@ -176,5 +176,6 @@ func (ctl *StudentController) register() {
 
 	student.POST("", ctl.CreateStudent)
 	student.GET("", ctl.ListStudent)
+	student.GET(":id", ctl.GetStudent)
 
 }
