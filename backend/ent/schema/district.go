@@ -22,7 +22,7 @@ func (District) Fields() []ent.Field {
 func (District) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("dist_subd", Subdistrict.Type).Ref("subd_dist").Unique(),
-		edge.From("dist_post", Postal_number.Type).Ref("post_dist").Unique(),
+		edge.From("dist_post", Postal.Type).Ref("post_dist").Unique(),
 		edge.To("dist_prov", Province.Type),
 	}
 }
