@@ -4,10 +4,10 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/jeeninee/app/ent/postal"
+	"github.com/sut63/team17/app/ent/postal"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jeeninee/app/ent"
+	"github.com/sut63/team17/app/ent"
 )
 
 // PostalController defines the struct for the postal controller
