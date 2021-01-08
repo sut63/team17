@@ -9,7 +9,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
+// AgencyController defines the struct for the agency controller
+type AgencyController struct {
+	client *ent.Client
+	router gin.IRouter
+}
 // GetAgency handles GET requests to retrieve a agency entity
 // @Summary Get a agency entity by ID
 // @Description get agency by ID
