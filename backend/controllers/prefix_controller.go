@@ -8,44 +8,10 @@ import (
 	"github.com/sut63/team17/app/ent"
 	"github.com/sut63/team17/app/ent/prefix"
 )
+
 type PrefixController struct {
 	client *ent.Client
 	router gin.IRouter
-}
-
-// CreatePrefix handles POST requests for adding prefix entities
-// @Summary Create prefix
-// @Description Create prefix
-// @ID create-prefix
-// @Accept   json
-// @Produce  json
-// @Param prefix body ent.Prefix true "Prefix entity"
-// @Success 200 {object} ent.Prefix
-// @Failure 400 {object} gin.H
-// @Failure 500 {object} gin.H
-// @Router /prefixs [post]
-func (ctl *PrefixController) CreatePrefix(c *gin.Context) {
-	obj := ent.Prefix{}
-	if err := c.ShouldBind(&obj); err != nil {
-		c.JSON(400, gin.H{
-			"error": "prefix binding failed",
-		})
-		return
-	}
-
-	pf, err := ctl.client.Prefix.
-		Create().
-		SetPrefix(obj.Prefix).
-		Save(context.Background())
-
-	if err != nil {
-		c.JSON(400, gin.H{
-			"error": "saving failed",
-		})
-		return
-	}
-
-	c.JSON(200, pf)
 }
 
 // GetPrefix handles GET requests to retrieve a prefix entity
@@ -144,7 +110,6 @@ func NewPrefixController(router gin.IRouter, client *ent.Client) *PrefixControll
 func (ctl *PrefixController) register() {
 	prefixs := ctl.router.Group("/prefixs")
 
-	prefixs.POST("", ctl.CreatePrefix)
 	prefixs.GET(":id", ctl.GetPrefix)
 	prefixs.GET("", ctl.ListPrefix)
 

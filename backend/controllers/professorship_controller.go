@@ -13,40 +13,6 @@ type ProfessorshipController struct {
 	router gin.IRouter
 }
 
-// CreateProfessorship handles POST requests for adding professorship entities
-// @Summary Create professorship
-// @Description Create professorship
-// @ID create-professorship
-// @Accept   json
-// @Produce  json
-// @Param professorship body ent.Professorship true "Professorship entity"
-// @Success 200 {object} ent.Professorship
-// @Failure 400 {object} gin.H
-// @Failure 500 {object} gin.H
-// @Router /professorships [post]
-func (ctl *ProfessorshipController) CreateProfessorship(c *gin.Context) {
-	obj := ent.Professorship{}
-	if err := c.ShouldBind(&obj); err != nil {
-		c.JSON(400, gin.H{
-			"error": "professorship binding failed",
-		})
-		return
-	}
-
-	ps, err := ctl.client.Professorship.
-		Create().
-		SetProfessorship(obj.Professorship).
-		Save(context.Background())
-
-	if err != nil {
-		c.JSON(400, gin.H{
-			"error": "saving failed",
-		})
-		return
-	}
-
-	c.JSON(200, ps)
-}
 
 // GetProfessorship handles GET requests to retrieve a professorship entity
 // @Summary Get a professorship entity by ID
@@ -144,7 +110,6 @@ func NewProfessorshipController(router gin.IRouter, client *ent.Client) *Profess
 func (ctl *ProfessorshipController) register() {
 	professorships := ctl.router.Group("/professorships")
 
-	professorships.POST("", ctl.CreateProfessorship)
 	professorships.GET(":id", ctl.GetProfessorship)
 	professorships.GET("", ctl.ListProfessorship)
 
