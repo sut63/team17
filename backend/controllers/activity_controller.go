@@ -49,7 +49,7 @@ func (ctl *ActivityController) CreateActivity(c *gin.Context) {
 			"error": "activity binding failed",
 		})
 		return
-		
+
 	}
 
 	ag, err := ctl.client.Agency.
@@ -107,9 +107,8 @@ func (ctl *ActivityController) CreateActivity(c *gin.Context) {
 		SetActiPlace(p).
 		SetHOURS(obj.Hours).
 		SetActiYear(y).
-		SetActiStud(st)
-
-	Save(context.Background())
+		SetActiStud(st).
+		Save(context.Background())
 
 	if err != nil {
 		c.JSON(400, gin.H{
@@ -186,10 +185,10 @@ func (ctl *ActivityController) ListActivity(c *gin.Context) {
 
 	activitys, err := ctl.client.Activity.
 		Query().
-		WithAgency().
-		WithPlace().
-		WithYear().
-		WithStudent().
+		WithActiAgen().
+		WithActiPlace().
+		WithActiYear().
+		WithActiStud().
 		Limit(limit).
 		Offset(offset).
 		All(context.Background())
@@ -203,14 +202,14 @@ func (ctl *ActivityController) ListActivity(c *gin.Context) {
 	c.JSON(200, activitys)
 }
 
-// NewEventaddController creates and registers handles for the eventadd controller
-func NewEventaddController(router gin.IRouter, client *ent.Client) *EventaddController {
-	evc := &EventaddController{
+// NewActivityController creates and registers handles for the activity controller
+func NewActivityController(router gin.IRouter, client *ent.Client) *ActivityController {
+	ac := &ActivityController{
 		client: client,
 		router: router,
 	}
-	evc.register()
-	return evc
+	ac.register()
+	return ac
 }
 
 // InitActivityController registers routes to the main engine
