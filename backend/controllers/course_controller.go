@@ -22,7 +22,6 @@ type CourseController struct {
 // Course defines the struct for the course
 type Course struct {
 	Coursename  string
-	id          int
 	Degree      int
 	Institution int
 	Faculty     int
