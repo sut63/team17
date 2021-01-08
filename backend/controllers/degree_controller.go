@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -14,47 +13,6 @@ import (
 type DegreeController struct {
 	client *ent.Client
 	router gin.IRouter
-}
-
-// Degree defines the struct for the degree
-type Degree struct {
-	Degree string
-	id     int
-}
-
-// CreateDegree handles POST requests for adding degree entities
-// @Summary Create degree
-// @Description Create degree
-// @ID create-degree
-// @Accept   json
-// @Produce  json
-// @Param degree body ent.Degree true "Degree entity"
-// @Success 200 {object} ent.Degree
-// @Failure 400 {object} gin.H
-// @Failure 500 {object} gin.H
-// @Router /degrees [post]
-func (ctl *DegreeController) CreateDegree(c *gin.Context) {
-	obj := Degree{}
-	if err := c.ShouldBind(&obj); err != nil {
-		c.JSON(400, gin.H{
-			"error": "degree binding failed",
-		})
-		return
-	}
-
-	fa, err := ctl.client.Degree.
-		Create().
-		SetDegree(obj.Degree).
-		Save(context.Background())
-
-	if err != nil {
-		c.JSON(400, gin.H{
-			"error": "saving failed",
-		})
-		return
-	}
-
-	c.JSON(200, fa)
 }
 
 // GetDegree handles GET requests to retrieve a degree entity
@@ -135,39 +93,6 @@ func (ctl *DegreeController) ListDegree(c *gin.Context) {
 	}
 
 	c.JSON(200, degrees)
-}
-
-// DeleteDegree handles DELETE requests to delete a degree entity
-// @Summary Delete a degree entity by ID
-// @Description get degree by ID
-// @ID delete-degree
-// @Produce  json
-// @Param id path int true "Degree ID"
-// @Success 200 {object} gin.H
-// @Failure 400 {object} gin.H
-// @Failure 404 {object} gin.H
-// @Failure 500 {object} gin.H
-// @Router /degrees/{id} [delete]
-func (ctl *DegreeController) DeleteDegree(c *gin.Context) {
-	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err != nil {
-		c.JSON(400, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	err = ctl.client.Degree.
-		DeleteOneID(int(id)).
-		Exec(context.Background())
-	if err != nil {
-		c.JSON(404, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	c.JSON(200, gin.H{"result": fmt.Sprintf("ok deleted %v", id)})
 }
 
 // NewDegreeController creates and registers handles for the degree controller
