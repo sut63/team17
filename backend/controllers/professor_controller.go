@@ -88,7 +88,7 @@ func (ctl *ProfessorController) CreateProfessor(c *gin.Context) {
 		SetEmail(obj.Email).
 		SetTel(obj.Tel).
 		SetProfPre(pf).
-		SetProfFac(fa).
+		SetProfFacu(fa).
 		SetProfPros(ps).
 		Save(context.Background())
 
@@ -136,7 +136,7 @@ func (ctl *ProfessorController) ListProfessor(c *gin.Context) {
 	professors, err := ctl.client.Professor.
 		Query().
 		WithProfPre().
-		WithProfFac().
+		WithProfFacu().
 		WithProfPros().
 		Limit(limit).
 		Offset(offset).
