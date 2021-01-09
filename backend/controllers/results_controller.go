@@ -159,9 +159,9 @@ func (ctl *ResultsController) ListResults(c *gin.Context) {
 
 	resultss, err := ctl.client.Results.
 		Query().
-		WithTypeID().
-		WithUnitID().
-		WithStatusID().
+		WithResuStud().
+		WithResuYear().
+		WithResuSubj().
 		Limit(limit).
 		Offset(offset).
 		All(context.Background())
