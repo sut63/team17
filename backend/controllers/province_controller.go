@@ -7,9 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sut63/team17/app/ent"
 	"github.com/sut63/team17/app/ent/district"
-	"github.com/sut63/team17/app/ent/postal"
 	"github.com/sut63/team17/app/ent/region"
-	"github.com/sut63/team17/app/ent/subdistrict"
 )
 
 type ProvinceController struct {
@@ -18,11 +16,9 @@ type ProvinceController struct {
 }
 
 type Province struct {
-	Name        string
-	District    int
-	Subdistrict int
-	Region      int
-	Postal      int
+	Name     string
+	District int
+	Region   int
 }
 
 // CreateProvince handles POST requests for adding province entities
@@ -57,18 +53,6 @@ func (ctl *ProvinceController) ProvinceCreate(c *gin.Context) {
 		return
 	}
 
-	sd, err := ctl.client.Subdistrict.
-		Query().
-		Where(subdistrict.IDEQ(int(obj.Subdistrict))).
-		Only(context.Background())
-
-	if err != nil {
-		c.JSON(400, gin.H{
-			"error": "subdistrict not found",
-		})
-		return
-	}
-
 	re, err := ctl.client.Region.
 		Query().
 		Where(region.IDEQ(int(obj.Region))).
@@ -81,25 +65,11 @@ func (ctl *ProvinceController) ProvinceCreate(c *gin.Context) {
 		return
 	}
 
-	pt, err := ctl.client.Postal.
-		Query().
-		Where(postal.IDEQ(int(obj.Postal))).
-		Only(context.Background())
-
-	if err != nil {
-		c.JSON(400, gin.H{
-			"error": "postal not found",
-		})
-		return
-	}
-
 	pv, err := ctl.client.Province.
 		Create().
 		SetName(obj.Name).
-		SetDistrict(di).
-		SetiSubstrict(sd).
-		SetRegion(re).
-		SetPostal(pt).
+		SetProvRegi(re).
+		SetProvDist(di).
 		Save(context.Background())
 
 	if err != nil {
@@ -144,11 +114,9 @@ func (ctl *ProvinceController) ListProvince(c *gin.Context) {
 
 	provinces, err := ctl.client.Province.
 		Query().
-		WithStudent().
-		WithDistrict().
-		WithSubdistrict().
-		WithRegion().
-		WithPostal().
+		WithProvDist().
+		WithProvRegi().
+		WithProvStud().
 		Limit(limit).
 		Offset(offset).
 		All(context.Background())
