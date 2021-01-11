@@ -157,10 +157,10 @@ const Results: FC<{}> = () => {
   
 
   //seve**********************************************************
-  const save = async () => {
-    const res = await api.createResults({ Results });
-    console.log(res);
-  };
+  //const save = async () => {
+  //  const res = await api.createResults({ Results });
+  //  console.log(res);
+  //};
   
 
   //console log****************************************************************
@@ -307,7 +307,7 @@ const Results: FC<{}> = () => {
                 color="primary"
                 size="large"
                 startIcon={<SaveIcon />}
-                onClick={save}
+                //onClick={save}
               >
                 บันทึก
               </Button>
