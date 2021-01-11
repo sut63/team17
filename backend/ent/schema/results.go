@@ -24,5 +24,6 @@ func (Results) Edges() []ent.Edge {
 		edge.From("resu_year", Year.Type).Ref("year_resu").Unique(),
 		edge.From("resu_subj", Subject.Type).Ref("subj_resu").Unique(),
 		edge.From("resu_stud", Student.Type).Ref("stud_resu").Unique(),
+		edge.From("resu_term", Term.Type).Ref("term_resu").Unique(),
 	}
 }
