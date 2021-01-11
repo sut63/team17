@@ -62,7 +62,7 @@ func (ctl *SubjectController) GetSubject(c *gin.Context) {
 // @Router /subjects [get]
 func (ctl *SubjectController) ListSubject(c *gin.Context) {
 	limitQuery := c.Query("limit")
-	limit := 10
+	limit := 100
 	if limitQuery != "" {
 		limit64, err := strconv.ParseInt(limitQuery, 10, 64)
 		if err == nil {
