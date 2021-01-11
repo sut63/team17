@@ -13,6 +13,7 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
+
 type Terms struct {
 	Term []Term
 }
@@ -23,8 +24,7 @@ type Years struct {
 	Year []Year
 }
 type Year struct {
-	Years  int
-	TermID int
+	Years int
 }
 type Subjects struct {
 	Subject []Subject
@@ -88,32 +88,29 @@ type Gender struct {
 	Gender string
 }
 type Districts struct {
-    District []District
+	District []District
 }
 type District struct {
-    District string
+	District string
 }
 type Subdistricts struct {
-    Subdistrict []Subdistrict
+	Subdistrict []Subdistrict
 }
 type Subdistrict struct {
-    Subdistrict string
+	Subdistrict string
 }
 type Postals struct {
-    Postal []Postal
+	Postal []Postal
 }
 type Postal struct {
-    Postal string
+	Postal string
 }
 type Regions struct {
-    Region []Region
+	Region []Region
 }
 type Region struct {
-    Region string
+	Region string
 }
-
-
-
 
 // @title SUT SA Example API Playlist Vidoe
 // @version 1.0
@@ -192,7 +189,6 @@ func main() {
 	controllers.NewStudentController(v1, client)
 	controllers.NewGenderController(v1, client)
 
-
 	// Set Genders Data
 	Genders := Genders{
 		Gender: []Gender{
@@ -258,27 +254,21 @@ func main() {
 	// Set Year Data
 	years := Years{
 		Year: []Year{
-			Year{2558, 1},
-			Year{2558, 2},
-			Year{2558, 3},
-			Year{2559, 1},
-			Year{2559, 2},
-			Year{2559, 3},
-			Year{2560, 1},
-			Year{2560, 2},
-			Year{2560, 3},
-			Year{2561, 1},
-			Year{2561, 2},
-			Year{2561, 3},
-			Year{2562, 1},
-			Year{2562, 2},
-			Year{2562, 3},
-			Year{2563, 1},
-			Year{2563, 2},
-			Year{2563, 3},
-			Year{2564, 1},
-			Year{2564, 2},
-			Year{2564, 3},
+			Year{2551},
+			Year{2552},
+			Year{2553},
+			Year{2554},
+			Year{2555},
+			Year{2556},
+			Year{2557},
+			Year{2558},
+			Year{2559},
+			Year{2560},
+			Year{2561},
+			Year{2562},
+			Year{2563},
+			Year{2564},
+			Year{2565},
 		},
 	}
 
@@ -286,7 +276,6 @@ func main() {
 		client.Year.
 			Create().
 			SetYears(ry.Years).
-			SetYearTermID(ry.TermID).
 			Save(context.Background())
 	}
 
@@ -389,110 +378,109 @@ func main() {
 	}
 
 	//Set District Data
-    districts := Districts{
-        District: []District{
-            District{"เมืองนครราชสีมา"},
-            District{"โนนสูง"},
-            District{"สีคิ้ว"},
-            District{"สีดา"},
-        },
-    }
-    for _, di := range districts.District {
-        client.District.
-            Create().
-            SetDistrict(di.District).
-            Save(context.Background())
-    }
+	districts := Districts{
+		District: []District{
+			District{"เมืองนครราชสีมา"},
+			District{"โนนสูง"},
+			District{"สีคิ้ว"},
+			District{"สีดา"},
+		},
+	}
+	for _, di := range districts.District {
+		client.District.
+			Create().
+			SetDistrict(di.District).
+			Save(context.Background())
+	}
 
-    //Set Subdistrict Data
-    subdistricts := Subdistricts{
-        Subdistrict: []Subdistrict{
-            Subdistrict{"ในเมือง"},
-            Subdistrict{"สุรนารี"},
-            Subdistrict{"จอหอ"},
-        },
-    }
-    for _, sd := range subdistricts.Subdistrict {
-        client.Subdistrict.
-            Create().
-            SetSubdistrict(sd.Subdistrict).
-            Save(context.Background())
-    }
+	//Set Subdistrict Data
+	subdistricts := Subdistricts{
+		Subdistrict: []Subdistrict{
+			Subdistrict{"ในเมือง"},
+			Subdistrict{"สุรนารี"},
+			Subdistrict{"จอหอ"},
+		},
+	}
+	for _, sd := range subdistricts.Subdistrict {
+		client.Subdistrict.
+			Create().
+			SetSubdistrict(sd.Subdistrict).
+			Save(context.Background())
+	}
 
-    //Set Region Data
-    regions := Regions{
-        Region: []Region{
-            Region{"ภาคกลาง"},
-            Region{"ภาคตะวันออกเฉียงเหนือ"},
-            Region{"ภาคเหนือ"},
-            Region{"ภาคใต้"},
-        },
-    }
-    for _, st := range regions.Region {
-        client.Region.
-            Create().
-            SetName(st.Region).
-            Save(context.Background())
-    }
+	//Set Region Data
+	regions := Regions{
+		Region: []Region{
+			Region{"ภาคกลาง"},
+			Region{"ภาคตะวันออกเฉียงเหนือ"},
+			Region{"ภาคเหนือ"},
+			Region{"ภาคใต้"},
+		},
+	}
+	for _, st := range regions.Region {
+		client.Region.
+			Create().
+			SetName(st.Region).
+			Save(context.Background())
+	}
 
-    //Set Postal Data
-    Postals := Postals{
-        Postal: []Postal{
-            Postal{"30000"},
-            Postal{"30430"},
-            Postal{"30310"},
-            Postal{"30280"},
-        },
-    }
-    for _, st := range Postals.Postal {
-        client.Postal.
-            Create().
-            SetPostal(st.Postal).
-            Save(context.Background())
-    }
+	//Set Postal Data
+	Postals := Postals{
+		Postal: []Postal{
+			Postal{"30000"},
+			Postal{"30430"},
+			Postal{"30310"},
+			Postal{"30280"},
+		},
+	}
+	for _, st := range Postals.Postal {
+		client.Postal.
+			Create().
+			SetPostal(st.Postal).
+			Save(context.Background())
+	}
 
-	    // Set Institution Data
-		institutions := Institutions{
-			Institution: []Institution{
-				Institution{"สาขาวิชาเคมี"},
-				Institution{"สาขาวิชาคณิตศาสตร์"},
-				Institution{"สาขาวิชาวิศวกรรมคอมพิวเตอร์"},
-				Institution{"สาขาวิชาวิศวกรรมเครื่องกล"},
-				Institution{"สาขาวิชาวิศวกรรมโยธา"},
-				Institution{"สาขาวิชาวิศวกรรมไฟฟ้า"},
-				Institution{"สาขาวิชาเทคโนโลยีการจัดการ"},
-				Institution{"สาขาวิชาเทคโนโลยีอาหาร"},
-				Institution{"สาขาวิชาแพทยศาสตรบัณฑิต"},
-				Institution{"สาขาวิชาพยาบาลศาสตรบัณฑิต"},
-				Institution{"สาขาวิชาทันตแพทยศาสตรบัณฑิต"},
-				Institution{"สาขาวิชาอาชีวอนามัยและความปลอดภัย"},
-				Institution{"สาขาวิชาอนามัยสิ่งแวดล้อม"},       
-			},
-		}
-		for _, in := range institutions.Institution {
-			client.Institution.
-				Create().
-				SetInstitution(in.Institution).
-				Save(context.Background())
-		}
-		
-		// Set degree Data
-		degrees := Degrees{
-			Degree: []Degree{
-				Degree{"ปริญญาตรี"},
-				Degree{"ปริญญาโท"},
-				Degree{"ปริญญาเอก"},
-				Degree{"ปริญญากิตติมศักดิ์"},
-				Degree{"มัธยมศึกษาตอนปลาย"},
-			},
-		}
-		for _, de := range degrees.Degree {
-			client.Degree.
-				Create().
-				SetDegree(de.Degree).
-				Save(context.Background())
-		}
-	
+	// Set Institution Data
+	institutions := Institutions{
+		Institution: []Institution{
+			Institution{"สาขาวิชาเคมี"},
+			Institution{"สาขาวิชาคณิตศาสตร์"},
+			Institution{"สาขาวิชาวิศวกรรมคอมพิวเตอร์"},
+			Institution{"สาขาวิชาวิศวกรรมเครื่องกล"},
+			Institution{"สาขาวิชาวิศวกรรมโยธา"},
+			Institution{"สาขาวิชาวิศวกรรมไฟฟ้า"},
+			Institution{"สาขาวิชาเทคโนโลยีการจัดการ"},
+			Institution{"สาขาวิชาเทคโนโลยีอาหาร"},
+			Institution{"สาขาวิชาแพทยศาสตรบัณฑิต"},
+			Institution{"สาขาวิชาพยาบาลศาสตรบัณฑิต"},
+			Institution{"สาขาวิชาทันตแพทยศาสตรบัณฑิต"},
+			Institution{"สาขาวิชาอาชีวอนามัยและความปลอดภัย"},
+			Institution{"สาขาวิชาอนามัยสิ่งแวดล้อม"},
+		},
+	}
+	for _, in := range institutions.Institution {
+		client.Institution.
+			Create().
+			SetInstitution(in.Institution).
+			Save(context.Background())
+	}
+
+	// Set degree Data
+	degrees := Degrees{
+		Degree: []Degree{
+			Degree{"ปริญญาตรี"},
+			Degree{"ปริญญาโท"},
+			Degree{"ปริญญาเอก"},
+			Degree{"ปริญญากิตติมศักดิ์"},
+			Degree{"มัธยมศึกษาตอนปลาย"},
+		},
+	}
+	for _, de := range degrees.Degree {
+		client.Degree.
+			Create().
+			SetDegree(de.Degree).
+			Save(context.Background())
+	}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.Run()
