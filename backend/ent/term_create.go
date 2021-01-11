@@ -9,8 +9,8 @@ import (
 
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
+	"github.com/sut63/team17/app/ent/results"
 	"github.com/sut63/team17/app/ent/term"
-	"github.com/sut63/team17/app/ent/year"
 )
 
 // TermCreate is the builder for creating a Term entity.
@@ -26,23 +26,19 @@ func (tc *TermCreate) SetSemester(i int) *TermCreate {
 	return tc
 }
 
-// SetTermYearID sets the term_year edge to Year by id.
-func (tc *TermCreate) SetTermYearID(id int) *TermCreate {
-	tc.mutation.SetTermYearID(id)
+// AddTermResuIDs adds the term_resu edge to Results by ids.
+func (tc *TermCreate) AddTermResuIDs(ids ...int) *TermCreate {
+	tc.mutation.AddTermResuIDs(ids...)
 	return tc
 }
 
-// SetNillableTermYearID sets the term_year edge to Year by id if the given value is not nil.
-func (tc *TermCreate) SetNillableTermYearID(id *int) *TermCreate {
-	if id != nil {
-		tc = tc.SetTermYearID(*id)
+// AddTermResu adds the term_resu edges to Results.
+func (tc *TermCreate) AddTermResu(r ...*Results) *TermCreate {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
 	}
-	return tc
-}
-
-// SetTermYear sets the term_year edge to Year.
-func (tc *TermCreate) SetTermYear(y *Year) *TermCreate {
-	return tc.SetTermYearID(y.ID)
+	return tc.AddTermResuIDs(ids...)
 }
 
 // Mutation returns the TermMutation object of the builder.
@@ -128,17 +124,17 @@ func (tc *TermCreate) createSpec() (*Term, *sqlgraph.CreateSpec) {
 		})
 		t.Semester = value
 	}
-	if nodes := tc.mutation.TermYearIDs(); len(nodes) > 0 {
+	if nodes := tc.mutation.TermResuIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   term.TermYearTable,
-			Columns: []string{term.TermYearColumn},
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   term.TermResuTable,
+			Columns: []string{term.TermResuColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: year.FieldID,
+					Column: results.FieldID,
 				},
 			},
 		}

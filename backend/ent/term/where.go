@@ -174,25 +174,25 @@ func SemesterLTE(v int) predicate.Term {
 	})
 }
 
-// HasTermYear applies the HasEdge predicate on the "term_year" edge.
-func HasTermYear() predicate.Term {
+// HasTermResu applies the HasEdge predicate on the "term_resu" edge.
+func HasTermResu() predicate.Term {
 	return predicate.Term(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(TermYearTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, TermYearTable, TermYearColumn),
+			sqlgraph.To(TermResuTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, TermResuTable, TermResuColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasTermYearWith applies the HasEdge predicate on the "term_year" edge with a given conditions (other predicates).
-func HasTermYearWith(preds ...predicate.Year) predicate.Term {
+// HasTermResuWith applies the HasEdge predicate on the "term_resu" edge with a given conditions (other predicates).
+func HasTermResuWith(preds ...predicate.Results) predicate.Term {
 	return predicate.Term(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(TermYearInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, TermYearTable, TermYearColumn),
+			sqlgraph.To(TermResuInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, TermResuTable, TermResuColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

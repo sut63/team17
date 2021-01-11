@@ -13,6 +13,7 @@ import (
 	"github.com/sut63/team17/app/ent/results"
 	"github.com/sut63/team17/app/ent/student"
 	"github.com/sut63/team17/app/ent/subject"
+	"github.com/sut63/team17/app/ent/term"
 	"github.com/sut63/team17/app/ent/year"
 )
 
@@ -100,6 +101,25 @@ func (ru *ResultsUpdate) SetResuStud(s *Student) *ResultsUpdate {
 	return ru.SetResuStudID(s.ID)
 }
 
+// SetResuTermID sets the resu_term edge to Term by id.
+func (ru *ResultsUpdate) SetResuTermID(id int) *ResultsUpdate {
+	ru.mutation.SetResuTermID(id)
+	return ru
+}
+
+// SetNillableResuTermID sets the resu_term edge to Term by id if the given value is not nil.
+func (ru *ResultsUpdate) SetNillableResuTermID(id *int) *ResultsUpdate {
+	if id != nil {
+		ru = ru.SetResuTermID(*id)
+	}
+	return ru
+}
+
+// SetResuTerm sets the resu_term edge to Term.
+func (ru *ResultsUpdate) SetResuTerm(t *Term) *ResultsUpdate {
+	return ru.SetResuTermID(t.ID)
+}
+
 // Mutation returns the ResultsMutation object of the builder.
 func (ru *ResultsUpdate) Mutation() *ResultsMutation {
 	return ru.mutation
@@ -120,6 +140,12 @@ func (ru *ResultsUpdate) ClearResuSubj() *ResultsUpdate {
 // ClearResuStud clears the resu_stud edge to Student.
 func (ru *ResultsUpdate) ClearResuStud() *ResultsUpdate {
 	ru.mutation.ClearResuStud()
+	return ru
+}
+
+// ClearResuTerm clears the resu_term edge to Term.
+func (ru *ResultsUpdate) ClearResuTerm() *ResultsUpdate {
+	ru.mutation.ClearResuTerm()
 	return ru
 }
 
@@ -317,6 +343,41 @@ func (ru *ResultsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if ru.mutation.ResuTermCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   results.ResuTermTable,
+			Columns: []string{results.ResuTermColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: term.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ru.mutation.ResuTermIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   results.ResuTermTable,
+			Columns: []string{results.ResuTermColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: term.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, ru.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{results.Label}
@@ -405,6 +466,25 @@ func (ruo *ResultsUpdateOne) SetResuStud(s *Student) *ResultsUpdateOne {
 	return ruo.SetResuStudID(s.ID)
 }
 
+// SetResuTermID sets the resu_term edge to Term by id.
+func (ruo *ResultsUpdateOne) SetResuTermID(id int) *ResultsUpdateOne {
+	ruo.mutation.SetResuTermID(id)
+	return ruo
+}
+
+// SetNillableResuTermID sets the resu_term edge to Term by id if the given value is not nil.
+func (ruo *ResultsUpdateOne) SetNillableResuTermID(id *int) *ResultsUpdateOne {
+	if id != nil {
+		ruo = ruo.SetResuTermID(*id)
+	}
+	return ruo
+}
+
+// SetResuTerm sets the resu_term edge to Term.
+func (ruo *ResultsUpdateOne) SetResuTerm(t *Term) *ResultsUpdateOne {
+	return ruo.SetResuTermID(t.ID)
+}
+
 // Mutation returns the ResultsMutation object of the builder.
 func (ruo *ResultsUpdateOne) Mutation() *ResultsMutation {
 	return ruo.mutation
@@ -425,6 +505,12 @@ func (ruo *ResultsUpdateOne) ClearResuSubj() *ResultsUpdateOne {
 // ClearResuStud clears the resu_stud edge to Student.
 func (ruo *ResultsUpdateOne) ClearResuStud() *ResultsUpdateOne {
 	ruo.mutation.ClearResuStud()
+	return ruo
+}
+
+// ClearResuTerm clears the resu_term edge to Term.
+func (ruo *ResultsUpdateOne) ClearResuTerm() *ResultsUpdateOne {
+	ruo.mutation.ClearResuTerm()
 	return ruo
 }
 
@@ -612,6 +698,41 @@ func (ruo *ResultsUpdateOne) sqlSave(ctx context.Context) (r *Results, err error
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: student.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ruo.mutation.ResuTermCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   results.ResuTermTable,
+			Columns: []string{results.ResuTermColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: term.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ruo.mutation.ResuTermIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   results.ResuTermTable,
+			Columns: []string{results.ResuTermColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: term.FieldID,
 				},
 			},
 		}

@@ -2092,6 +2092,22 @@ func (c *ResultsClient) QueryResuStud(r *Results) *StudentQuery {
 	return query
 }
 
+// QueryResuTerm queries the resu_term edge of a Results.
+func (c *ResultsClient) QueryResuTerm(r *Results) *TermQuery {
+	query := &TermQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := r.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(results.Table, results.FieldID, id),
+			sqlgraph.To(term.Table, term.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, results.ResuTermTable, results.ResuTermColumn),
+		)
+		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *ResultsClient) Hooks() []Hook {
 	return c.hooks.Results
@@ -2552,15 +2568,15 @@ func (c *TermClient) GetX(ctx context.Context, id int) *Term {
 	return t
 }
 
-// QueryTermYear queries the term_year edge of a Term.
-func (c *TermClient) QueryTermYear(t *Term) *YearQuery {
-	query := &YearQuery{config: c.config}
+// QueryTermResu queries the term_resu edge of a Term.
+func (c *TermClient) QueryTermResu(t *Term) *ResultsQuery {
+	query := &ResultsQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := t.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(term.Table, term.FieldID, id),
-			sqlgraph.To(year.Table, year.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, term.TermYearTable, term.TermYearColumn),
+			sqlgraph.To(results.Table, results.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, term.TermResuTable, term.TermResuColumn),
 		)
 		fromV = sqlgraph.Neighbors(t.driver.Dialect(), step)
 		return fromV, nil

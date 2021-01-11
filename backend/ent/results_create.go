@@ -12,6 +12,7 @@ import (
 	"github.com/sut63/team17/app/ent/results"
 	"github.com/sut63/team17/app/ent/student"
 	"github.com/sut63/team17/app/ent/subject"
+	"github.com/sut63/team17/app/ent/term"
 	"github.com/sut63/team17/app/ent/year"
 )
 
@@ -83,6 +84,25 @@ func (rc *ResultsCreate) SetNillableResuStudID(id *int) *ResultsCreate {
 // SetResuStud sets the resu_stud edge to Student.
 func (rc *ResultsCreate) SetResuStud(s *Student) *ResultsCreate {
 	return rc.SetResuStudID(s.ID)
+}
+
+// SetResuTermID sets the resu_term edge to Term by id.
+func (rc *ResultsCreate) SetResuTermID(id int) *ResultsCreate {
+	rc.mutation.SetResuTermID(id)
+	return rc
+}
+
+// SetNillableResuTermID sets the resu_term edge to Term by id if the given value is not nil.
+func (rc *ResultsCreate) SetNillableResuTermID(id *int) *ResultsCreate {
+	if id != nil {
+		rc = rc.SetResuTermID(*id)
+	}
+	return rc
+}
+
+// SetResuTerm sets the resu_term edge to Term.
+func (rc *ResultsCreate) SetResuTerm(t *Term) *ResultsCreate {
+	return rc.SetResuTermID(t.ID)
 }
 
 // Mutation returns the ResultsMutation object of the builder.
@@ -217,6 +237,25 @@ func (rc *ResultsCreate) createSpec() (*Results, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: student.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := rc.mutation.ResuTermIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   results.ResuTermTable,
+			Columns: []string{results.ResuTermColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: term.FieldID,
 				},
 			},
 		}
