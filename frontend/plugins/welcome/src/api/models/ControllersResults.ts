@@ -42,6 +42,12 @@ export interface ControllersResults {
      * @type {number}
      * @memberof ControllersResults
      */
+    termID?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ControllersResults
+     */
     yearID?: number;
 }
 
@@ -58,6 +64,7 @@ export function ControllersResultsFromJSONTyped(json: any, ignoreDiscriminator: 
         'grade': !exists(json, 'grade') ? undefined : json['grade'],
         'studentID': !exists(json, 'studentID') ? undefined : json['studentID'],
         'subjectID': !exists(json, 'subjectID') ? undefined : json['subjectID'],
+        'termID': !exists(json, 'termID') ? undefined : json['termID'],
         'yearID': !exists(json, 'yearID') ? undefined : json['yearID'],
     };
 }
@@ -74,6 +81,7 @@ export function ControllersResultsToJSON(value?: ControllersResults | null): any
         'grade': value.grade,
         'studentID': value.studentID,
         'subjectID': value.subjectID,
+        'termID': value.termID,
         'yearID': value.yearID,
     };
 }

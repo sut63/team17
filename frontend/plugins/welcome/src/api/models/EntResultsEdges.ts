@@ -22,6 +22,10 @@ import {
     EntSubjectFromJSON,
     EntSubjectFromJSONTyped,
     EntSubjectToJSON,
+    EntTerm,
+    EntTermFromJSON,
+    EntTermFromJSONTyped,
+    EntTermToJSON,
     EntYear,
     EntYearFromJSON,
     EntYearFromJSONTyped,
@@ -48,6 +52,12 @@ export interface EntResultsEdges {
     resuSubj?: EntSubject;
     /**
      * 
+     * @type {EntTerm}
+     * @memberof EntResultsEdges
+     */
+    resuTerm?: EntTerm;
+    /**
+     * 
      * @type {EntYear}
      * @memberof EntResultsEdges
      */
@@ -66,6 +76,7 @@ export function EntResultsEdgesFromJSONTyped(json: any, ignoreDiscriminator: boo
         
         'resuStud': !exists(json, 'resuStud') ? undefined : EntStudentFromJSON(json['resuStud']),
         'resuSubj': !exists(json, 'resuSubj') ? undefined : EntSubjectFromJSON(json['resuSubj']),
+        'resuTerm': !exists(json, 'resuTerm') ? undefined : EntTermFromJSON(json['resuTerm']),
         'resuYear': !exists(json, 'resuYear') ? undefined : EntYearFromJSON(json['resuYear']),
     };
 }
@@ -81,6 +92,7 @@ export function EntResultsEdgesToJSON(value?: EntResultsEdges | null): any {
         
         'resuStud': EntStudentToJSON(value.resuStud),
         'resuSubj': EntSubjectToJSON(value.resuSubj),
+        'resuTerm': EntTermToJSON(value.resuTerm),
         'resuYear': EntYearToJSON(value.resuYear),
     };
 }
