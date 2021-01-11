@@ -10,9 +10,9 @@ import (
 	"github.com/sut63/team17/app/ent/results"
 	"github.com/sut63/team17/app/ent/year"
 
-	//"github.com/se63/team17/app/ent/term"
 	"github.com/sut63/team17/app/ent/student"
 	"github.com/sut63/team17/app/ent/subject"
+	"github.com/sut63/team17/app/ent/term"
 )
 
 // ResultsController defines the struct for the results controller
@@ -27,6 +27,7 @@ type Results struct {
 	StudentID int
 	YearID    int
 	SubjectID int
+	TermID    int
 }
 
 // CreateResults handles POST requests for adding results entities
@@ -76,12 +77,22 @@ func (ctl *ResultsController) CreateResults(c *gin.Context) {
 		fmt.Println(err.Error())
 		return
 	}
+	term, err := ctl.client.Term.
+		Query().
+		Where(term.IDEQ(int(obj.TermID))).
+		Only(context.Background())
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
 	t, err := ctl.client.Results.
 		Create().
 		SetGrade(obj.Grade).
 		SetResuStud(std).
 		SetResuYear(yea).
 		SetResuSubj(subj).
+		SetResuTerm(term).
 		Save(context.Background())
 	if err != nil {
 		c.JSON(400, gin.H{
@@ -140,7 +151,7 @@ func (ctl *ResultsController) GetResults(c *gin.Context) {
 // @Router /resultss [get]
 func (ctl *ResultsController) ListResults(c *gin.Context) {
 	limitQuery := c.Query("limit")
-	limit := 10
+	limit := 100
 	if limitQuery != "" {
 		limit64, err := strconv.ParseInt(limitQuery, 10, 64)
 		if err == nil {
