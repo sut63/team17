@@ -14,14 +14,10 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    EntActivity,
-    EntActivityFromJSON,
-    EntActivityFromJSONTyped,
-    EntActivityToJSON,
-    EntYear,
-    EntYearFromJSON,
-    EntYearFromJSONTyped,
-    EntYearToJSON,
+    EntResults,
+    EntResultsFromJSON,
+    EntResultsFromJSONTyped,
+    EntResultsToJSON,
 } from './';
 
 /**
@@ -31,17 +27,11 @@ import {
  */
 export interface EntTermEdges {
     /**
-     * TermYear holds the value of the term_year edge.
-     * @type {Array<EntYear>}
+     * TermResu holds the value of the term_resu edge.
+     * @type {Array<EntResults>}
      * @memberof EntTermEdges
      */
-    termYear?: Array<EntYear>;
-    /**
-     * YearActi holds the value of the year_acti edge.
-     * @type {Array<EntActivity>}
-     * @memberof EntTermEdges
-     */
-    yearActi?: Array<EntActivity>;
+    termResu?: Array<EntResults>;
 }
 
 export function EntTermEdgesFromJSON(json: any): EntTermEdges {
@@ -54,8 +44,7 @@ export function EntTermEdgesFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'termYear': !exists(json, 'termYear') ? undefined : ((json['termYear'] as Array<any>).map(EntYearFromJSON)),
-        'yearActi': !exists(json, 'yearActi') ? undefined : ((json['yearActi'] as Array<any>).map(EntActivityFromJSON)),
+        'termResu': !exists(json, 'termResu') ? undefined : ((json['termResu'] as Array<any>).map(EntResultsFromJSON)),
     };
 }
 
@@ -68,8 +57,7 @@ export function EntTermEdgesToJSON(value?: EntTermEdges | null): any {
     }
     return {
         
-        'termYear': value.termYear === undefined ? undefined : ((value.termYear as Array<any>).map(EntYearToJSON)),
-        'yearActi': value.yearActi === undefined ? undefined : ((value.yearActi as Array<any>).map(EntActivityToJSON)),
+        'termResu': value.termResu === undefined ? undefined : ((value.termResu as Array<any>).map(EntResultsToJSON)),
     };
 }
 

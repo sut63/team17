@@ -47,11 +47,11 @@ export interface EntYearEdges {
      */
     yearResu?: Array<EntResults>;
     /**
-     * 
-     * @type {EntTerm}
+     * YearTerm holds the value of the year_term edge.
+     * @type {Array<EntTerm>}
      * @memberof EntYearEdges
      */
-    yearTerm?: EntTerm;
+    yearTerm?: Array<EntTerm>;
 }
 
 export function EntYearEdgesFromJSON(json: any): EntYearEdges {
@@ -66,7 +66,7 @@ export function EntYearEdgesFromJSONTyped(json: any, ignoreDiscriminator: boolea
         
         'yearActi': !exists(json, 'yearActi') ? undefined : ((json['yearActi'] as Array<any>).map(EntActivityFromJSON)),
         'yearResu': !exists(json, 'yearResu') ? undefined : ((json['yearResu'] as Array<any>).map(EntResultsFromJSON)),
-        'yearTerm': !exists(json, 'yearTerm') ? undefined : EntTermFromJSON(json['yearTerm']),
+        'yearTerm': !exists(json, 'yearTerm') ? undefined : ((json['yearTerm'] as Array<any>).map(EntTermFromJSON)),
     };
 }
 
@@ -81,7 +81,7 @@ export function EntYearEdgesToJSON(value?: EntYearEdges | null): any {
         
         'yearActi': value.yearActi === undefined ? undefined : ((value.yearActi as Array<any>).map(EntActivityToJSON)),
         'yearResu': value.yearResu === undefined ? undefined : ((value.yearResu as Array<any>).map(EntResultsToJSON)),
-        'yearTerm': EntTermToJSON(value.yearTerm),
+        'yearTerm': value.yearTerm === undefined ? undefined : ((value.yearTerm as Array<any>).map(EntTermToJSON)),
     };
 }
 
