@@ -153,6 +153,7 @@ type Region struct {
 // @tokenUrl https://example.com/oauth/token
 // @authorizationUrl https://example.com/oauth/authorize
 // @scope.admin Grants read and write access to administrative information
+//comment eiei
 func main() {
 	router := gin.Default()
 	router.Use(cors.Default())
