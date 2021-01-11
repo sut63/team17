@@ -21,6 +21,6 @@ func (Term) Fields() []ent.Field {
 // Edges of the Term.
 func (Term) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("term_year", Year.Type).Ref("year_term").Unique(),
+		edge.To("term_resu", Results.Type),
 	}
 }
