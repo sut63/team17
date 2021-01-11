@@ -22,5 +22,6 @@ func (Term) Fields() []ent.Field {
 func (Term) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("term_resu", Results.Type),
+		edge.To("term_acti", Activity.Type),
 	}
 }
