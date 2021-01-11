@@ -2358,6 +2358,9 @@ var doc = `{
                 "subjectID": {
                     "type": "integer"
                 },
+                "termID": {
+                    "type": "integer"
+                },
                 "yearID": {
                     "type": "integer"
                 }
@@ -2965,6 +2968,11 @@ var doc = `{
                     "type": "object",
                     "$ref": "#/definitions/ent.Subject"
                 },
+                "resuTerm": {
+                    "description": "ResuTerm holds the value of the resu_term edge.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.Term"
+                },
                 "resuYear": {
                     "description": "ResuYear holds the value of the resu_year edge.",
                     "type": "object",
@@ -3138,18 +3146,11 @@ var doc = `{
         "ent.TermEdges": {
             "type": "object",
             "properties": {
-                "termYear": {
-                    "description": "TermYear holds the value of the term_year edge.",
+                "termResu": {
+                    "description": "TermResu holds the value of the term_resu edge.",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/ent.Year"
-                    }
-                },
-                "yearActi": {
-                    "description": "YearActi holds the value of the year_acti edge.",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/ent.Activity"
+                        "$ref": "#/definitions/ent.Results"
                     }
                 }
             }
@@ -3191,8 +3192,10 @@ var doc = `{
                 },
                 "yearTerm": {
                     "description": "YearTerm holds the value of the year_term edge.",
-                    "type": "object",
-                    "$ref": "#/definitions/ent.Term"
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.Term"
+                    }
                 }
             }
         },

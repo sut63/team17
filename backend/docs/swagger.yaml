@@ -60,6 +60,8 @@ definitions:
         type: integer
       subjectID:
         type: integer
+      termID:
+        type: integer
       yearID:
         type: integer
     type: object
@@ -524,6 +526,10 @@ definitions:
         $ref: '#/definitions/ent.Subject'
         description: ResuSubj holds the value of the resu_subj edge.
         type: object
+      resuTerm:
+        $ref: '#/definitions/ent.Term'
+        description: ResuTerm holds the value of the resu_term edge.
+        type: object
       resuYear:
         $ref: '#/definitions/ent.Year'
         description: ResuYear holds the value of the resu_year edge.
@@ -657,15 +663,10 @@ definitions:
     type: object
   ent.TermEdges:
     properties:
-      termYear:
-        description: TermYear holds the value of the term_year edge.
+      termResu:
+        description: TermResu holds the value of the term_resu edge.
         items:
-          $ref: '#/definitions/ent.Year'
-        type: array
-      yearActi:
-        description: YearActi holds the value of the year_acti edge.
-        items:
-          $ref: '#/definitions/ent.Activity'
+          $ref: '#/definitions/ent.Results'
         type: array
     type: object
   ent.Year:
@@ -696,9 +697,10 @@ definitions:
           $ref: '#/definitions/ent.Results'
         type: array
       yearTerm:
-        $ref: '#/definitions/ent.Term'
         description: YearTerm holds the value of the year_term edge.
-        type: object
+        items:
+          $ref: '#/definitions/ent.Term'
+        type: array
     type: object
   gin.H:
     additionalProperties: true
