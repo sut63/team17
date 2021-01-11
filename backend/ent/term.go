@@ -8,6 +8,7 @@ import (
 
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/sut63/team17/app/ent/term"
+	"github.com/sut63/team17/app/ent/year"
 )
 
 // Term is the model entity for the Term schema.
@@ -19,36 +20,31 @@ type Term struct {
 	Semester int `json:"semester,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TermQuery when eager-loading is set.
-	Edges TermEdges `json:"edges"`
+	Edges          TermEdges `json:"edges"`
+	year_year_term *int
 }
 
 // TermEdges holds the relations/edges for other nodes in the graph.
 type TermEdges struct {
 	// TermYear holds the value of the term_year edge.
-	TermYear []*Year
-	// YearActi holds the value of the year_acti edge.
-	YearActi []*Activity
+	TermYear *Year
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [1]bool
 }
 
 // TermYearOrErr returns the TermYear value or an error if the edge
-// was not loaded in eager-loading.
-func (e TermEdges) TermYearOrErr() ([]*Year, error) {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e TermEdges) TermYearOrErr() (*Year, error) {
 	if e.loadedTypes[0] {
+		if e.TermYear == nil {
+			// The edge term_year was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: year.Label}
+		}
 		return e.TermYear, nil
 	}
 	return nil, &NotLoadedError{edge: "term_year"}
-}
-
-// YearActiOrErr returns the YearActi value or an error if the edge
-// was not loaded in eager-loading.
-func (e TermEdges) YearActiOrErr() ([]*Activity, error) {
-	if e.loadedTypes[1] {
-		return e.YearActi, nil
-	}
-	return nil, &NotLoadedError{edge: "year_acti"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -56,6 +52,13 @@ func (*Term) scanValues() []interface{} {
 	return []interface{}{
 		&sql.NullInt64{}, // id
 		&sql.NullInt64{}, // semester
+	}
+}
+
+// fkValues returns the types for scanning foreign-keys values from sql.Rows.
+func (*Term) fkValues() []interface{} {
+	return []interface{}{
+		&sql.NullInt64{}, // year_year_term
 	}
 }
 
@@ -76,17 +79,21 @@ func (t *Term) assignValues(values ...interface{}) error {
 	} else if value.Valid {
 		t.Semester = int(value.Int64)
 	}
+	values = values[1:]
+	if len(values) == len(term.ForeignKeys) {
+		if value, ok := values[0].(*sql.NullInt64); !ok {
+			return fmt.Errorf("unexpected type %T for edge-field year_year_term", value)
+		} else if value.Valid {
+			t.year_year_term = new(int)
+			*t.year_year_term = int(value.Int64)
+		}
+	}
 	return nil
 }
 
 // QueryTermYear queries the term_year edge of the Term.
 func (t *Term) QueryTermYear() *YearQuery {
 	return (&TermClient{config: t.config}).QueryTermYear(t)
-}
-
-// QueryYearActi queries the year_acti edge of the Term.
-func (t *Term) QueryYearActi() *ActivityQuery {
-	return (&TermClient{config: t.config}).QueryYearActi(t)
 }
 
 // Update returns a builder for updating this Term.

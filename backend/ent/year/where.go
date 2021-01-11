@@ -180,7 +180,7 @@ func HasYearTerm() predicate.Year {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(YearTermTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, YearTermTable, YearTermColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, YearTermTable, YearTermColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -192,7 +192,7 @@ func HasYearTermWith(preds ...predicate.Term) predicate.Year {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(YearTermInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, YearTermTable, YearTermColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, YearTermTable, YearTermColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

@@ -20,12 +20,12 @@ const (
 	// Table holds the table name of the year in the database.
 	Table = "years"
 	// YearTermTable is the table the holds the year_term relation/edge.
-	YearTermTable = "years"
+	YearTermTable = "terms"
 	// YearTermInverseTable is the table name for the Term entity.
 	// It exists in this package in order to avoid circular dependency with the "term" package.
 	YearTermInverseTable = "terms"
 	// YearTermColumn is the table column denoting the year_term relation/edge.
-	YearTermColumn = "term_term_year"
+	YearTermColumn = "year_year_term"
 	// YearResuTable is the table the holds the year_resu relation/edge.
 	YearResuTable = "results"
 	// YearResuInverseTable is the table name for the Results entity.
@@ -46,11 +46,6 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldYears,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the Year type.
-var ForeignKeys = []string{
-	"term_term_year",
 }
 
 var (

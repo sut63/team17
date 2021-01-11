@@ -2560,23 +2560,7 @@ func (c *TermClient) QueryTermYear(t *Term) *YearQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(term.Table, term.FieldID, id),
 			sqlgraph.To(year.Table, year.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, term.TermYearTable, term.TermYearColumn),
-		)
-		fromV = sqlgraph.Neighbors(t.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryYearActi queries the year_acti edge of a Term.
-func (c *TermClient) QueryYearActi(t *Term) *ActivityQuery {
-	query := &ActivityQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := t.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(term.Table, term.FieldID, id),
-			sqlgraph.To(activity.Table, activity.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, term.YearActiTable, term.YearActiColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, term.TermYearTable, term.TermYearColumn),
 		)
 		fromV = sqlgraph.Neighbors(t.driver.Dialect(), step)
 		return fromV, nil
@@ -2675,7 +2659,7 @@ func (c *YearClient) QueryYearTerm(y *Year) *TermQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(year.Table, year.FieldID, id),
 			sqlgraph.To(term.Table, term.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, year.YearTermTable, year.YearTermColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, year.YearTermTable, year.YearTermColumn),
 		)
 		fromV = sqlgraph.Neighbors(y.driver.Dialect(), step)
 		return fromV, nil

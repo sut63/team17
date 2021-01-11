@@ -31,7 +31,6 @@ type YearQuery struct {
 	withYearTerm *TermQuery
 	withYearResu *ResultsQuery
 	withYearActi *ActivityQuery
-	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -71,7 +70,7 @@ func (yq *YearQuery) QueryYearTerm() *TermQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(year.Table, year.FieldID, yq.sqlQuery()),
 			sqlgraph.To(term.Table, term.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, year.YearTermTable, year.YearTermColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, year.YearTermTable, year.YearTermColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(yq.driver.Dialect(), step)
 		return fromU, nil
@@ -392,7 +391,6 @@ func (yq *YearQuery) prepareQuery(ctx context.Context) error {
 func (yq *YearQuery) sqlAll(ctx context.Context) ([]*Year, error) {
 	var (
 		nodes       = []*Year{}
-		withFKs     = yq.withFKs
 		_spec       = yq.querySpec()
 		loadedTypes = [3]bool{
 			yq.withYearTerm != nil,
@@ -400,19 +398,10 @@ func (yq *YearQuery) sqlAll(ctx context.Context) ([]*Year, error) {
 			yq.withYearActi != nil,
 		}
 	)
-	if yq.withYearTerm != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, year.ForeignKeys...)
-	}
 	_spec.ScanValues = func() []interface{} {
 		node := &Year{config: yq.config}
 		nodes = append(nodes, node)
 		values := node.scanValues()
-		if withFKs {
-			values = append(values, node.fkValues()...)
-		}
 		return values
 	}
 	_spec.Assign = func(values ...interface{}) error {
@@ -431,27 +420,30 @@ func (yq *YearQuery) sqlAll(ctx context.Context) ([]*Year, error) {
 	}
 
 	if query := yq.withYearTerm; query != nil {
-		ids := make([]int, 0, len(nodes))
-		nodeids := make(map[int][]*Year)
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[int]*Year)
 		for i := range nodes {
-			if fk := nodes[i].term_term_year; fk != nil {
-				ids = append(ids, *fk)
-				nodeids[*fk] = append(nodeids[*fk], nodes[i])
-			}
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
 		}
-		query.Where(term.IDIn(ids...))
+		query.withFKs = true
+		query.Where(predicate.Term(func(s *sql.Selector) {
+			s.Where(sql.InValues(year.YearTermColumn, fks...))
+		}))
 		neighbors, err := query.All(ctx)
 		if err != nil {
 			return nil, err
 		}
 		for _, n := range neighbors {
-			nodes, ok := nodeids[n.ID]
+			fk := n.year_year_term
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "year_year_term" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "term_term_year" returned %v`, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "year_year_term" returned %v for node %v`, *fk, n.ID)
 			}
-			for i := range nodes {
-				nodes[i].Edges.YearTerm = n
-			}
+			node.Edges.YearTerm = append(node.Edges.YearTerm, n)
 		}
 	}
 

@@ -43,23 +43,19 @@ func (yu *YearUpdate) AddYears(i int) *YearUpdate {
 	return yu
 }
 
-// SetYearTermID sets the year_term edge to Term by id.
-func (yu *YearUpdate) SetYearTermID(id int) *YearUpdate {
-	yu.mutation.SetYearTermID(id)
+// AddYearTermIDs adds the year_term edge to Term by ids.
+func (yu *YearUpdate) AddYearTermIDs(ids ...int) *YearUpdate {
+	yu.mutation.AddYearTermIDs(ids...)
 	return yu
 }
 
-// SetNillableYearTermID sets the year_term edge to Term by id if the given value is not nil.
-func (yu *YearUpdate) SetNillableYearTermID(id *int) *YearUpdate {
-	if id != nil {
-		yu = yu.SetYearTermID(*id)
+// AddYearTerm adds the year_term edges to Term.
+func (yu *YearUpdate) AddYearTerm(t ...*Term) *YearUpdate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
 	}
-	return yu
-}
-
-// SetYearTerm sets the year_term edge to Term.
-func (yu *YearUpdate) SetYearTerm(t *Term) *YearUpdate {
-	return yu.SetYearTermID(t.ID)
+	return yu.AddYearTermIDs(ids...)
 }
 
 // AddYearResuIDs adds the year_resu edge to Results by ids.
@@ -97,10 +93,19 @@ func (yu *YearUpdate) Mutation() *YearMutation {
 	return yu.mutation
 }
 
-// ClearYearTerm clears the year_term edge to Term.
-func (yu *YearUpdate) ClearYearTerm() *YearUpdate {
-	yu.mutation.ClearYearTerm()
+// RemoveYearTermIDs removes the year_term edge to Term by ids.
+func (yu *YearUpdate) RemoveYearTermIDs(ids ...int) *YearUpdate {
+	yu.mutation.RemoveYearTermIDs(ids...)
 	return yu
+}
+
+// RemoveYearTerm removes year_term edges to Term.
+func (yu *YearUpdate) RemoveYearTerm(t ...*Term) *YearUpdate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return yu.RemoveYearTermIDs(ids...)
 }
 
 // RemoveYearResuIDs removes the year_resu edge to Results by ids.
@@ -222,10 +227,10 @@ func (yu *YearUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: year.FieldYears,
 		})
 	}
-	if yu.mutation.YearTermCleared() {
+	if nodes := yu.mutation.RemovedYearTermIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
 			Table:   year.YearTermTable,
 			Columns: []string{year.YearTermColumn},
 			Bidi:    false,
@@ -236,12 +241,15 @@ func (yu *YearUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				},
 			},
 		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := yu.mutation.YearTermIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
 			Table:   year.YearTermTable,
 			Columns: []string{year.YearTermColumn},
 			Bidi:    false,
@@ -364,23 +372,19 @@ func (yuo *YearUpdateOne) AddYears(i int) *YearUpdateOne {
 	return yuo
 }
 
-// SetYearTermID sets the year_term edge to Term by id.
-func (yuo *YearUpdateOne) SetYearTermID(id int) *YearUpdateOne {
-	yuo.mutation.SetYearTermID(id)
+// AddYearTermIDs adds the year_term edge to Term by ids.
+func (yuo *YearUpdateOne) AddYearTermIDs(ids ...int) *YearUpdateOne {
+	yuo.mutation.AddYearTermIDs(ids...)
 	return yuo
 }
 
-// SetNillableYearTermID sets the year_term edge to Term by id if the given value is not nil.
-func (yuo *YearUpdateOne) SetNillableYearTermID(id *int) *YearUpdateOne {
-	if id != nil {
-		yuo = yuo.SetYearTermID(*id)
+// AddYearTerm adds the year_term edges to Term.
+func (yuo *YearUpdateOne) AddYearTerm(t ...*Term) *YearUpdateOne {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
 	}
-	return yuo
-}
-
-// SetYearTerm sets the year_term edge to Term.
-func (yuo *YearUpdateOne) SetYearTerm(t *Term) *YearUpdateOne {
-	return yuo.SetYearTermID(t.ID)
+	return yuo.AddYearTermIDs(ids...)
 }
 
 // AddYearResuIDs adds the year_resu edge to Results by ids.
@@ -418,10 +422,19 @@ func (yuo *YearUpdateOne) Mutation() *YearMutation {
 	return yuo.mutation
 }
 
-// ClearYearTerm clears the year_term edge to Term.
-func (yuo *YearUpdateOne) ClearYearTerm() *YearUpdateOne {
-	yuo.mutation.ClearYearTerm()
+// RemoveYearTermIDs removes the year_term edge to Term by ids.
+func (yuo *YearUpdateOne) RemoveYearTermIDs(ids ...int) *YearUpdateOne {
+	yuo.mutation.RemoveYearTermIDs(ids...)
 	return yuo
+}
+
+// RemoveYearTerm removes year_term edges to Term.
+func (yuo *YearUpdateOne) RemoveYearTerm(t ...*Term) *YearUpdateOne {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return yuo.RemoveYearTermIDs(ids...)
 }
 
 // RemoveYearResuIDs removes the year_resu edge to Results by ids.
@@ -541,10 +554,10 @@ func (yuo *YearUpdateOne) sqlSave(ctx context.Context) (y *Year, err error) {
 			Column: year.FieldYears,
 		})
 	}
-	if yuo.mutation.YearTermCleared() {
+	if nodes := yuo.mutation.RemovedYearTermIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
 			Table:   year.YearTermTable,
 			Columns: []string{year.YearTermColumn},
 			Bidi:    false,
@@ -555,12 +568,15 @@ func (yuo *YearUpdateOne) sqlSave(ctx context.Context) (y *Year, err error) {
 				},
 			},
 		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := yuo.mutation.YearTermIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
 			Table:   year.YearTermTable,
 			Columns: []string{year.YearTermColumn},
 			Bidi:    false,
