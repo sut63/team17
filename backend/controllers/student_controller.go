@@ -6,7 +6,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sut63/team17/app/ent"
+	"github.com/sut63/team17/app/ent/degree"
 	"github.com/sut63/team17/app/ent/gender"
+	"github.com/sut63/team17/app/ent/prefix"
+	"github.com/sut63/team17/app/ent/province"
 	"github.com/sut63/team17/app/ent/student"
 )
 
@@ -24,6 +27,9 @@ type Student struct {
 	Email  string
 	Tel    int
 	Sex    int
+	Province   int
+	Degree   int
+	Title  int
 }
 
 // CreateStudent handles POST requests for adding student entities
@@ -45,9 +51,42 @@ func (ctl *StudentController) CreateStudent(c *gin.Context) {
 		})
 		return
 	}
+	d, err := ctl.client.Degree.
+		Query().
+		Where(degree.IDEQ(int(obj.Degree))).
+		Only(context.Background())
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "user not found",
+		})
+		return
+	}
 	s, err := ctl.client.Gender.
 		Query().
 		Where(gender.IDEQ(int(obj.Sex))).
+		Only(context.Background())
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "user not found",
+		})
+		return
+	}
+	pre, err := ctl.client.Prefix.
+		Query().
+		Where(prefix.IDEQ(int(obj.Title))).
+		Only(context.Background())
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "user not found",
+		})
+		return
+	}
+	pro, err := ctl.client.Province.
+		Query().
+		Where(province.IDEQ(int(obj.Province))).
 		Only(context.Background())
 
 	if err != nil {
@@ -65,7 +104,10 @@ func (ctl *StudentController) CreateStudent(c *gin.Context) {
 		SetSchoolname(obj.School).
 		SetEmail(obj.Email).
 		SetTelephone(obj.Tel).
+		SetStudDegr(d).
 		SetStudGend(s).
+		SetStudPref(pre).
+		SetStudProv(pro).
 		Save(context.Background())
 	if err != nil {
 		c.JSON(400, gin.H{
@@ -143,7 +185,10 @@ func (ctl *StudentController) ListStudent(c *gin.Context) {
 
 	studentss, err := ctl.client.Student.
 		Query().
+		WithStudDegr().
 		WithStudGend().
+		WithStudPref().
+		WithStudProv().
 		Limit(limit).
 		Offset(offset).
 		All(context.Background())
