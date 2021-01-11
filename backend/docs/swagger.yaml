@@ -1,0 +1,2239 @@
+basePath: /api/v1
+definitions:
+  controllers.Activity:
+    properties:
+      activityname:
+        type: string
+      added:
+        type: string
+      agency:
+        type: integer
+      hours:
+        type: integer
+      place:
+        type: integer
+      student:
+        type: integer
+      year:
+        type: integer
+    type: object
+  controllers.Course:
+    properties:
+      coursename:
+        type: string
+      degree:
+        type: integer
+      faculty:
+        type: integer
+      institution:
+        type: integer
+    type: object
+  controllers.Professor:
+    properties:
+      email:
+        type: string
+      faculty:
+        type: integer
+      name:
+        type: string
+      prefix:
+        type: integer
+      professorship:
+        type: integer
+      tel:
+        type: string
+    type: object
+  controllers.Province:
+    properties:
+      district:
+        type: integer
+      name:
+        type: string
+      region:
+        type: integer
+    type: object
+  controllers.Results:
+    properties:
+      grade:
+        type: number
+      studentID:
+        type: integer
+      subjectID:
+        type: integer
+      yearID:
+        type: integer
+    type: object
+  controllers.Student:
+    properties:
+      addr:
+        type: string
+      degree:
+        type: integer
+      email:
+        type: string
+      fname:
+        type: string
+      lname:
+        type: string
+      province:
+        type: integer
+      school:
+        type: string
+      sex:
+        type: integer
+      tel:
+        type: integer
+      title:
+        type: integer
+    type: object
+  ent.Activity:
+    properties:
+      ACTIVITYNAME:
+        description: ACTIVITYNAME holds the value of the "ACTIVITYNAME" field.
+        type: string
+      ADDED:
+        description: ADDED holds the value of the "ADDED" field.
+        type: string
+      HOURS:
+        description: HOURS holds the value of the "HOURS" field.
+        type: integer
+      edges:
+        $ref: '#/definitions/ent.ActivityEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the ActivityQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+    type: object
+  ent.ActivityEdges:
+    properties:
+      actiAgen:
+        $ref: '#/definitions/ent.Agency'
+        description: ActiAgen holds the value of the acti_agen edge.
+        type: object
+      actiPlace:
+        $ref: '#/definitions/ent.Place'
+        description: ActiPlace holds the value of the acti_place edge.
+        type: object
+      actiStud:
+        $ref: '#/definitions/ent.Student'
+        description: ActiStud holds the value of the acti_stud edge.
+        type: object
+      actiYear:
+        $ref: '#/definitions/ent.Year'
+        description: ActiYear holds the value of the acti_year edge.
+        type: object
+    type: object
+  ent.Agency:
+    properties:
+      AGENCY:
+        description: AGENCY holds the value of the "AGENCY" field.
+        type: string
+      edges:
+        $ref: '#/definitions/ent.AgencyEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the AgencyQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+    type: object
+  ent.AgencyEdges:
+    properties:
+      agenActi:
+        description: AgenActi holds the value of the agen_acti edge.
+        items:
+          $ref: '#/definitions/ent.Activity'
+        type: array
+    type: object
+  ent.Course:
+    properties:
+      course:
+        description: Course holds the value of the "course" field.
+        type: string
+      edges:
+        $ref: '#/definitions/ent.CourseEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the CourseQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+    type: object
+  ent.CourseEdges:
+    properties:
+      courDegr:
+        $ref: '#/definitions/ent.Degree'
+        description: CourDegr holds the value of the cour_degr edge.
+        type: object
+      courFacu:
+        $ref: '#/definitions/ent.Faculty'
+        description: CourFacu holds the value of the cour_facu edge.
+        type: object
+      courInst:
+        $ref: '#/definitions/ent.Institution'
+        description: CourInst holds the value of the cour_inst edge.
+        type: object
+    type: object
+  ent.Degree:
+    properties:
+      degree:
+        description: Degree holds the value of the "degree" field.
+        type: string
+      edges:
+        $ref: '#/definitions/ent.DegreeEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the DegreeQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+    type: object
+  ent.DegreeEdges:
+    properties:
+      degrCour:
+        description: DegrCour holds the value of the degr_cour edge.
+        items:
+          $ref: '#/definitions/ent.Course'
+        type: array
+      degrStud:
+        description: DegrStud holds the value of the degr_stud edge.
+        items:
+          $ref: '#/definitions/ent.Student'
+        type: array
+    type: object
+  ent.District:
+    properties:
+      district:
+        description: District holds the value of the "district" field.
+        type: string
+      edges:
+        $ref: '#/definitions/ent.DistrictEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the DistrictQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+    type: object
+  ent.DistrictEdges:
+    properties:
+      distPost:
+        $ref: '#/definitions/ent.Postal'
+        description: DistPost holds the value of the dist_post edge.
+        type: object
+      distProv:
+        description: DistProv holds the value of the dist_prov edge.
+        items:
+          $ref: '#/definitions/ent.Province'
+        type: array
+      distSubd:
+        $ref: '#/definitions/ent.Subdistrict'
+        description: DistSubd holds the value of the dist_subd edge.
+        type: object
+    type: object
+  ent.Faculty:
+    properties:
+      edges:
+        $ref: '#/definitions/ent.FacultyEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the FacultyQuery when eager-loading is set.
+        type: object
+      faculty:
+        description: Faculty holds the value of the "faculty" field.
+        type: string
+      id:
+        description: ID of the ent.
+        type: integer
+    type: object
+  ent.FacultyEdges:
+    properties:
+      facuCour:
+        description: FacuCour holds the value of the facu_cour edge.
+        items:
+          $ref: '#/definitions/ent.Course'
+        type: array
+      facuProf:
+        description: FacuProf holds the value of the facu_prof edge.
+        items:
+          $ref: '#/definitions/ent.Professor'
+        type: array
+    type: object
+  ent.Gender:
+    properties:
+      edges:
+        $ref: '#/definitions/ent.GenderEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the GenderQuery when eager-loading is set.
+        type: object
+      gender:
+        description: Gender holds the value of the "gender" field.
+        type: string
+      id:
+        description: ID of the ent.
+        type: integer
+    type: object
+  ent.GenderEdges:
+    properties:
+      gendStud:
+        description: GendStud holds the value of the gend_stud edge.
+        items:
+          $ref: '#/definitions/ent.Student'
+        type: array
+    type: object
+  ent.Institution:
+    properties:
+      edges:
+        $ref: '#/definitions/ent.InstitutionEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the InstitutionQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+      institution:
+        description: Institution holds the value of the "institution" field.
+        type: string
+    type: object
+  ent.InstitutionEdges:
+    properties:
+      instCour:
+        description: InstCour holds the value of the inst_cour edge.
+        items:
+          $ref: '#/definitions/ent.Course'
+        type: array
+    type: object
+  ent.Place:
+    properties:
+      PLACE:
+        description: PLACE holds the value of the "PLACE" field.
+        type: string
+      edges:
+        $ref: '#/definitions/ent.PlaceEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the PlaceQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+    type: object
+  ent.PlaceEdges:
+    properties:
+      placeActi:
+        description: PlaceActi holds the value of the place_acti edge.
+        items:
+          $ref: '#/definitions/ent.Activity'
+        type: array
+    type: object
+  ent.Postal:
+    properties:
+      edges:
+        $ref: '#/definitions/ent.PostalEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the PostalQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+      postal:
+        description: Postal holds the value of the "postal" field.
+        type: string
+    type: object
+  ent.PostalEdges:
+    properties:
+      postDist:
+        description: PostDist holds the value of the post_dist edge.
+        items:
+          $ref: '#/definitions/ent.District'
+        type: array
+    type: object
+  ent.Prefix:
+    properties:
+      edges:
+        $ref: '#/definitions/ent.PrefixEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the PrefixQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+      prefix:
+        description: Prefix holds the value of the "prefix" field.
+        type: string
+    type: object
+  ent.PrefixEdges:
+    properties:
+      preProf:
+        description: PreProf holds the value of the pre_prof edge.
+        items:
+          $ref: '#/definitions/ent.Professor'
+        type: array
+      prefStud:
+        description: PrefStud holds the value of the pref_stud edge.
+        items:
+          $ref: '#/definitions/ent.Student'
+        type: array
+    type: object
+  ent.Professor:
+    properties:
+      edges:
+        $ref: '#/definitions/ent.ProfessorEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the ProfessorQuery when eager-loading is set.
+        type: object
+      email:
+        description: Email holds the value of the "email" field.
+        type: string
+      id:
+        description: ID of the ent.
+        type: integer
+      name:
+        description: Name holds the value of the "name" field.
+        type: string
+      tel:
+        description: Tel holds the value of the "tel" field.
+        type: string
+    type: object
+  ent.ProfessorEdges:
+    properties:
+      profFacu:
+        $ref: '#/definitions/ent.Faculty'
+        description: ProfFacu holds the value of the prof_facu edge.
+        type: object
+      profPre:
+        $ref: '#/definitions/ent.Prefix'
+        description: ProfPre holds the value of the prof_pre edge.
+        type: object
+      profPros:
+        $ref: '#/definitions/ent.Professorship'
+        description: ProfPros holds the value of the prof_pros edge.
+        type: object
+    type: object
+  ent.Professorship:
+    properties:
+      edges:
+        $ref: '#/definitions/ent.ProfessorshipEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the ProfessorshipQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+      professorship:
+        description: Professorship holds the value of the "professorship" field.
+        type: string
+    type: object
+  ent.ProfessorshipEdges:
+    properties:
+      prosProf:
+        description: ProsProf holds the value of the pros_prof edge.
+        items:
+          $ref: '#/definitions/ent.Professor'
+        type: array
+    type: object
+  ent.Province:
+    properties:
+      edges:
+        $ref: '#/definitions/ent.ProvinceEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the ProvinceQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+      name:
+        description: Name holds the value of the "name" field.
+        type: string
+    type: object
+  ent.ProvinceEdges:
+    properties:
+      provDist:
+        $ref: '#/definitions/ent.District'
+        description: ProvDist holds the value of the prov_dist edge.
+        type: object
+      provRegi:
+        $ref: '#/definitions/ent.Region'
+        description: ProvRegi holds the value of the prov_regi edge.
+        type: object
+      provStud:
+        description: ProvStud holds the value of the prov_stud edge.
+        items:
+          $ref: '#/definitions/ent.Student'
+        type: array
+    type: object
+  ent.Region:
+    properties:
+      edges:
+        $ref: '#/definitions/ent.RegionEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the RegionQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+      name:
+        description: Name holds the value of the "name" field.
+        type: string
+    type: object
+  ent.RegionEdges:
+    properties:
+      regiProv:
+        description: RegiProv holds the value of the regi_prov edge.
+        items:
+          $ref: '#/definitions/ent.Province'
+        type: array
+    type: object
+  ent.Results:
+    properties:
+      edges:
+        $ref: '#/definitions/ent.ResultsEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the ResultsQuery when eager-loading is set.
+        type: object
+      grade:
+        description: Grade holds the value of the "grade" field.
+        type: number
+      id:
+        description: ID of the ent.
+        type: integer
+    type: object
+  ent.ResultsEdges:
+    properties:
+      resuStud:
+        $ref: '#/definitions/ent.Student'
+        description: ResuStud holds the value of the resu_stud edge.
+        type: object
+      resuSubj:
+        $ref: '#/definitions/ent.Subject'
+        description: ResuSubj holds the value of the resu_subj edge.
+        type: object
+      resuYear:
+        $ref: '#/definitions/ent.Year'
+        description: ResuYear holds the value of the resu_year edge.
+        type: object
+    type: object
+  ent.Student:
+    properties:
+      edges:
+        $ref: '#/definitions/ent.StudentEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the StudentQuery when eager-loading is set.
+        type: object
+      email:
+        description: Email holds the value of the "email" field.
+        type: string
+      fname:
+        description: Fname holds the value of the "fname" field.
+        type: string
+      id:
+        description: ID of the ent.
+        type: integer
+      lname:
+        description: Lname holds the value of the "lname" field.
+        type: string
+      recent_address:
+        description: RecentAddress holds the value of the "recent_address" field.
+        type: string
+      schoolname:
+        description: Schoolname holds the value of the "schoolname" field.
+        type: string
+      telephone:
+        description: Telephone holds the value of the "telephone" field.
+        type: integer
+    type: object
+  ent.StudentEdges:
+    properties:
+      studActi:
+        description: StudActi holds the value of the stud_acti edge.
+        items:
+          $ref: '#/definitions/ent.Activity'
+        type: array
+      studDegr:
+        $ref: '#/definitions/ent.Degree'
+        description: StudDegr holds the value of the stud_degr edge.
+        type: object
+      studGend:
+        $ref: '#/definitions/ent.Gender'
+        description: StudGend holds the value of the stud_gend edge.
+        type: object
+      studPref:
+        $ref: '#/definitions/ent.Prefix'
+        description: StudPref holds the value of the stud_pref edge.
+        type: object
+      studProv:
+        $ref: '#/definitions/ent.Province'
+        description: StudProv holds the value of the stud_prov edge.
+        type: object
+      studResu:
+        description: StudResu holds the value of the stud_resu edge.
+        items:
+          $ref: '#/definitions/ent.Results'
+        type: array
+    type: object
+  ent.Subdistrict:
+    properties:
+      edges:
+        $ref: '#/definitions/ent.SubdistrictEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the SubdistrictQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+      subdistrict:
+        description: Subdistrict holds the value of the "subdistrict" field.
+        type: string
+    type: object
+  ent.SubdistrictEdges:
+    properties:
+      subdDist:
+        description: SubdDist holds the value of the subd_dist edge.
+        items:
+          $ref: '#/definitions/ent.District'
+        type: array
+    type: object
+  ent.Subject:
+    properties:
+      code:
+        description: Code holds the value of the "code" field.
+        type: integer
+      creditpiont:
+        description: Creditpiont holds the value of the "creditpiont" field.
+        type: integer
+      edges:
+        $ref: '#/definitions/ent.SubjectEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the SubjectQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+      subjects:
+        description: Subjects holds the value of the "subjects" field.
+        type: string
+    type: object
+  ent.SubjectEdges:
+    properties:
+      subjResu:
+        description: SubjResu holds the value of the subj_resu edge.
+        items:
+          $ref: '#/definitions/ent.Results'
+        type: array
+    type: object
+  ent.Term:
+    properties:
+      edges:
+        $ref: '#/definitions/ent.TermEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the TermQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+      semester:
+        description: Semester holds the value of the "semester" field.
+        type: integer
+    type: object
+  ent.TermEdges:
+    properties:
+      termYear:
+        description: TermYear holds the value of the term_year edge.
+        items:
+          $ref: '#/definitions/ent.Year'
+        type: array
+      yearActi:
+        description: YearActi holds the value of the year_acti edge.
+        items:
+          $ref: '#/definitions/ent.Activity'
+        type: array
+    type: object
+  ent.Year:
+    properties:
+      edges:
+        $ref: '#/definitions/ent.YearEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the YearQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+      years:
+        description: Years holds the value of the "years" field.
+        type: integer
+    type: object
+  ent.YearEdges:
+    properties:
+      yearActi:
+        description: YearActi holds the value of the year_acti edge.
+        items:
+          $ref: '#/definitions/ent.Activity'
+        type: array
+      yearResu:
+        description: YearResu holds the value of the year_resu edge.
+        items:
+          $ref: '#/definitions/ent.Results'
+        type: array
+      yearTerm:
+        $ref: '#/definitions/ent.Term'
+        description: YearTerm holds the value of the year_term edge.
+        type: object
+    type: object
+  gin.H:
+    additionalProperties: true
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server for SUT SE 2563
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: SUT SA Example API Playlist Vidoe
+  version: "1.0"
+paths:
+  /activitys:
+    get:
+      description: list activity entities
+      operationId: list-activity
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Activity'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List activity entities
+    post:
+      consumes:
+      - application/json
+      description: Create activity
+      operationId: create-activity
+      parameters:
+      - description: Activity entity
+        in: body
+        name: activity
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.Activity'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Activity'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Create activity
+  /activitys/{id}:
+    delete:
+      description: get activity by ID
+      operationId: delete-activity
+      parameters:
+      - description: Activity ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin.H'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Delete a activity entity by ID
+  /agencys:
+    get:
+      description: list agency entities
+      operationId: list-agency
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Agency'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List agency entities
+  /agencys/{id}:
+    get:
+      description: get agency by ID
+      operationId: get-agency
+      parameters:
+      - description: Agency ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Agency'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a agency entity by ID
+  /courses:
+    get:
+      description: list course entities
+      operationId: list-course
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Course'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List course entities
+    post:
+      consumes:
+      - application/json
+      description: Create course
+      operationId: create-course
+      parameters:
+      - description: Course entity
+        in: body
+        name: course
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.Course'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Course'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Create course
+  /courses/{id}:
+    get:
+      description: get course by ID
+      operationId: get-course
+      parameters:
+      - description: Course ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Course'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a course entity by ID
+  /degrees:
+    get:
+      description: list degree entities
+      operationId: list-degree
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Degree'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List degree entities
+  /degrees/{id}:
+    get:
+      description: get degree by ID
+      operationId: get-degree
+      parameters:
+      - description: Degree ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Degree'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a degree entity by ID
+  /districts:
+    get:
+      description: list district entities
+      operationId: list-district
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.District'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List district entities
+  /districts/{id}:
+    get:
+      description: get district by ID
+      operationId: get-district
+      parameters:
+      - description: District ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.District'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a district entity by ID
+  /facultys:
+    get:
+      description: list faculty entities
+      operationId: list-faculty
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Faculty'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List faculty entities
+  /facultys/{id}:
+    get:
+      description: get faculty by ID
+      operationId: get-faculty
+      parameters:
+      - description: Faculty ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Faculty'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a faculty entity by ID
+  /genders:
+    get:
+      description: list gender entities
+      operationId: list-gender
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Gender'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List gender entities
+  /genders/{id}:
+    get:
+      description: get gender by ID
+      operationId: get-gender
+      parameters:
+      - description: Gender ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Gender'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a gender entity by ID
+  /institutions:
+    get:
+      description: list institutionentities
+      operationId: list-institution
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Institution'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List institution entities
+  /institutions/{id}:
+    get:
+      description: get institution by ID
+      operationId: get-institution
+      parameters:
+      - description: Institution ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Institution'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a institution entity by ID
+  /places:
+    get:
+      description: list place entities
+      operationId: list-place
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Place'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List place entities
+  /places/{id}:
+    get:
+      description: get place by ID
+      operationId: get-place
+      parameters:
+      - description: Place ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Place'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a place entity by ID
+  /postals:
+    get:
+      description: list postal entities
+      operationId: list-postal
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Postal'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List postal entities
+  /postals/{id}:
+    get:
+      description: get postal by ID
+      operationId: get-postal
+      parameters:
+      - description: Postal ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Postal'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a postal entity by ID
+  /prefixs:
+    get:
+      description: list prefix entities
+      operationId: list-prefix
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Prefix'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List prefix entities
+  /prefixs/{id}:
+    get:
+      description: get prefix by ID
+      operationId: get-prefix
+      parameters:
+      - description: Prefix ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Prefix'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a prefix entity by ID
+  /professors:
+    get:
+      description: list professor entities
+      operationId: list-professor
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Professor'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List professor entities
+    post:
+      consumes:
+      - application/json
+      description: Create professor
+      operationId: create-professor
+      parameters:
+      - description: Professor entity
+        in: body
+        name: professor
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.Professor'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Professor'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Create professor
+  /professors/{id}:
+    delete:
+      description: get professor by ID
+      operationId: delete-professor
+      parameters:
+      - description: Professor ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin.H'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Delete a professor entity by ID
+  /professorships:
+    get:
+      description: list professorship entities
+      operationId: list-professorship
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Professorship'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List professorship entities
+  /professorships/{id}:
+    get:
+      description: get professorship by ID
+      operationId: get-professorship
+      parameters:
+      - description: Professorship ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Professorship'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a professorship entity by ID
+  /provinces:
+    get:
+      description: list province entities
+      operationId: list-province
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Province'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List province entities
+    post:
+      consumes:
+      - application/json
+      description: Create province
+      operationId: create-province
+      parameters:
+      - description: Province entity
+        in: body
+        name: province
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.Province'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Province'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Create province
+  /regions:
+    get:
+      description: list region entities
+      operationId: list-region
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Region'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List region entities
+  /regions/{id}:
+    get:
+      description: get region by ID
+      operationId: get-region
+      parameters:
+      - description: Region ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Region'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a region entity by ID
+  /resultss:
+    get:
+      description: list results entities
+      operationId: list-results
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Results'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List results entities
+    post:
+      consumes:
+      - application/json
+      description: Create results
+      operationId: create-results
+      parameters:
+      - description: Results entity
+        in: body
+        name: results
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.Results'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Results'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Create results
+  /resultss/{id}:
+    delete:
+      description: get results by ID
+      operationId: delete-results
+      parameters:
+      - description: Results ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin.H'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Delete a results entity by ID
+    get:
+      description: get results by ID
+      operationId: get-results
+      parameters:
+      - description: Results ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Results'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a results entity by ID
+    put:
+      consumes:
+      - application/json
+      description: update results by ID
+      operationId: update-results
+      parameters:
+      - description: Results ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Results entity
+        in: body
+        name: results
+        required: true
+        schema:
+          $ref: '#/definitions/ent.Results'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Results'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Update a results entity by ID
+  /students:
+    get:
+      description: list student entities
+      operationId: list-student
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Student'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List student entities
+    post:
+      consumes:
+      - application/json
+      description: Create student
+      operationId: create-student
+      parameters:
+      - description: Student entity
+        in: body
+        name: student
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.Student'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Student'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Create student
+  /students/{id}:
+    get:
+      description: get student by ID
+      operationId: get-student
+      parameters:
+      - description: Student ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Student'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a student entity by ID
+  /subdistricts:
+    get:
+      description: list subdistrict entities
+      operationId: list-subdistrict
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Subdistrict'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List subdistrict entities
+  /subdistricts/{id}:
+    get:
+      description: get subdistrict by ID
+      operationId: get-subdistrict
+      parameters:
+      - description: Subdistrict ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Subdistrict'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a subdistrict entity by ID
+  /subjects:
+    get:
+      description: list subject entities
+      operationId: list-subject
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Subject'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List subject entities
+  /subjects/{id}:
+    get:
+      description: get subject by ID
+      operationId: get-subject
+      parameters:
+      - description: Subject ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Subject'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a subject entity by ID
+  /terms:
+    get:
+      description: list term entities
+      operationId: list-term
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Term'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List term entities
+  /terms/{id}:
+    get:
+      description: get term by ID
+      operationId: get-term
+      parameters:
+      - description: Term ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Term'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a term entity by ID
+  /years:
+    get:
+      description: list year entities
+      operationId: list-year
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Year'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List year entities
+  /years/{id}:
+    get:
+      description: get year by ID
+      operationId: get-year
+      parameters:
+      - description: Year ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Year'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a year entity by ID
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+  BasicAuth:
+    type: basic
+  OAuth2AccessCode:
+    authorizationUrl: https://example.com/oauth/authorize
+    flow: accessCode
+    scopes:
+      admin: ' Grants read and write access to administrative information'
+    tokenUrl: https://example.com/oauth/token
+    type: oauth2
+  OAuth2Application:
+    authorizationUrl: ""
+    flow: application
+    scopes:
+      admin: ' Grants read and write access to administrative information'
+      write: ' Grants write access'
+    tokenUrl: https://example.com/oauth/token
+    type: oauth2
+  OAuth2Implicit:
+    authorizationUrl: https://example.com/oauth/authorize
+    flow: implicit
+    scopes:
+      admin: ' Grants read and write access to administrative information'
+      write: ' Grants write access'
+    type: oauth2
+  OAuth2Password:
+    authorizationUrl: ""
+    flow: password
+    scopes:
+      admin: ' Grants read and write access to administrative information'
+      read: ' Grants read access'
+      write: ' Grants write access'
+    tokenUrl: https://example.com/oauth/token
+    type: oauth2
+swagger: "2.0"
