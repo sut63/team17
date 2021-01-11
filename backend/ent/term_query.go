@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"database/sql/driver"
 	"errors"
 	"fmt"
 	"math"
@@ -12,7 +11,6 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
-	"github.com/sut63/team17/app/ent/activity"
 	"github.com/sut63/team17/app/ent/predicate"
 	"github.com/sut63/team17/app/ent/term"
 	"github.com/sut63/team17/app/ent/year"
@@ -28,7 +26,7 @@ type TermQuery struct {
 	predicates []predicate.Term
 	// eager-loading edges.
 	withTermYear *YearQuery
-	withYearActi *ActivityQuery
+	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -68,25 +66,7 @@ func (tq *TermQuery) QueryTermYear() *YearQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(term.Table, term.FieldID, tq.sqlQuery()),
 			sqlgraph.To(year.Table, year.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, term.TermYearTable, term.TermYearColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryYearActi chains the current query on the year_acti edge.
-func (tq *TermQuery) QueryYearActi() *ActivityQuery {
-	query := &ActivityQuery{config: tq.config}
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := tq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(term.Table, term.FieldID, tq.sqlQuery()),
-			sqlgraph.To(activity.Table, activity.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, term.YearActiTable, term.YearActiColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, term.TermYearTable, term.TermYearColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
 		return fromU, nil
@@ -284,17 +264,6 @@ func (tq *TermQuery) WithTermYear(opts ...func(*YearQuery)) *TermQuery {
 	return tq
 }
 
-//  WithYearActi tells the query-builder to eager-loads the nodes that are connected to
-// the "year_acti" edge. The optional arguments used to configure the query builder of the edge.
-func (tq *TermQuery) WithYearActi(opts ...func(*ActivityQuery)) *TermQuery {
-	query := &ActivityQuery{config: tq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	tq.withYearActi = query
-	return tq
-}
-
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
@@ -360,16 +329,25 @@ func (tq *TermQuery) prepareQuery(ctx context.Context) error {
 func (tq *TermQuery) sqlAll(ctx context.Context) ([]*Term, error) {
 	var (
 		nodes       = []*Term{}
+		withFKs     = tq.withFKs
 		_spec       = tq.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [1]bool{
 			tq.withTermYear != nil,
-			tq.withYearActi != nil,
 		}
 	)
+	if tq.withTermYear != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, term.ForeignKeys...)
+	}
 	_spec.ScanValues = func() []interface{} {
 		node := &Term{config: tq.config}
 		nodes = append(nodes, node)
 		values := node.scanValues()
+		if withFKs {
+			values = append(values, node.fkValues()...)
+		}
 		return values
 	}
 	_spec.Assign = func(values ...interface{}) error {
@@ -388,58 +366,27 @@ func (tq *TermQuery) sqlAll(ctx context.Context) ([]*Term, error) {
 	}
 
 	if query := tq.withTermYear; query != nil {
-		fks := make([]driver.Value, 0, len(nodes))
-		nodeids := make(map[int]*Term)
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*Term)
 		for i := range nodes {
-			fks = append(fks, nodes[i].ID)
-			nodeids[nodes[i].ID] = nodes[i]
+			if fk := nodes[i].year_year_term; fk != nil {
+				ids = append(ids, *fk)
+				nodeids[*fk] = append(nodeids[*fk], nodes[i])
+			}
 		}
-		query.withFKs = true
-		query.Where(predicate.Year(func(s *sql.Selector) {
-			s.Where(sql.InValues(term.TermYearColumn, fks...))
-		}))
+		query.Where(year.IDIn(ids...))
 		neighbors, err := query.All(ctx)
 		if err != nil {
 			return nil, err
 		}
 		for _, n := range neighbors {
-			fk := n.term_term_year
-			if fk == nil {
-				return nil, fmt.Errorf(`foreign-key "term_term_year" is nil for node %v`, n.ID)
-			}
-			node, ok := nodeids[*fk]
+			nodes, ok := nodeids[n.ID]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "term_term_year" returned %v for node %v`, *fk, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "year_year_term" returned %v`, n.ID)
 			}
-			node.Edges.TermYear = append(node.Edges.TermYear, n)
-		}
-	}
-
-	if query := tq.withYearActi; query != nil {
-		fks := make([]driver.Value, 0, len(nodes))
-		nodeids := make(map[int]*Term)
-		for i := range nodes {
-			fks = append(fks, nodes[i].ID)
-			nodeids[nodes[i].ID] = nodes[i]
-		}
-		query.withFKs = true
-		query.Where(predicate.Activity(func(s *sql.Selector) {
-			s.Where(sql.InValues(term.YearActiColumn, fks...))
-		}))
-		neighbors, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, n := range neighbors {
-			fk := n.term_year_acti
-			if fk == nil {
-				return nil, fmt.Errorf(`foreign-key "term_year_acti" is nil for node %v`, n.ID)
+			for i := range nodes {
+				nodes[i].Edges.TermYear = n
 			}
-			node, ok := nodeids[*fk]
-			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "term_year_acti" returned %v for node %v`, *fk, n.ID)
-			}
-			node.Edges.YearActi = append(node.Edges.YearActi, n)
 		}
 	}
 

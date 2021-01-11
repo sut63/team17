@@ -9,7 +9,6 @@ import (
 
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
-	"github.com/sut63/team17/app/ent/activity"
 	"github.com/sut63/team17/app/ent/term"
 	"github.com/sut63/team17/app/ent/year"
 )
@@ -27,34 +26,23 @@ func (tc *TermCreate) SetSemester(i int) *TermCreate {
 	return tc
 }
 
-// AddTermYearIDs adds the term_year edge to Year by ids.
-func (tc *TermCreate) AddTermYearIDs(ids ...int) *TermCreate {
-	tc.mutation.AddTermYearIDs(ids...)
+// SetTermYearID sets the term_year edge to Year by id.
+func (tc *TermCreate) SetTermYearID(id int) *TermCreate {
+	tc.mutation.SetTermYearID(id)
 	return tc
 }
 
-// AddTermYear adds the term_year edges to Year.
-func (tc *TermCreate) AddTermYear(y ...*Year) *TermCreate {
-	ids := make([]int, len(y))
-	for i := range y {
-		ids[i] = y[i].ID
+// SetNillableTermYearID sets the term_year edge to Year by id if the given value is not nil.
+func (tc *TermCreate) SetNillableTermYearID(id *int) *TermCreate {
+	if id != nil {
+		tc = tc.SetTermYearID(*id)
 	}
-	return tc.AddTermYearIDs(ids...)
-}
-
-// AddYearActiIDs adds the year_acti edge to Activity by ids.
-func (tc *TermCreate) AddYearActiIDs(ids ...int) *TermCreate {
-	tc.mutation.AddYearActiIDs(ids...)
 	return tc
 }
 
-// AddYearActi adds the year_acti edges to Activity.
-func (tc *TermCreate) AddYearActi(a ...*Activity) *TermCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return tc.AddYearActiIDs(ids...)
+// SetTermYear sets the term_year edge to Year.
+func (tc *TermCreate) SetTermYear(y *Year) *TermCreate {
+	return tc.SetTermYearID(y.ID)
 }
 
 // Mutation returns the TermMutation object of the builder.
@@ -142,8 +130,8 @@ func (tc *TermCreate) createSpec() (*Term, *sqlgraph.CreateSpec) {
 	}
 	if nodes := tc.mutation.TermYearIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
 			Table:   term.TermYearTable,
 			Columns: []string{term.TermYearColumn},
 			Bidi:    false,
@@ -151,25 +139,6 @@ func (tc *TermCreate) createSpec() (*Term, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: year.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := tc.mutation.YearActiIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   term.YearActiTable,
-			Columns: []string{term.YearActiColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: activity.FieldID,
 				},
 			},
 		}

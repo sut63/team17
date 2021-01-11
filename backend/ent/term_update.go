@@ -9,7 +9,6 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
-	"github.com/sut63/team17/app/ent/activity"
 	"github.com/sut63/team17/app/ent/predicate"
 	"github.com/sut63/team17/app/ent/term"
 	"github.com/sut63/team17/app/ent/year"
@@ -42,34 +41,23 @@ func (tu *TermUpdate) AddSemester(i int) *TermUpdate {
 	return tu
 }
 
-// AddTermYearIDs adds the term_year edge to Year by ids.
-func (tu *TermUpdate) AddTermYearIDs(ids ...int) *TermUpdate {
-	tu.mutation.AddTermYearIDs(ids...)
+// SetTermYearID sets the term_year edge to Year by id.
+func (tu *TermUpdate) SetTermYearID(id int) *TermUpdate {
+	tu.mutation.SetTermYearID(id)
 	return tu
 }
 
-// AddTermYear adds the term_year edges to Year.
-func (tu *TermUpdate) AddTermYear(y ...*Year) *TermUpdate {
-	ids := make([]int, len(y))
-	for i := range y {
-		ids[i] = y[i].ID
+// SetNillableTermYearID sets the term_year edge to Year by id if the given value is not nil.
+func (tu *TermUpdate) SetNillableTermYearID(id *int) *TermUpdate {
+	if id != nil {
+		tu = tu.SetTermYearID(*id)
 	}
-	return tu.AddTermYearIDs(ids...)
-}
-
-// AddYearActiIDs adds the year_acti edge to Activity by ids.
-func (tu *TermUpdate) AddYearActiIDs(ids ...int) *TermUpdate {
-	tu.mutation.AddYearActiIDs(ids...)
 	return tu
 }
 
-// AddYearActi adds the year_acti edges to Activity.
-func (tu *TermUpdate) AddYearActi(a ...*Activity) *TermUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return tu.AddYearActiIDs(ids...)
+// SetTermYear sets the term_year edge to Year.
+func (tu *TermUpdate) SetTermYear(y *Year) *TermUpdate {
+	return tu.SetTermYearID(y.ID)
 }
 
 // Mutation returns the TermMutation object of the builder.
@@ -77,34 +65,10 @@ func (tu *TermUpdate) Mutation() *TermMutation {
 	return tu.mutation
 }
 
-// RemoveTermYearIDs removes the term_year edge to Year by ids.
-func (tu *TermUpdate) RemoveTermYearIDs(ids ...int) *TermUpdate {
-	tu.mutation.RemoveTermYearIDs(ids...)
+// ClearTermYear clears the term_year edge to Year.
+func (tu *TermUpdate) ClearTermYear() *TermUpdate {
+	tu.mutation.ClearTermYear()
 	return tu
-}
-
-// RemoveTermYear removes term_year edges to Year.
-func (tu *TermUpdate) RemoveTermYear(y ...*Year) *TermUpdate {
-	ids := make([]int, len(y))
-	for i := range y {
-		ids[i] = y[i].ID
-	}
-	return tu.RemoveTermYearIDs(ids...)
-}
-
-// RemoveYearActiIDs removes the year_acti edge to Activity by ids.
-func (tu *TermUpdate) RemoveYearActiIDs(ids ...int) *TermUpdate {
-	tu.mutation.RemoveYearActiIDs(ids...)
-	return tu
-}
-
-// RemoveYearActi removes year_acti edges to Activity.
-func (tu *TermUpdate) RemoveYearActi(a ...*Activity) *TermUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return tu.RemoveYearActiIDs(ids...)
 }
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
@@ -196,10 +160,10 @@ func (tu *TermUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: term.FieldSemester,
 		})
 	}
-	if nodes := tu.mutation.RemovedTermYearIDs(); len(nodes) > 0 {
+	if tu.mutation.TermYearCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
 			Table:   term.TermYearTable,
 			Columns: []string{term.TermYearColumn},
 			Bidi:    false,
@@ -209,16 +173,13 @@ func (tu *TermUpdate) sqlSave(ctx context.Context) (n int, err error) {
 					Column: year.FieldID,
 				},
 			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := tu.mutation.TermYearIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
 			Table:   term.TermYearTable,
 			Columns: []string{term.TermYearColumn},
 			Bidi:    false,
@@ -226,44 +187,6 @@ func (tu *TermUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: year.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if nodes := tu.mutation.RemovedYearActiIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   term.YearActiTable,
-			Columns: []string{term.YearActiColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: activity.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tu.mutation.YearActiIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   term.YearActiTable,
-			Columns: []string{term.YearActiColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: activity.FieldID,
 				},
 			},
 		}
@@ -303,34 +226,23 @@ func (tuo *TermUpdateOne) AddSemester(i int) *TermUpdateOne {
 	return tuo
 }
 
-// AddTermYearIDs adds the term_year edge to Year by ids.
-func (tuo *TermUpdateOne) AddTermYearIDs(ids ...int) *TermUpdateOne {
-	tuo.mutation.AddTermYearIDs(ids...)
+// SetTermYearID sets the term_year edge to Year by id.
+func (tuo *TermUpdateOne) SetTermYearID(id int) *TermUpdateOne {
+	tuo.mutation.SetTermYearID(id)
 	return tuo
 }
 
-// AddTermYear adds the term_year edges to Year.
-func (tuo *TermUpdateOne) AddTermYear(y ...*Year) *TermUpdateOne {
-	ids := make([]int, len(y))
-	for i := range y {
-		ids[i] = y[i].ID
+// SetNillableTermYearID sets the term_year edge to Year by id if the given value is not nil.
+func (tuo *TermUpdateOne) SetNillableTermYearID(id *int) *TermUpdateOne {
+	if id != nil {
+		tuo = tuo.SetTermYearID(*id)
 	}
-	return tuo.AddTermYearIDs(ids...)
-}
-
-// AddYearActiIDs adds the year_acti edge to Activity by ids.
-func (tuo *TermUpdateOne) AddYearActiIDs(ids ...int) *TermUpdateOne {
-	tuo.mutation.AddYearActiIDs(ids...)
 	return tuo
 }
 
-// AddYearActi adds the year_acti edges to Activity.
-func (tuo *TermUpdateOne) AddYearActi(a ...*Activity) *TermUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return tuo.AddYearActiIDs(ids...)
+// SetTermYear sets the term_year edge to Year.
+func (tuo *TermUpdateOne) SetTermYear(y *Year) *TermUpdateOne {
+	return tuo.SetTermYearID(y.ID)
 }
 
 // Mutation returns the TermMutation object of the builder.
@@ -338,34 +250,10 @@ func (tuo *TermUpdateOne) Mutation() *TermMutation {
 	return tuo.mutation
 }
 
-// RemoveTermYearIDs removes the term_year edge to Year by ids.
-func (tuo *TermUpdateOne) RemoveTermYearIDs(ids ...int) *TermUpdateOne {
-	tuo.mutation.RemoveTermYearIDs(ids...)
+// ClearTermYear clears the term_year edge to Year.
+func (tuo *TermUpdateOne) ClearTermYear() *TermUpdateOne {
+	tuo.mutation.ClearTermYear()
 	return tuo
-}
-
-// RemoveTermYear removes term_year edges to Year.
-func (tuo *TermUpdateOne) RemoveTermYear(y ...*Year) *TermUpdateOne {
-	ids := make([]int, len(y))
-	for i := range y {
-		ids[i] = y[i].ID
-	}
-	return tuo.RemoveTermYearIDs(ids...)
-}
-
-// RemoveYearActiIDs removes the year_acti edge to Activity by ids.
-func (tuo *TermUpdateOne) RemoveYearActiIDs(ids ...int) *TermUpdateOne {
-	tuo.mutation.RemoveYearActiIDs(ids...)
-	return tuo
-}
-
-// RemoveYearActi removes year_acti edges to Activity.
-func (tuo *TermUpdateOne) RemoveYearActi(a ...*Activity) *TermUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return tuo.RemoveYearActiIDs(ids...)
 }
 
 // Save executes the query and returns the updated entity.
@@ -455,10 +343,10 @@ func (tuo *TermUpdateOne) sqlSave(ctx context.Context) (t *Term, err error) {
 			Column: term.FieldSemester,
 		})
 	}
-	if nodes := tuo.mutation.RemovedTermYearIDs(); len(nodes) > 0 {
+	if tuo.mutation.TermYearCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
 			Table:   term.TermYearTable,
 			Columns: []string{term.TermYearColumn},
 			Bidi:    false,
@@ -468,16 +356,13 @@ func (tuo *TermUpdateOne) sqlSave(ctx context.Context) (t *Term, err error) {
 					Column: year.FieldID,
 				},
 			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := tuo.mutation.TermYearIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
 			Table:   term.TermYearTable,
 			Columns: []string{term.TermYearColumn},
 			Bidi:    false,
@@ -485,44 +370,6 @@ func (tuo *TermUpdateOne) sqlSave(ctx context.Context) (t *Term, err error) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: year.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if nodes := tuo.mutation.RemovedYearActiIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   term.YearActiTable,
-			Columns: []string{term.YearActiColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: activity.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tuo.mutation.YearActiIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   term.YearActiTable,
-			Columns: []string{term.YearActiColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: activity.FieldID,
 				},
 			},
 		}

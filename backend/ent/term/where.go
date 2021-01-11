@@ -180,7 +180,7 @@ func HasTermYear() predicate.Term {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(TermYearTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, TermYearTable, TermYearColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, TermYearTable, TermYearColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -192,35 +192,7 @@ func HasTermYearWith(preds ...predicate.Year) predicate.Term {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(TermYearInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, TermYearTable, TermYearColumn),
-		)
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
-// HasYearActi applies the HasEdge predicate on the "year_acti" edge.
-func HasYearActi() predicate.Term {
-	return predicate.Term(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(YearActiTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, YearActiTable, YearActiColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasYearActiWith applies the HasEdge predicate on the "year_acti" edge with a given conditions (other predicates).
-func HasYearActiWith(preds ...predicate.Activity) predicate.Term {
-	return predicate.Term(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(YearActiInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, YearActiTable, YearActiColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, TermYearTable, TermYearColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

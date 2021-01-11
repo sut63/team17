@@ -28,23 +28,19 @@ func (yc *YearCreate) SetYears(i int) *YearCreate {
 	return yc
 }
 
-// SetYearTermID sets the year_term edge to Term by id.
-func (yc *YearCreate) SetYearTermID(id int) *YearCreate {
-	yc.mutation.SetYearTermID(id)
+// AddYearTermIDs adds the year_term edge to Term by ids.
+func (yc *YearCreate) AddYearTermIDs(ids ...int) *YearCreate {
+	yc.mutation.AddYearTermIDs(ids...)
 	return yc
 }
 
-// SetNillableYearTermID sets the year_term edge to Term by id if the given value is not nil.
-func (yc *YearCreate) SetNillableYearTermID(id *int) *YearCreate {
-	if id != nil {
-		yc = yc.SetYearTermID(*id)
+// AddYearTerm adds the year_term edges to Term.
+func (yc *YearCreate) AddYearTerm(t ...*Term) *YearCreate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
 	}
-	return yc
-}
-
-// SetYearTerm sets the year_term edge to Term.
-func (yc *YearCreate) SetYearTerm(t *Term) *YearCreate {
-	return yc.SetYearTermID(t.ID)
+	return yc.AddYearTermIDs(ids...)
 }
 
 // AddYearResuIDs adds the year_resu edge to Results by ids.
@@ -162,8 +158,8 @@ func (yc *YearCreate) createSpec() (*Year, *sqlgraph.CreateSpec) {
 	}
 	if nodes := yc.mutation.YearTermIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
 			Table:   year.YearTermTable,
 			Columns: []string{year.YearTermColumn},
 			Bidi:    false,

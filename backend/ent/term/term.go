@@ -12,31 +12,27 @@ const (
 
 	// EdgeTermYear holds the string denoting the term_year edge name in mutations.
 	EdgeTermYear = "term_year"
-	// EdgeYearActi holds the string denoting the year_acti edge name in mutations.
-	EdgeYearActi = "year_acti"
 
 	// Table holds the table name of the term in the database.
 	Table = "terms"
 	// TermYearTable is the table the holds the term_year relation/edge.
-	TermYearTable = "years"
+	TermYearTable = "terms"
 	// TermYearInverseTable is the table name for the Year entity.
 	// It exists in this package in order to avoid circular dependency with the "year" package.
 	TermYearInverseTable = "years"
 	// TermYearColumn is the table column denoting the term_year relation/edge.
-	TermYearColumn = "term_term_year"
-	// YearActiTable is the table the holds the year_acti relation/edge.
-	YearActiTable = "activities"
-	// YearActiInverseTable is the table name for the Activity entity.
-	// It exists in this package in order to avoid circular dependency with the "activity" package.
-	YearActiInverseTable = "activities"
-	// YearActiColumn is the table column denoting the year_acti relation/edge.
-	YearActiColumn = "term_year_acti"
+	TermYearColumn = "year_year_term"
 )
 
 // Columns holds all SQL columns for term fields.
 var Columns = []string{
 	FieldID,
 	FieldSemester,
+}
+
+// ForeignKeys holds the SQL foreign-keys that are owned by the Term type.
+var ForeignKeys = []string{
+	"year_year_term",
 }
 
 var (

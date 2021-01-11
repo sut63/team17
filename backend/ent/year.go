@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/facebookincubator/ent/dialect/sql"
-	"github.com/sut63/team17/app/ent/term"
 	"github.com/sut63/team17/app/ent/year"
 )
 
@@ -20,14 +19,13 @@ type Year struct {
 	Years int `json:"years,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the YearQuery when eager-loading is set.
-	Edges          YearEdges `json:"edges"`
-	term_term_year *int
+	Edges YearEdges `json:"edges"`
 }
 
 // YearEdges holds the relations/edges for other nodes in the graph.
 type YearEdges struct {
 	// YearTerm holds the value of the year_term edge.
-	YearTerm *Term
+	YearTerm []*Term
 	// YearResu holds the value of the year_resu edge.
 	YearResu []*Results
 	// YearActi holds the value of the year_acti edge.
@@ -38,14 +36,9 @@ type YearEdges struct {
 }
 
 // YearTermOrErr returns the YearTerm value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e YearEdges) YearTermOrErr() (*Term, error) {
+// was not loaded in eager-loading.
+func (e YearEdges) YearTermOrErr() ([]*Term, error) {
 	if e.loadedTypes[0] {
-		if e.YearTerm == nil {
-			// The edge year_term was loaded in eager-loading,
-			// but was not found.
-			return nil, &NotFoundError{label: term.Label}
-		}
 		return e.YearTerm, nil
 	}
 	return nil, &NotLoadedError{edge: "year_term"}
@@ -77,13 +70,6 @@ func (*Year) scanValues() []interface{} {
 	}
 }
 
-// fkValues returns the types for scanning foreign-keys values from sql.Rows.
-func (*Year) fkValues() []interface{} {
-	return []interface{}{
-		&sql.NullInt64{}, // term_term_year
-	}
-}
-
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Year fields.
 func (y *Year) assignValues(values ...interface{}) error {
@@ -100,15 +86,6 @@ func (y *Year) assignValues(values ...interface{}) error {
 		return fmt.Errorf("unexpected type %T for field years", values[0])
 	} else if value.Valid {
 		y.Years = int(value.Int64)
-	}
-	values = values[1:]
-	if len(values) == len(year.ForeignKeys) {
-		if value, ok := values[0].(*sql.NullInt64); !ok {
-			return fmt.Errorf("unexpected type %T for edge-field term_term_year", value)
-		} else if value.Valid {
-			y.term_term_year = new(int)
-			*y.term_term_year = int(value.Int64)
-		}
 	}
 	return nil
 }

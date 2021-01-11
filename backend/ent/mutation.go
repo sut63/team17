@@ -9088,10 +9088,8 @@ type TermMutation struct {
 	semester         *int
 	addsemester      *int
 	clearedFields    map[string]struct{}
-	term_year        map[int]struct{}
-	removedterm_year map[int]struct{}
-	year_acti        map[int]struct{}
-	removedyear_acti map[int]struct{}
+	term_year        *int
+	clearedterm_year bool
 	done             bool
 	oldValue         func(context.Context) (*Term, error)
 }
@@ -9232,38 +9230,35 @@ func (m *TermMutation) ResetSemester() {
 	m.addsemester = nil
 }
 
-// AddTermYearIDs adds the term_year edge to Year by ids.
-func (m *TermMutation) AddTermYearIDs(ids ...int) {
-	if m.term_year == nil {
-		m.term_year = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.term_year[ids[i]] = struct{}{}
-	}
+// SetTermYearID sets the term_year edge to Year by id.
+func (m *TermMutation) SetTermYearID(id int) {
+	m.term_year = &id
 }
 
-// RemoveTermYearIDs removes the term_year edge to Year by ids.
-func (m *TermMutation) RemoveTermYearIDs(ids ...int) {
-	if m.removedterm_year == nil {
-		m.removedterm_year = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.removedterm_year[ids[i]] = struct{}{}
-	}
+// ClearTermYear clears the term_year edge to Year.
+func (m *TermMutation) ClearTermYear() {
+	m.clearedterm_year = true
 }
 
-// RemovedTermYear returns the removed ids of term_year.
-func (m *TermMutation) RemovedTermYearIDs() (ids []int) {
-	for id := range m.removedterm_year {
-		ids = append(ids, id)
+// TermYearCleared returns if the edge term_year was cleared.
+func (m *TermMutation) TermYearCleared() bool {
+	return m.clearedterm_year
+}
+
+// TermYearID returns the term_year id in the mutation.
+func (m *TermMutation) TermYearID() (id int, exists bool) {
+	if m.term_year != nil {
+		return *m.term_year, true
 	}
 	return
 }
 
 // TermYearIDs returns the term_year ids in the mutation.
+// Note that ids always returns len(ids) <= 1 for unique edges, and you should use
+// TermYearID instead. It exists only for internal usage by the builders.
 func (m *TermMutation) TermYearIDs() (ids []int) {
-	for id := range m.term_year {
-		ids = append(ids, id)
+	if id := m.term_year; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -9271,49 +9266,7 @@ func (m *TermMutation) TermYearIDs() (ids []int) {
 // ResetTermYear reset all changes of the "term_year" edge.
 func (m *TermMutation) ResetTermYear() {
 	m.term_year = nil
-	m.removedterm_year = nil
-}
-
-// AddYearActiIDs adds the year_acti edge to Activity by ids.
-func (m *TermMutation) AddYearActiIDs(ids ...int) {
-	if m.year_acti == nil {
-		m.year_acti = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.year_acti[ids[i]] = struct{}{}
-	}
-}
-
-// RemoveYearActiIDs removes the year_acti edge to Activity by ids.
-func (m *TermMutation) RemoveYearActiIDs(ids ...int) {
-	if m.removedyear_acti == nil {
-		m.removedyear_acti = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.removedyear_acti[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedYearActi returns the removed ids of year_acti.
-func (m *TermMutation) RemovedYearActiIDs() (ids []int) {
-	for id := range m.removedyear_acti {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// YearActiIDs returns the year_acti ids in the mutation.
-func (m *TermMutation) YearActiIDs() (ids []int) {
-	for id := range m.year_acti {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetYearActi reset all changes of the "year_acti" edge.
-func (m *TermMutation) ResetYearActi() {
-	m.year_acti = nil
-	m.removedyear_acti = nil
+	m.clearedterm_year = false
 }
 
 // Op returns the operation name.
@@ -9446,12 +9399,9 @@ func (m *TermMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this
 // mutation.
 func (m *TermMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 1)
 	if m.term_year != nil {
 		edges = append(edges, term.EdgeTermYear)
-	}
-	if m.year_acti != nil {
-		edges = append(edges, term.EdgeYearActi)
 	}
 	return edges
 }
@@ -9461,17 +9411,9 @@ func (m *TermMutation) AddedEdges() []string {
 func (m *TermMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case term.EdgeTermYear:
-		ids := make([]ent.Value, 0, len(m.term_year))
-		for id := range m.term_year {
-			ids = append(ids, id)
+		if id := m.term_year; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
-	case term.EdgeYearActi:
-		ids := make([]ent.Value, 0, len(m.year_acti))
-		for id := range m.year_acti {
-			ids = append(ids, id)
-		}
-		return ids
 	}
 	return nil
 }
@@ -9479,13 +9421,7 @@ func (m *TermMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this
 // mutation.
 func (m *TermMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.removedterm_year != nil {
-		edges = append(edges, term.EdgeTermYear)
-	}
-	if m.removedyear_acti != nil {
-		edges = append(edges, term.EdgeYearActi)
-	}
+	edges := make([]string, 0, 1)
 	return edges
 }
 
@@ -9493,18 +9429,6 @@ func (m *TermMutation) RemovedEdges() []string {
 // the given edge name.
 func (m *TermMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case term.EdgeTermYear:
-		ids := make([]ent.Value, 0, len(m.removedterm_year))
-		for id := range m.removedterm_year {
-			ids = append(ids, id)
-		}
-		return ids
-	case term.EdgeYearActi:
-		ids := make([]ent.Value, 0, len(m.removedyear_acti))
-		for id := range m.removedyear_acti {
-			ids = append(ids, id)
-		}
-		return ids
 	}
 	return nil
 }
@@ -9512,7 +9436,10 @@ func (m *TermMutation) RemovedIDs(name string) []ent.Value {
 // ClearedEdges returns all edge names that were cleared in this
 // mutation.
 func (m *TermMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 1)
+	if m.clearedterm_year {
+		edges = append(edges, term.EdgeTermYear)
+	}
 	return edges
 }
 
@@ -9520,6 +9447,8 @@ func (m *TermMutation) ClearedEdges() []string {
 // cleared in this mutation.
 func (m *TermMutation) EdgeCleared(name string) bool {
 	switch name {
+	case term.EdgeTermYear:
+		return m.clearedterm_year
 	}
 	return false
 }
@@ -9528,6 +9457,9 @@ func (m *TermMutation) EdgeCleared(name string) bool {
 // error if the edge name is not defined in the schema.
 func (m *TermMutation) ClearEdge(name string) error {
 	switch name {
+	case term.EdgeTermYear:
+		m.ClearTermYear()
+		return nil
 	}
 	return fmt.Errorf("unknown Term unique edge %s", name)
 }
@@ -9539,9 +9471,6 @@ func (m *TermMutation) ResetEdge(name string) error {
 	switch name {
 	case term.EdgeTermYear:
 		m.ResetTermYear()
-		return nil
-	case term.EdgeYearActi:
-		m.ResetYearActi()
 		return nil
 	}
 	return fmt.Errorf("unknown Term edge %s", name)
@@ -9557,8 +9486,8 @@ type YearMutation struct {
 	years            *int
 	addyears         *int
 	clearedFields    map[string]struct{}
-	year_term        *int
-	clearedyear_term bool
+	year_term        map[int]struct{}
+	removedyear_term map[int]struct{}
 	year_resu        map[int]struct{}
 	removedyear_resu map[int]struct{}
 	year_acti        map[int]struct{}
@@ -9703,35 +9632,38 @@ func (m *YearMutation) ResetYears() {
 	m.addyears = nil
 }
 
-// SetYearTermID sets the year_term edge to Term by id.
-func (m *YearMutation) SetYearTermID(id int) {
-	m.year_term = &id
+// AddYearTermIDs adds the year_term edge to Term by ids.
+func (m *YearMutation) AddYearTermIDs(ids ...int) {
+	if m.year_term == nil {
+		m.year_term = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.year_term[ids[i]] = struct{}{}
+	}
 }
 
-// ClearYearTerm clears the year_term edge to Term.
-func (m *YearMutation) ClearYearTerm() {
-	m.clearedyear_term = true
+// RemoveYearTermIDs removes the year_term edge to Term by ids.
+func (m *YearMutation) RemoveYearTermIDs(ids ...int) {
+	if m.removedyear_term == nil {
+		m.removedyear_term = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.removedyear_term[ids[i]] = struct{}{}
+	}
 }
 
-// YearTermCleared returns if the edge year_term was cleared.
-func (m *YearMutation) YearTermCleared() bool {
-	return m.clearedyear_term
-}
-
-// YearTermID returns the year_term id in the mutation.
-func (m *YearMutation) YearTermID() (id int, exists bool) {
-	if m.year_term != nil {
-		return *m.year_term, true
+// RemovedYearTerm returns the removed ids of year_term.
+func (m *YearMutation) RemovedYearTermIDs() (ids []int) {
+	for id := range m.removedyear_term {
+		ids = append(ids, id)
 	}
 	return
 }
 
 // YearTermIDs returns the year_term ids in the mutation.
-// Note that ids always returns len(ids) <= 1 for unique edges, and you should use
-// YearTermID instead. It exists only for internal usage by the builders.
 func (m *YearMutation) YearTermIDs() (ids []int) {
-	if id := m.year_term; id != nil {
-		ids = append(ids, *id)
+	for id := range m.year_term {
+		ids = append(ids, id)
 	}
 	return
 }
@@ -9739,7 +9671,7 @@ func (m *YearMutation) YearTermIDs() (ids []int) {
 // ResetYearTerm reset all changes of the "year_term" edge.
 func (m *YearMutation) ResetYearTerm() {
 	m.year_term = nil
-	m.clearedyear_term = false
+	m.removedyear_term = nil
 }
 
 // AddYearResuIDs adds the year_resu edge to Results by ids.
@@ -9974,9 +9906,11 @@ func (m *YearMutation) AddedEdges() []string {
 func (m *YearMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case year.EdgeYearTerm:
-		if id := m.year_term; id != nil {
-			return []ent.Value{*id}
+		ids := make([]ent.Value, 0, len(m.year_term))
+		for id := range m.year_term {
+			ids = append(ids, id)
 		}
+		return ids
 	case year.EdgeYearResu:
 		ids := make([]ent.Value, 0, len(m.year_resu))
 		for id := range m.year_resu {
@@ -9997,6 +9931,9 @@ func (m *YearMutation) AddedIDs(name string) []ent.Value {
 // mutation.
 func (m *YearMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 3)
+	if m.removedyear_term != nil {
+		edges = append(edges, year.EdgeYearTerm)
+	}
 	if m.removedyear_resu != nil {
 		edges = append(edges, year.EdgeYearResu)
 	}
@@ -10010,6 +9947,12 @@ func (m *YearMutation) RemovedEdges() []string {
 // the given edge name.
 func (m *YearMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
+	case year.EdgeYearTerm:
+		ids := make([]ent.Value, 0, len(m.removedyear_term))
+		for id := range m.removedyear_term {
+			ids = append(ids, id)
+		}
+		return ids
 	case year.EdgeYearResu:
 		ids := make([]ent.Value, 0, len(m.removedyear_resu))
 		for id := range m.removedyear_resu {
@@ -10030,9 +9973,6 @@ func (m *YearMutation) RemovedIDs(name string) []ent.Value {
 // mutation.
 func (m *YearMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 3)
-	if m.clearedyear_term {
-		edges = append(edges, year.EdgeYearTerm)
-	}
 	return edges
 }
 
@@ -10040,8 +9980,6 @@ func (m *YearMutation) ClearedEdges() []string {
 // cleared in this mutation.
 func (m *YearMutation) EdgeCleared(name string) bool {
 	switch name {
-	case year.EdgeYearTerm:
-		return m.clearedyear_term
 	}
 	return false
 }
@@ -10050,9 +9988,6 @@ func (m *YearMutation) EdgeCleared(name string) bool {
 // error if the edge name is not defined in the schema.
 func (m *YearMutation) ClearEdge(name string) error {
 	switch name {
-	case year.EdgeYearTerm:
-		m.ClearYearTerm()
-		return nil
 	}
 	return fmt.Errorf("unknown Year unique edge %s", name)
 }

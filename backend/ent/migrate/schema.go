@@ -17,7 +17,6 @@ var (
 		{Name: "agency_agen_acti", Type: field.TypeInt, Nullable: true},
 		{Name: "place_place_acti", Type: field.TypeInt, Nullable: true},
 		{Name: "student_stud_acti", Type: field.TypeInt, Nullable: true},
-		{Name: "term_year_acti", Type: field.TypeInt, Nullable: true},
 		{Name: "year_year_acti", Type: field.TypeInt, Nullable: true},
 	}
 	// ActivitiesTable holds the schema information for the "activities" table.
@@ -48,15 +47,8 @@ var (
 				OnDelete:   schema.SetNull,
 			},
 			{
-				Symbol:  "activities_terms_year_acti",
-				Columns: []*schema.Column{ActivitiesColumns[7]},
-
-				RefColumns: []*schema.Column{TermsColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-			{
 				Symbol:  "activities_years_year_acti",
-				Columns: []*schema.Column{ActivitiesColumns[8]},
+				Columns: []*schema.Column{ActivitiesColumns[7]},
 
 				RefColumns: []*schema.Column{YearsColumns[0]},
 				OnDelete:   schema.SetNull,
@@ -434,34 +426,34 @@ var (
 	TermsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "semester", Type: field.TypeInt},
+		{Name: "year_year_term", Type: field.TypeInt, Nullable: true},
 	}
 	// TermsTable holds the schema information for the "terms" table.
 	TermsTable = &schema.Table{
-		Name:        "terms",
-		Columns:     TermsColumns,
-		PrimaryKey:  []*schema.Column{TermsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{},
+		Name:       "terms",
+		Columns:    TermsColumns,
+		PrimaryKey: []*schema.Column{TermsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:  "terms_years_year_term",
+				Columns: []*schema.Column{TermsColumns[2]},
+
+				RefColumns: []*schema.Column{YearsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// YearsColumns holds the columns for the "years" table.
 	YearsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "years", Type: field.TypeInt},
-		{Name: "term_term_year", Type: field.TypeInt, Nullable: true},
 	}
 	// YearsTable holds the schema information for the "years" table.
 	YearsTable = &schema.Table{
-		Name:       "years",
-		Columns:    YearsColumns,
-		PrimaryKey: []*schema.Column{YearsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:  "years_terms_term_year",
-				Columns: []*schema.Column{YearsColumns[2]},
-
-				RefColumns: []*schema.Column{TermsColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-		},
+		Name:        "years",
+		Columns:     YearsColumns,
+		PrimaryKey:  []*schema.Column{YearsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
@@ -493,8 +485,7 @@ func init() {
 	ActivitiesTable.ForeignKeys[0].RefTable = AgenciesTable
 	ActivitiesTable.ForeignKeys[1].RefTable = PlacesTable
 	ActivitiesTable.ForeignKeys[2].RefTable = StudentsTable
-	ActivitiesTable.ForeignKeys[3].RefTable = TermsTable
-	ActivitiesTable.ForeignKeys[4].RefTable = YearsTable
+	ActivitiesTable.ForeignKeys[3].RefTable = YearsTable
 	CoursesTable.ForeignKeys[0].RefTable = DegreesTable
 	CoursesTable.ForeignKeys[1].RefTable = FacultiesTable
 	CoursesTable.ForeignKeys[2].RefTable = InstitutionsTable
@@ -512,5 +503,5 @@ func init() {
 	StudentsTable.ForeignKeys[1].RefTable = GendersTable
 	StudentsTable.ForeignKeys[2].RefTable = PrefixesTable
 	StudentsTable.ForeignKeys[3].RefTable = ProvincesTable
-	YearsTable.ForeignKeys[0].RefTable = TermsTable
+	TermsTable.ForeignKeys[0].RefTable = YearsTable
 }

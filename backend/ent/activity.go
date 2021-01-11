@@ -32,7 +32,6 @@ type Activity struct {
 	agency_agen_acti  *int
 	place_place_acti  *int
 	student_stud_acti *int
-	term_year_acti    *int
 	year_year_acti    *int
 }
 
@@ -123,7 +122,6 @@ func (*Activity) fkValues() []interface{} {
 		&sql.NullInt64{}, // agency_agen_acti
 		&sql.NullInt64{}, // place_place_acti
 		&sql.NullInt64{}, // student_stud_acti
-		&sql.NullInt64{}, // term_year_acti
 		&sql.NullInt64{}, // year_year_acti
 	}
 }
@@ -176,12 +174,6 @@ func (a *Activity) assignValues(values ...interface{}) error {
 			*a.student_stud_acti = int(value.Int64)
 		}
 		if value, ok := values[3].(*sql.NullInt64); !ok {
-			return fmt.Errorf("unexpected type %T for edge-field term_year_acti", value)
-		} else if value.Valid {
-			a.term_year_acti = new(int)
-			*a.term_year_acti = int(value.Int64)
-		}
-		if value, ok := values[4].(*sql.NullInt64); !ok {
 			return fmt.Errorf("unexpected type %T for edge-field year_year_acti", value)
 		} else if value.Valid {
 			a.year_year_acti = new(int)
