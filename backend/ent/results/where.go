@@ -258,6 +258,34 @@ func HasResuStudWith(preds ...predicate.Student) predicate.Results {
 	})
 }
 
+// HasResuTerm applies the HasEdge predicate on the "resu_term" edge.
+func HasResuTerm() predicate.Results {
+	return predicate.Results(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ResuTermTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ResuTermTable, ResuTermColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasResuTermWith applies the HasEdge predicate on the "resu_term" edge with a given conditions (other predicates).
+func HasResuTermWith(preds ...predicate.Term) predicate.Results {
+	return predicate.Results(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ResuTermInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ResuTermTable, ResuTermColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups list of predicates with the AND operator between them.
 func And(predicates ...predicate.Results) predicate.Results {
 	return predicate.Results(func(s *sql.Selector) {

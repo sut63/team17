@@ -10,6 +10,7 @@ import (
 	"github.com/sut63/team17/app/ent/results"
 	"github.com/sut63/team17/app/ent/student"
 	"github.com/sut63/team17/app/ent/subject"
+	"github.com/sut63/team17/app/ent/term"
 	"github.com/sut63/team17/app/ent/year"
 )
 
@@ -25,6 +26,7 @@ type Results struct {
 	Edges             ResultsEdges `json:"edges"`
 	student_stud_resu *int
 	subject_subj_resu *int
+	term_term_resu    *int
 	year_year_resu    *int
 }
 
@@ -36,9 +38,11 @@ type ResultsEdges struct {
 	ResuSubj *Subject
 	// ResuStud holds the value of the resu_stud edge.
 	ResuStud *Student
+	// ResuTerm holds the value of the resu_term edge.
+	ResuTerm *Term
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [4]bool
 }
 
 // ResuYearOrErr returns the ResuYear value or an error if the edge
@@ -83,6 +87,20 @@ func (e ResultsEdges) ResuStudOrErr() (*Student, error) {
 	return nil, &NotLoadedError{edge: "resu_stud"}
 }
 
+// ResuTermOrErr returns the ResuTerm value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ResultsEdges) ResuTermOrErr() (*Term, error) {
+	if e.loadedTypes[3] {
+		if e.ResuTerm == nil {
+			// The edge resu_term was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: term.Label}
+		}
+		return e.ResuTerm, nil
+	}
+	return nil, &NotLoadedError{edge: "resu_term"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Results) scanValues() []interface{} {
 	return []interface{}{
@@ -96,6 +114,7 @@ func (*Results) fkValues() []interface{} {
 	return []interface{}{
 		&sql.NullInt64{}, // student_stud_resu
 		&sql.NullInt64{}, // subject_subj_resu
+		&sql.NullInt64{}, // term_term_resu
 		&sql.NullInt64{}, // year_year_resu
 	}
 }
@@ -132,6 +151,12 @@ func (r *Results) assignValues(values ...interface{}) error {
 			*r.subject_subj_resu = int(value.Int64)
 		}
 		if value, ok := values[2].(*sql.NullInt64); !ok {
+			return fmt.Errorf("unexpected type %T for edge-field term_term_resu", value)
+		} else if value.Valid {
+			r.term_term_resu = new(int)
+			*r.term_term_resu = int(value.Int64)
+		}
+		if value, ok := values[3].(*sql.NullInt64); !ok {
 			return fmt.Errorf("unexpected type %T for edge-field year_year_resu", value)
 		} else if value.Valid {
 			r.year_year_resu = new(int)
@@ -154,6 +179,11 @@ func (r *Results) QueryResuSubj() *SubjectQuery {
 // QueryResuStud queries the resu_stud edge of the Results.
 func (r *Results) QueryResuStud() *StudentQuery {
 	return (&ResultsClient{config: r.config}).QueryResuStud(r)
+}
+
+// QueryResuTerm queries the resu_term edge of the Results.
+func (r *Results) QueryResuTerm() *TermQuery {
+	return (&ResultsClient{config: r.config}).QueryResuTerm(r)
 }
 
 // Update returns a builder for updating this Results.

@@ -16,6 +16,8 @@ const (
 	EdgeResuSubj = "resu_subj"
 	// EdgeResuStud holds the string denoting the resu_stud edge name in mutations.
 	EdgeResuStud = "resu_stud"
+	// EdgeResuTerm holds the string denoting the resu_term edge name in mutations.
+	EdgeResuTerm = "resu_term"
 
 	// Table holds the table name of the results in the database.
 	Table = "results"
@@ -40,6 +42,13 @@ const (
 	ResuStudInverseTable = "students"
 	// ResuStudColumn is the table column denoting the resu_stud relation/edge.
 	ResuStudColumn = "student_stud_resu"
+	// ResuTermTable is the table the holds the resu_term relation/edge.
+	ResuTermTable = "results"
+	// ResuTermInverseTable is the table name for the Term entity.
+	// It exists in this package in order to avoid circular dependency with the "term" package.
+	ResuTermInverseTable = "terms"
+	// ResuTermColumn is the table column denoting the resu_term relation/edge.
+	ResuTermColumn = "term_term_resu"
 )
 
 // Columns holds all SQL columns for results fields.
@@ -52,6 +61,7 @@ var Columns = []string{
 var ForeignKeys = []string{
 	"student_stud_resu",
 	"subject_subj_resu",
+	"term_term_resu",
 	"year_year_resu",
 }
 

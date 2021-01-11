@@ -10,18 +10,18 @@ const (
 	// FieldSemester holds the string denoting the semester field in the database.
 	FieldSemester = "semester"
 
-	// EdgeTermYear holds the string denoting the term_year edge name in mutations.
-	EdgeTermYear = "term_year"
+	// EdgeTermResu holds the string denoting the term_resu edge name in mutations.
+	EdgeTermResu = "term_resu"
 
 	// Table holds the table name of the term in the database.
 	Table = "terms"
-	// TermYearTable is the table the holds the term_year relation/edge.
-	TermYearTable = "terms"
-	// TermYearInverseTable is the table name for the Year entity.
-	// It exists in this package in order to avoid circular dependency with the "year" package.
-	TermYearInverseTable = "years"
-	// TermYearColumn is the table column denoting the term_year relation/edge.
-	TermYearColumn = "year_year_term"
+	// TermResuTable is the table the holds the term_resu relation/edge.
+	TermResuTable = "results"
+	// TermResuInverseTable is the table name for the Results entity.
+	// It exists in this package in order to avoid circular dependency with the "results" package.
+	TermResuInverseTable = "results"
+	// TermResuColumn is the table column denoting the term_resu relation/edge.
+	TermResuColumn = "term_term_resu"
 )
 
 // Columns holds all SQL columns for term fields.

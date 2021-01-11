@@ -8,7 +8,6 @@ import (
 
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/sut63/team17/app/ent/term"
-	"github.com/sut63/team17/app/ent/year"
 )
 
 // Term is the model entity for the Term schema.
@@ -26,25 +25,20 @@ type Term struct {
 
 // TermEdges holds the relations/edges for other nodes in the graph.
 type TermEdges struct {
-	// TermYear holds the value of the term_year edge.
-	TermYear *Year
+	// TermResu holds the value of the term_resu edge.
+	TermResu []*Results
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 }
 
-// TermYearOrErr returns the TermYear value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e TermEdges) TermYearOrErr() (*Year, error) {
+// TermResuOrErr returns the TermResu value or an error if the edge
+// was not loaded in eager-loading.
+func (e TermEdges) TermResuOrErr() ([]*Results, error) {
 	if e.loadedTypes[0] {
-		if e.TermYear == nil {
-			// The edge term_year was loaded in eager-loading,
-			// but was not found.
-			return nil, &NotFoundError{label: year.Label}
-		}
-		return e.TermYear, nil
+		return e.TermResu, nil
 	}
-	return nil, &NotLoadedError{edge: "term_year"}
+	return nil, &NotLoadedError{edge: "term_resu"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -91,9 +85,9 @@ func (t *Term) assignValues(values ...interface{}) error {
 	return nil
 }
 
-// QueryTermYear queries the term_year edge of the Term.
-func (t *Term) QueryTermYear() *YearQuery {
-	return (&TermClient{config: t.config}).QueryTermYear(t)
+// QueryTermResu queries the term_resu edge of the Term.
+func (t *Term) QueryTermResu() *ResultsQuery {
+	return (&TermClient{config: t.config}).QueryTermResu(t)
 }
 
 // Update returns a builder for updating this Term.

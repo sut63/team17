@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"errors"
 	"fmt"
 	"math"
@@ -12,8 +13,8 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/sut63/team17/app/ent/predicate"
+	"github.com/sut63/team17/app/ent/results"
 	"github.com/sut63/team17/app/ent/term"
-	"github.com/sut63/team17/app/ent/year"
 )
 
 // TermQuery is the builder for querying Term entities.
@@ -25,7 +26,7 @@ type TermQuery struct {
 	unique     []string
 	predicates []predicate.Term
 	// eager-loading edges.
-	withTermYear *YearQuery
+	withTermResu *ResultsQuery
 	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -56,17 +57,17 @@ func (tq *TermQuery) Order(o ...OrderFunc) *TermQuery {
 	return tq
 }
 
-// QueryTermYear chains the current query on the term_year edge.
-func (tq *TermQuery) QueryTermYear() *YearQuery {
-	query := &YearQuery{config: tq.config}
+// QueryTermResu chains the current query on the term_resu edge.
+func (tq *TermQuery) QueryTermResu() *ResultsQuery {
+	query := &ResultsQuery{config: tq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := tq.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(term.Table, term.FieldID, tq.sqlQuery()),
-			sqlgraph.To(year.Table, year.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, term.TermYearTable, term.TermYearColumn),
+			sqlgraph.To(results.Table, results.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, term.TermResuTable, term.TermResuColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
 		return fromU, nil
@@ -253,14 +254,14 @@ func (tq *TermQuery) Clone() *TermQuery {
 	}
 }
 
-//  WithTermYear tells the query-builder to eager-loads the nodes that are connected to
-// the "term_year" edge. The optional arguments used to configure the query builder of the edge.
-func (tq *TermQuery) WithTermYear(opts ...func(*YearQuery)) *TermQuery {
-	query := &YearQuery{config: tq.config}
+//  WithTermResu tells the query-builder to eager-loads the nodes that are connected to
+// the "term_resu" edge. The optional arguments used to configure the query builder of the edge.
+func (tq *TermQuery) WithTermResu(opts ...func(*ResultsQuery)) *TermQuery {
+	query := &ResultsQuery{config: tq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
-	tq.withTermYear = query
+	tq.withTermResu = query
 	return tq
 }
 
@@ -332,12 +333,9 @@ func (tq *TermQuery) sqlAll(ctx context.Context) ([]*Term, error) {
 		withFKs     = tq.withFKs
 		_spec       = tq.querySpec()
 		loadedTypes = [1]bool{
-			tq.withTermYear != nil,
+			tq.withTermResu != nil,
 		}
 	)
-	if tq.withTermYear != nil {
-		withFKs = true
-	}
 	if withFKs {
 		_spec.Node.Columns = append(_spec.Node.Columns, term.ForeignKeys...)
 	}
@@ -365,28 +363,31 @@ func (tq *TermQuery) sqlAll(ctx context.Context) ([]*Term, error) {
 		return nodes, nil
 	}
 
-	if query := tq.withTermYear; query != nil {
-		ids := make([]int, 0, len(nodes))
-		nodeids := make(map[int][]*Term)
+	if query := tq.withTermResu; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[int]*Term)
 		for i := range nodes {
-			if fk := nodes[i].year_year_term; fk != nil {
-				ids = append(ids, *fk)
-				nodeids[*fk] = append(nodeids[*fk], nodes[i])
-			}
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
 		}
-		query.Where(year.IDIn(ids...))
+		query.withFKs = true
+		query.Where(predicate.Results(func(s *sql.Selector) {
+			s.Where(sql.InValues(term.TermResuColumn, fks...))
+		}))
 		neighbors, err := query.All(ctx)
 		if err != nil {
 			return nil, err
 		}
 		for _, n := range neighbors {
-			nodes, ok := nodeids[n.ID]
+			fk := n.term_term_resu
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "term_term_resu" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "year_year_term" returned %v`, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "term_term_resu" returned %v for node %v`, *fk, n.ID)
 			}
-			for i := range nodes {
-				nodes[i].Edges.TermYear = n
-			}
+			node.Edges.TermResu = append(node.Edges.TermResu, n)
 		}
 	}
 

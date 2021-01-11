@@ -15,6 +15,7 @@ import (
 	"github.com/sut63/team17/app/ent/results"
 	"github.com/sut63/team17/app/ent/student"
 	"github.com/sut63/team17/app/ent/subject"
+	"github.com/sut63/team17/app/ent/term"
 	"github.com/sut63/team17/app/ent/year"
 )
 
@@ -30,6 +31,7 @@ type ResultsQuery struct {
 	withResuYear *YearQuery
 	withResuSubj *SubjectQuery
 	withResuStud *StudentQuery
+	withResuTerm *TermQuery
 	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -107,6 +109,24 @@ func (rq *ResultsQuery) QueryResuStud() *StudentQuery {
 			sqlgraph.From(results.Table, results.FieldID, rq.sqlQuery()),
 			sqlgraph.To(student.Table, student.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, results.ResuStudTable, results.ResuStudColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(rq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryResuTerm chains the current query on the resu_term edge.
+func (rq *ResultsQuery) QueryResuTerm() *TermQuery {
+	query := &TermQuery{config: rq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := rq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(results.Table, results.FieldID, rq.sqlQuery()),
+			sqlgraph.To(term.Table, term.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, results.ResuTermTable, results.ResuTermColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(rq.driver.Dialect(), step)
 		return fromU, nil
@@ -326,6 +346,17 @@ func (rq *ResultsQuery) WithResuStud(opts ...func(*StudentQuery)) *ResultsQuery 
 	return rq
 }
 
+//  WithResuTerm tells the query-builder to eager-loads the nodes that are connected to
+// the "resu_term" edge. The optional arguments used to configure the query builder of the edge.
+func (rq *ResultsQuery) WithResuTerm(opts ...func(*TermQuery)) *ResultsQuery {
+	query := &TermQuery{config: rq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	rq.withResuTerm = query
+	return rq
+}
+
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
@@ -393,13 +424,14 @@ func (rq *ResultsQuery) sqlAll(ctx context.Context) ([]*Results, error) {
 		nodes       = []*Results{}
 		withFKs     = rq.withFKs
 		_spec       = rq.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [4]bool{
 			rq.withResuYear != nil,
 			rq.withResuSubj != nil,
 			rq.withResuStud != nil,
+			rq.withResuTerm != nil,
 		}
 	)
-	if rq.withResuYear != nil || rq.withResuSubj != nil || rq.withResuStud != nil {
+	if rq.withResuYear != nil || rq.withResuSubj != nil || rq.withResuStud != nil || rq.withResuTerm != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -500,6 +532,31 @@ func (rq *ResultsQuery) sqlAll(ctx context.Context) ([]*Results, error) {
 			}
 			for i := range nodes {
 				nodes[i].Edges.ResuStud = n
+			}
+		}
+	}
+
+	if query := rq.withResuTerm; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*Results)
+		for i := range nodes {
+			if fk := nodes[i].term_term_resu; fk != nil {
+				ids = append(ids, *fk)
+				nodeids[*fk] = append(nodeids[*fk], nodes[i])
+			}
+		}
+		query.Where(term.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "term_term_resu" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.ResuTerm = n
 			}
 		}
 	}

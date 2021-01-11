@@ -315,6 +315,7 @@ var (
 		{Name: "grade", Type: field.TypeFloat64},
 		{Name: "student_stud_resu", Type: field.TypeInt, Nullable: true},
 		{Name: "subject_subj_resu", Type: field.TypeInt, Nullable: true},
+		{Name: "term_term_resu", Type: field.TypeInt, Nullable: true},
 		{Name: "year_year_resu", Type: field.TypeInt, Nullable: true},
 	}
 	// ResultsTable holds the schema information for the "results" table.
@@ -338,8 +339,15 @@ var (
 				OnDelete:   schema.SetNull,
 			},
 			{
-				Symbol:  "results_years_year_resu",
+				Symbol:  "results_terms_term_resu",
 				Columns: []*schema.Column{ResultsColumns[4]},
+
+				RefColumns: []*schema.Column{TermsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:  "results_years_year_resu",
+				Columns: []*schema.Column{ResultsColumns[5]},
 
 				RefColumns: []*schema.Column{YearsColumns[0]},
 				OnDelete:   schema.SetNull,
@@ -498,7 +506,8 @@ func init() {
 	ProvincesTable.ForeignKeys[1].RefTable = RegionsTable
 	ResultsTable.ForeignKeys[0].RefTable = StudentsTable
 	ResultsTable.ForeignKeys[1].RefTable = SubjectsTable
-	ResultsTable.ForeignKeys[2].RefTable = YearsTable
+	ResultsTable.ForeignKeys[2].RefTable = TermsTable
+	ResultsTable.ForeignKeys[3].RefTable = YearsTable
 	StudentsTable.ForeignKeys[0].RefTable = DegreesTable
 	StudentsTable.ForeignKeys[1].RefTable = GendersTable
 	StudentsTable.ForeignKeys[2].RefTable = PrefixesTable
