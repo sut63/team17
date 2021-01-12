@@ -4,30 +4,29 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/sut63/team17/app/ent/postal"
-
 	"github.com/gin-gonic/gin"
 	"github.com/sut63/team17/app/ent"
+	"github.com/sut63/team17/app/ent/country"
 )
 
-// PostalController defines the struct for the postal controller
-type PostalController struct {
+// CountryController defines the struct for the country controller
+type CountryController struct {
 	client *ent.Client
 	router gin.IRouter
 }
 
-// GetPostal handles GET requests to retrieve a postal entity
-// @Summary Get a postal entity by ID
-// @Description get postal by ID
-// @ID get-postal
+// GetCountry handles GET requests to retrieve a country entity
+// @Summary Get a country entity by ID
+// @Description get country by ID
+// @ID get-country
 // @Produce  json
-// @Param id path int true "Postal ID"
-// @Success 200 {object} ent.Postal
+// @Param id path int true "Country ID"
+// @Success 200 {object} ent.Country
 // @Failure 400 {object} gin.H
 // @Failure 404 {object} gin.H
 // @Failure 500 {object} gin.H
-// @Router /postals/{id} [get]
-func (ctl *PostalController) GetPostal(c *gin.Context) {
+// @Router /countrys/{id} [get]
+func (ctl *CountryController) GetCountry(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		c.JSON(400, gin.H{
@@ -35,9 +34,9 @@ func (ctl *PostalController) GetPostal(c *gin.Context) {
 		})
 		return
 	}
-	u, err := ctl.client.Postal.
+	u, err := ctl.client.Country.
 		Query().
-		Where(postal.IDEQ(int(id))).
+		Where(country.IDEQ(int(id))).
 		Only(context.Background())
 
 	if err != nil {
@@ -50,18 +49,18 @@ func (ctl *PostalController) GetPostal(c *gin.Context) {
 	c.JSON(200, u)
 }
 
-// ListPostal handles request to get a list of postal entities
-// @Summary List postal entities
-// @Description list postal entities
-// @ID list-postal
+// ListCountry handles request to get a list of country entities
+// @Summary List country entities
+// @Description list country entities
+// @ID list-country
 // @Produce json
 // @Param limit  query int false "Limit"
 // @Param offset query int false "Offset"
-// @Success 200 {array} ent.Postal
+// @Success 200 {array} ent.Country
 // @Failure 400 {object} gin.H
 // @Failure 500 {object} gin.H
-// @Router /postals [get]
-func (ctl *PostalController) ListPostal(c *gin.Context) {
+// @Router /countrys [get]
+func (ctl *CountryController) ListCountry(c *gin.Context) {
 	limitQuery := c.Query("limit")
 	limit := 10
 	if limitQuery != "" {
@@ -80,7 +79,7 @@ func (ctl *PostalController) ListPostal(c *gin.Context) {
 		}
 	}
 
-	histories, err := ctl.client.Postal.
+	histories, err := ctl.client.Country.
 		Query().
 		Limit(limit).
 		Offset(offset).
@@ -96,9 +95,9 @@ func (ctl *PostalController) ListPostal(c *gin.Context) {
 	c.JSON(200, histories)
 }
 
-// NewPostalController creates and registers handles for the postal controller
-func NewPostalController(router gin.IRouter, client *ent.Client) *PostalController {
-	uc := &PostalController{
+// NewCountryController creates and registers handles for the country controller
+func NewCountryController(router gin.IRouter, client *ent.Client) *CountryController {
+	uc := &CountryController{
 		client: client,
 		router: router,
 	}
@@ -109,11 +108,11 @@ func NewPostalController(router gin.IRouter, client *ent.Client) *PostalControll
 
 }
 
-func (ctl *PostalController) register() {
-	postals := ctl.router.Group("/postals")
+func (ctl *CountryController) register() {
+	countrys := ctl.router.Group("/countrys")
 
-	postals.GET("", ctl.ListPostal)
+	countrys.GET("", ctl.ListCountry)
 
 	// CRUD
-	postals.GET(":id", ctl.GetPostal)
+	countrys.GET(":id", ctl.GetCountry)
 }
