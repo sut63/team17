@@ -14,7 +14,10 @@ type Province struct {
 // Fields of the Province.
 func (Province) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("name").NotEmpty(),
+		field.String("province").NotEmpty().Unique(),
+		field.String("district").NotEmpty(),
+		field.String("subdistrict").NotEmpty(),
+		field.Int("postal").Positive(),
 	}
 }
 
@@ -22,7 +25,11 @@ func (Province) Fields() []ent.Field {
 func (Province) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("prov_regi", Region.Type).Ref("regi_prov").Unique(),
-		edge.From("prov_dist", District.Type).Ref("dist_prov").Unique(),
+		edge.From("prov_coun", Country.Type).Ref("coun_prov").Unique(),
+		edge.From("prov_cont", Continent.Type).Ref("cont_prov").Unique(),
 		edge.To("prov_stud", Student.Type),
+		edge.To("dist_stud", Student.Type),
+		edge.To("subd_stud", Student.Type),
+		edge.To("post_stud", Student.Type),
 	}
 }
