@@ -87,23 +87,17 @@ type Genders struct {
 type Gender struct {
 	Gender string
 }
-type Districts struct {
-	District []District
+type Countrys struct {
+	Country []Country
 }
-type District struct {
-	District string
+type Country struct {
+	Country string
 }
-type Subdistricts struct {
-	Subdistrict []Subdistrict
+type Continents struct {
+	Continent []Continent
 }
-type Subdistrict struct {
-	Subdistrict string
-}
-type Postals struct {
-	Postal []Postal
-}
-type Postal struct {
-	Postal string
+type Continent struct {
+	Continent string
 }
 type Regions struct {
 	Region []Region
@@ -179,11 +173,10 @@ func main() {
 	controllers.NewCourseController(v1, client)
 	controllers.NewDegreeController(v1, client)
 	controllers.NewFacultyController(v1, client)
-	controllers.NewDistrictController(v1, client)
+	controllers.NewCountryController(v1, client)
 	controllers.NewProvinceController(v1, client)
 	controllers.NewRegionController(v1, client)
-	controllers.NewSubdistrictController(v1, client)
-	controllers.NewPostalController(v1, client)
+	controllers.NewContinentController(v1, client)
 	controllers.NewPrefixController(v1, client)
 	controllers.NewProfessorController(v1, client)
 	controllers.NewProfessorshipController(v1, client)
@@ -378,34 +371,40 @@ func main() {
 			Save(context.Background())
 	}
 
-	//Set District Data
-	districts := Districts{
-		District: []District{
-			District{"เมืองนครราชสีมา"},
-			District{"โนนสูง"},
-			District{"สีคิ้ว"},
-			District{"สีดา"},
+	//Set Country Data
+	countrys := Countrys{
+		Country: []Country{
+			Country{"ไทย"},
+			Country{"จีน"},
+			Country{"กัมพูชา"},
+			Country{"อังกฤษ"},
+			Country{"อเมริกา"},
+			Country{"ออสเตรเลีย"},
+			Country{"สิงคโปร์"},
 		},
 	}
-	for _, di := range districts.District {
-		client.District.
+	for _, cu := range countrys.Country {
+		client.Country.
 			Create().
-			SetDistrict(di.District).
+			SetCountry(cu.Country).
 			Save(context.Background())
 	}
 
-	//Set Subdistrict Data
-	subdistricts := Subdistricts{
-		Subdistrict: []Subdistrict{
-			Subdistrict{"ในเมือง"},
-			Subdistrict{"สุรนารี"},
-			Subdistrict{"จอหอ"},
+	//Set Continent Data
+	continents := Continents{
+		Continent: []Continent{
+			Continent{"อเมริกา"},
+			Continent{"เอเซีย"},
+			Continent{"ยุโรป"},
+			Continent{"แอฟริกา"},
+			Continent{"ออสเตรเลีย"},
+			Continent{"แอนตาร์กติกา"},
 		},
 	}
-	for _, sd := range subdistricts.Subdistrict {
-		client.Subdistrict.
+	for _, cn := range continents.Continent {
+		client.Continent.
 			Create().
-			SetSubdistrict(sd.Subdistrict).
+			SetContinent(cn.Continent).
 			Save(context.Background())
 	}
 
@@ -418,26 +417,10 @@ func main() {
 			Region{"ภาคใต้"},
 		},
 	}
-	for _, st := range regions.Region {
+	for _, re := range regions.Region {
 		client.Region.
 			Create().
-			SetName(st.Region).
-			Save(context.Background())
-	}
-
-	//Set Postal Data
-	Postals := Postals{
-		Postal: []Postal{
-			Postal{"30000"},
-			Postal{"30430"},
-			Postal{"30310"},
-			Postal{"30280"},
-		},
-	}
-	for _, st := range Postals.Postal {
-		client.Postal.
-			Create().
-			SetPostal(st.Postal).
+			SetRegion(re.Region).
 			Save(context.Background())
 	}
 
