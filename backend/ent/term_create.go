@@ -9,6 +9,7 @@ import (
 
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
+	"github.com/sut63/team17/app/ent/activity"
 	"github.com/sut63/team17/app/ent/results"
 	"github.com/sut63/team17/app/ent/term"
 )
@@ -39,6 +40,21 @@ func (tc *TermCreate) AddTermResu(r ...*Results) *TermCreate {
 		ids[i] = r[i].ID
 	}
 	return tc.AddTermResuIDs(ids...)
+}
+
+// AddTermActiIDs adds the term_acti edge to Activity by ids.
+func (tc *TermCreate) AddTermActiIDs(ids ...int) *TermCreate {
+	tc.mutation.AddTermActiIDs(ids...)
+	return tc
+}
+
+// AddTermActi adds the term_acti edges to Activity.
+func (tc *TermCreate) AddTermActi(a ...*Activity) *TermCreate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return tc.AddTermActiIDs(ids...)
 }
 
 // Mutation returns the TermMutation object of the builder.
@@ -135,6 +151,25 @@ func (tc *TermCreate) createSpec() (*Term, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: results.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := tc.mutation.TermActiIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   term.TermActiTable,
+			Columns: []string{term.TermActiColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: activity.FieldID,
 				},
 			},
 		}

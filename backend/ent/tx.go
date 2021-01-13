@@ -16,12 +16,14 @@ type Tx struct {
 	Activity *ActivityClient
 	// Agency is the client for interacting with the Agency builders.
 	Agency *AgencyClient
+	// Continent is the client for interacting with the Continent builders.
+	Continent *ContinentClient
+	// Country is the client for interacting with the Country builders.
+	Country *CountryClient
 	// Course is the client for interacting with the Course builders.
 	Course *CourseClient
 	// Degree is the client for interacting with the Degree builders.
 	Degree *DegreeClient
-	// District is the client for interacting with the District builders.
-	District *DistrictClient
 	// Faculty is the client for interacting with the Faculty builders.
 	Faculty *FacultyClient
 	// Gender is the client for interacting with the Gender builders.
@@ -30,8 +32,6 @@ type Tx struct {
 	Institution *InstitutionClient
 	// Place is the client for interacting with the Place builders.
 	Place *PlaceClient
-	// Postal is the client for interacting with the Postal builders.
-	Postal *PostalClient
 	// Prefix is the client for interacting with the Prefix builders.
 	Prefix *PrefixClient
 	// Professor is the client for interacting with the Professor builders.
@@ -46,8 +46,6 @@ type Tx struct {
 	Results *ResultsClient
 	// Student is the client for interacting with the Student builders.
 	Student *StudentClient
-	// Subdistrict is the client for interacting with the Subdistrict builders.
-	Subdistrict *SubdistrictClient
 	// Subject is the client for interacting with the Subject builders.
 	Subject *SubjectClient
 	// Term is the client for interacting with the Term builders.
@@ -191,14 +189,14 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.Activity = NewActivityClient(tx.config)
 	tx.Agency = NewAgencyClient(tx.config)
+	tx.Continent = NewContinentClient(tx.config)
+	tx.Country = NewCountryClient(tx.config)
 	tx.Course = NewCourseClient(tx.config)
 	tx.Degree = NewDegreeClient(tx.config)
-	tx.District = NewDistrictClient(tx.config)
 	tx.Faculty = NewFacultyClient(tx.config)
 	tx.Gender = NewGenderClient(tx.config)
 	tx.Institution = NewInstitutionClient(tx.config)
 	tx.Place = NewPlaceClient(tx.config)
-	tx.Postal = NewPostalClient(tx.config)
 	tx.Prefix = NewPrefixClient(tx.config)
 	tx.Professor = NewProfessorClient(tx.config)
 	tx.Professorship = NewProfessorshipClient(tx.config)
@@ -206,7 +204,6 @@ func (tx *Tx) init() {
 	tx.Region = NewRegionClient(tx.config)
 	tx.Results = NewResultsClient(tx.config)
 	tx.Student = NewStudentClient(tx.config)
-	tx.Subdistrict = NewSubdistrictClient(tx.config)
 	tx.Subject = NewSubjectClient(tx.config)
 	tx.Term = NewTermClient(tx.config)
 	tx.Year = NewYearClient(tx.config)

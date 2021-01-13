@@ -7,15 +7,29 @@ const (
 	Label = "province"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldName holds the string denoting the name field in the database.
-	FieldName = "name"
+	// FieldProvince holds the string denoting the province field in the database.
+	FieldProvince = "province"
+	// FieldDistrict holds the string denoting the district field in the database.
+	FieldDistrict = "district"
+	// FieldSubdistrict holds the string denoting the subdistrict field in the database.
+	FieldSubdistrict = "subdistrict"
+	// FieldPostal holds the string denoting the postal field in the database.
+	FieldPostal = "postal"
 
 	// EdgeProvRegi holds the string denoting the prov_regi edge name in mutations.
 	EdgeProvRegi = "prov_regi"
-	// EdgeProvDist holds the string denoting the prov_dist edge name in mutations.
-	EdgeProvDist = "prov_dist"
+	// EdgeProvCoun holds the string denoting the prov_coun edge name in mutations.
+	EdgeProvCoun = "prov_coun"
+	// EdgeProvCont holds the string denoting the prov_cont edge name in mutations.
+	EdgeProvCont = "prov_cont"
 	// EdgeProvStud holds the string denoting the prov_stud edge name in mutations.
 	EdgeProvStud = "prov_stud"
+	// EdgeDistStud holds the string denoting the dist_stud edge name in mutations.
+	EdgeDistStud = "dist_stud"
+	// EdgeSubdStud holds the string denoting the subd_stud edge name in mutations.
+	EdgeSubdStud = "subd_stud"
+	// EdgePostStud holds the string denoting the post_stud edge name in mutations.
+	EdgePostStud = "post_stud"
 
 	// Table holds the table name of the province in the database.
 	Table = "provinces"
@@ -26,13 +40,20 @@ const (
 	ProvRegiInverseTable = "regions"
 	// ProvRegiColumn is the table column denoting the prov_regi relation/edge.
 	ProvRegiColumn = "region_regi_prov"
-	// ProvDistTable is the table the holds the prov_dist relation/edge.
-	ProvDistTable = "provinces"
-	// ProvDistInverseTable is the table name for the District entity.
-	// It exists in this package in order to avoid circular dependency with the "district" package.
-	ProvDistInverseTable = "districts"
-	// ProvDistColumn is the table column denoting the prov_dist relation/edge.
-	ProvDistColumn = "district_dist_prov"
+	// ProvCounTable is the table the holds the prov_coun relation/edge.
+	ProvCounTable = "provinces"
+	// ProvCounInverseTable is the table name for the Country entity.
+	// It exists in this package in order to avoid circular dependency with the "country" package.
+	ProvCounInverseTable = "countries"
+	// ProvCounColumn is the table column denoting the prov_coun relation/edge.
+	ProvCounColumn = "country_coun_prov"
+	// ProvContTable is the table the holds the prov_cont relation/edge.
+	ProvContTable = "provinces"
+	// ProvContInverseTable is the table name for the Continent entity.
+	// It exists in this package in order to avoid circular dependency with the "continent" package.
+	ProvContInverseTable = "continents"
+	// ProvContColumn is the table column denoting the prov_cont relation/edge.
+	ProvContColumn = "continent_cont_prov"
 	// ProvStudTable is the table the holds the prov_stud relation/edge.
 	ProvStudTable = "students"
 	// ProvStudInverseTable is the table name for the Student entity.
@@ -40,21 +61,52 @@ const (
 	ProvStudInverseTable = "students"
 	// ProvStudColumn is the table column denoting the prov_stud relation/edge.
 	ProvStudColumn = "province_prov_stud"
+	// DistStudTable is the table the holds the dist_stud relation/edge.
+	DistStudTable = "students"
+	// DistStudInverseTable is the table name for the Student entity.
+	// It exists in this package in order to avoid circular dependency with the "student" package.
+	DistStudInverseTable = "students"
+	// DistStudColumn is the table column denoting the dist_stud relation/edge.
+	DistStudColumn = "province_dist_stud"
+	// SubdStudTable is the table the holds the subd_stud relation/edge.
+	SubdStudTable = "students"
+	// SubdStudInverseTable is the table name for the Student entity.
+	// It exists in this package in order to avoid circular dependency with the "student" package.
+	SubdStudInverseTable = "students"
+	// SubdStudColumn is the table column denoting the subd_stud relation/edge.
+	SubdStudColumn = "province_subd_stud"
+	// PostStudTable is the table the holds the post_stud relation/edge.
+	PostStudTable = "students"
+	// PostStudInverseTable is the table name for the Student entity.
+	// It exists in this package in order to avoid circular dependency with the "student" package.
+	PostStudInverseTable = "students"
+	// PostStudColumn is the table column denoting the post_stud relation/edge.
+	PostStudColumn = "province_post_stud"
 )
 
 // Columns holds all SQL columns for province fields.
 var Columns = []string{
 	FieldID,
-	FieldName,
+	FieldProvince,
+	FieldDistrict,
+	FieldSubdistrict,
+	FieldPostal,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the Province type.
 var ForeignKeys = []string{
-	"district_dist_prov",
+	"continent_cont_prov",
+	"country_coun_prov",
 	"region_regi_prov",
 }
 
 var (
-	// NameValidator is a validator for the "name" field. It is called by the builders before save.
-	NameValidator func(string) error
+	// ProvinceValidator is a validator for the "province" field. It is called by the builders before save.
+	ProvinceValidator func(string) error
+	// DistrictValidator is a validator for the "district" field. It is called by the builders before save.
+	DistrictValidator func(string) error
+	// SubdistrictValidator is a validator for the "subdistrict" field. It is called by the builders before save.
+	SubdistrictValidator func(string) error
+	// PostalValidator is a validator for the "postal" field. It is called by the builders before save.
+	PostalValidator func(int) error
 )

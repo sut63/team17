@@ -10,14 +10,14 @@ import (
 
 	"github.com/sut63/team17/app/ent/activity"
 	"github.com/sut63/team17/app/ent/agency"
+	"github.com/sut63/team17/app/ent/continent"
+	"github.com/sut63/team17/app/ent/country"
 	"github.com/sut63/team17/app/ent/course"
 	"github.com/sut63/team17/app/ent/degree"
-	"github.com/sut63/team17/app/ent/district"
 	"github.com/sut63/team17/app/ent/faculty"
 	"github.com/sut63/team17/app/ent/gender"
 	"github.com/sut63/team17/app/ent/institution"
 	"github.com/sut63/team17/app/ent/place"
-	"github.com/sut63/team17/app/ent/postal"
 	"github.com/sut63/team17/app/ent/prefix"
 	"github.com/sut63/team17/app/ent/professor"
 	"github.com/sut63/team17/app/ent/professorship"
@@ -25,7 +25,6 @@ import (
 	"github.com/sut63/team17/app/ent/region"
 	"github.com/sut63/team17/app/ent/results"
 	"github.com/sut63/team17/app/ent/student"
-	"github.com/sut63/team17/app/ent/subdistrict"
 	"github.com/sut63/team17/app/ent/subject"
 	"github.com/sut63/team17/app/ent/term"
 	"github.com/sut63/team17/app/ent/year"
@@ -44,14 +43,14 @@ const (
 	// Node types.
 	TypeActivity      = "Activity"
 	TypeAgency        = "Agency"
+	TypeContinent     = "Continent"
+	TypeCountry       = "Country"
 	TypeCourse        = "Course"
 	TypeDegree        = "Degree"
-	TypeDistrict      = "District"
 	TypeFaculty       = "Faculty"
 	TypeGender        = "Gender"
 	TypeInstitution   = "Institution"
 	TypePlace         = "Place"
-	TypePostal        = "Postal"
 	TypePrefix        = "Prefix"
 	TypeProfessor     = "Professor"
 	TypeProfessorship = "Professorship"
@@ -59,7 +58,6 @@ const (
 	TypeRegion        = "Region"
 	TypeResults       = "Results"
 	TypeStudent       = "Student"
-	TypeSubdistrict   = "Subdistrict"
 	TypeSubject       = "Subject"
 	TypeTerm          = "Term"
 	TypeYear          = "Year"
@@ -1118,6 +1116,742 @@ func (m *AgencyMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Agency edge %s", name)
 }
 
+// ContinentMutation represents an operation that mutate the Continents
+// nodes in the graph.
+type ContinentMutation struct {
+	config
+	op               Op
+	typ              string
+	id               *int
+	continent        *string
+	clearedFields    map[string]struct{}
+	cont_prov        map[int]struct{}
+	removedcont_prov map[int]struct{}
+	done             bool
+	oldValue         func(context.Context) (*Continent, error)
+}
+
+var _ ent.Mutation = (*ContinentMutation)(nil)
+
+// continentOption allows to manage the mutation configuration using functional options.
+type continentOption func(*ContinentMutation)
+
+// newContinentMutation creates new mutation for $n.Name.
+func newContinentMutation(c config, op Op, opts ...continentOption) *ContinentMutation {
+	m := &ContinentMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeContinent,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withContinentID sets the id field of the mutation.
+func withContinentID(id int) continentOption {
+	return func(m *ContinentMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Continent
+		)
+		m.oldValue = func(ctx context.Context) (*Continent, error) {
+			once.Do(func() {
+				if m.done {
+					err = fmt.Errorf("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Continent.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withContinent sets the old Continent of the mutation.
+func withContinent(node *Continent) continentOption {
+	return func(m *ContinentMutation) {
+		m.oldValue = func(context.Context) (*Continent, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ContinentMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ContinentMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, fmt.Errorf("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the id value in the mutation. Note that, the id
+// is available only if it was provided to the builder.
+func (m *ContinentMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// SetContinent sets the continent field.
+func (m *ContinentMutation) SetContinent(s string) {
+	m.continent = &s
+}
+
+// Continent returns the continent value in the mutation.
+func (m *ContinentMutation) Continent() (r string, exists bool) {
+	v := m.continent
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldContinent returns the old continent value of the Continent.
+// If the Continent object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *ContinentMutation) OldContinent(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldContinent is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldContinent requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldContinent: %w", err)
+	}
+	return oldValue.Continent, nil
+}
+
+// ResetContinent reset all changes of the "continent" field.
+func (m *ContinentMutation) ResetContinent() {
+	m.continent = nil
+}
+
+// AddContProvIDs adds the cont_prov edge to Province by ids.
+func (m *ContinentMutation) AddContProvIDs(ids ...int) {
+	if m.cont_prov == nil {
+		m.cont_prov = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.cont_prov[ids[i]] = struct{}{}
+	}
+}
+
+// RemoveContProvIDs removes the cont_prov edge to Province by ids.
+func (m *ContinentMutation) RemoveContProvIDs(ids ...int) {
+	if m.removedcont_prov == nil {
+		m.removedcont_prov = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.removedcont_prov[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedContProv returns the removed ids of cont_prov.
+func (m *ContinentMutation) RemovedContProvIDs() (ids []int) {
+	for id := range m.removedcont_prov {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ContProvIDs returns the cont_prov ids in the mutation.
+func (m *ContinentMutation) ContProvIDs() (ids []int) {
+	for id := range m.cont_prov {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetContProv reset all changes of the "cont_prov" edge.
+func (m *ContinentMutation) ResetContProv() {
+	m.cont_prov = nil
+	m.removedcont_prov = nil
+}
+
+// Op returns the operation name.
+func (m *ContinentMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (Continent).
+func (m *ContinentMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during
+// this mutation. Note that, in order to get all numeric
+// fields that were in/decremented, call AddedFields().
+func (m *ContinentMutation) Fields() []string {
+	fields := make([]string, 0, 1)
+	if m.continent != nil {
+		fields = append(fields, continent.FieldContinent)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name.
+// The second boolean value indicates that this field was
+// not set, or was not define in the schema.
+func (m *ContinentMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case continent.FieldContinent:
+		return m.Continent()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database.
+// An error is returned if the mutation operation is not UpdateOne,
+// or the query to the database was failed.
+func (m *ContinentMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case continent.FieldContinent:
+		return m.OldContinent(ctx)
+	}
+	return nil, fmt.Errorf("unknown Continent field %s", name)
+}
+
+// SetField sets the value for the given name. It returns an
+// error if the field is not defined in the schema, or if the
+// type mismatch the field type.
+func (m *ContinentMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case continent.FieldContinent:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetContinent(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Continent field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented
+// or decremented during this mutation.
+func (m *ContinentMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was in/decremented
+// from a field with the given name. The second value indicates
+// that this field was not set, or was not define in the schema.
+func (m *ContinentMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value for the given name. It returns an
+// error if the field is not defined in the schema, or if the
+// type mismatch the field type.
+func (m *ContinentMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown Continent numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared
+// during this mutation.
+func (m *ContinentMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicates if this field was
+// cleared in this mutation.
+func (m *ContinentMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value for the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ContinentMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown Continent nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation regarding the
+// given field name. It returns an error if the field is not
+// defined in the schema.
+func (m *ContinentMutation) ResetField(name string) error {
+	switch name {
+	case continent.FieldContinent:
+		m.ResetContinent()
+		return nil
+	}
+	return fmt.Errorf("unknown Continent field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this
+// mutation.
+func (m *ContinentMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.cont_prov != nil {
+		edges = append(edges, continent.EdgeContProv)
+	}
+	return edges
+}
+
+// AddedIDs returns all ids (to other nodes) that were added for
+// the given edge name.
+func (m *ContinentMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case continent.EdgeContProv:
+		ids := make([]ent.Value, 0, len(m.cont_prov))
+		for id := range m.cont_prov {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this
+// mutation.
+func (m *ContinentMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.removedcont_prov != nil {
+		edges = append(edges, continent.EdgeContProv)
+	}
+	return edges
+}
+
+// RemovedIDs returns all ids (to other nodes) that were removed for
+// the given edge name.
+func (m *ContinentMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case continent.EdgeContProv:
+		ids := make([]ent.Value, 0, len(m.removedcont_prov))
+		for id := range m.removedcont_prov {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this
+// mutation.
+func (m *ContinentMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// EdgeCleared returns a boolean indicates if this edge was
+// cleared in this mutation.
+func (m *ContinentMutation) EdgeCleared(name string) bool {
+	switch name {
+	}
+	return false
+}
+
+// ClearEdge clears the value for the given name. It returns an
+// error if the edge name is not defined in the schema.
+func (m *ContinentMutation) ClearEdge(name string) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown Continent unique edge %s", name)
+}
+
+// ResetEdge resets all changes in the mutation regarding the
+// given edge name. It returns an error if the edge is not
+// defined in the schema.
+func (m *ContinentMutation) ResetEdge(name string) error {
+	switch name {
+	case continent.EdgeContProv:
+		m.ResetContProv()
+		return nil
+	}
+	return fmt.Errorf("unknown Continent edge %s", name)
+}
+
+// CountryMutation represents an operation that mutate the Countries
+// nodes in the graph.
+type CountryMutation struct {
+	config
+	op               Op
+	typ              string
+	id               *int
+	country          *string
+	clearedFields    map[string]struct{}
+	coun_prov        map[int]struct{}
+	removedcoun_prov map[int]struct{}
+	done             bool
+	oldValue         func(context.Context) (*Country, error)
+}
+
+var _ ent.Mutation = (*CountryMutation)(nil)
+
+// countryOption allows to manage the mutation configuration using functional options.
+type countryOption func(*CountryMutation)
+
+// newCountryMutation creates new mutation for $n.Name.
+func newCountryMutation(c config, op Op, opts ...countryOption) *CountryMutation {
+	m := &CountryMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeCountry,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withCountryID sets the id field of the mutation.
+func withCountryID(id int) countryOption {
+	return func(m *CountryMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Country
+		)
+		m.oldValue = func(ctx context.Context) (*Country, error) {
+			once.Do(func() {
+				if m.done {
+					err = fmt.Errorf("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Country.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withCountry sets the old Country of the mutation.
+func withCountry(node *Country) countryOption {
+	return func(m *CountryMutation) {
+		m.oldValue = func(context.Context) (*Country, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m CountryMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m CountryMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, fmt.Errorf("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the id value in the mutation. Note that, the id
+// is available only if it was provided to the builder.
+func (m *CountryMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// SetCountry sets the country field.
+func (m *CountryMutation) SetCountry(s string) {
+	m.country = &s
+}
+
+// Country returns the country value in the mutation.
+func (m *CountryMutation) Country() (r string, exists bool) {
+	v := m.country
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCountry returns the old country value of the Country.
+// If the Country object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *CountryMutation) OldCountry(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldCountry is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldCountry requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCountry: %w", err)
+	}
+	return oldValue.Country, nil
+}
+
+// ResetCountry reset all changes of the "country" field.
+func (m *CountryMutation) ResetCountry() {
+	m.country = nil
+}
+
+// AddCounProvIDs adds the coun_prov edge to Province by ids.
+func (m *CountryMutation) AddCounProvIDs(ids ...int) {
+	if m.coun_prov == nil {
+		m.coun_prov = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.coun_prov[ids[i]] = struct{}{}
+	}
+}
+
+// RemoveCounProvIDs removes the coun_prov edge to Province by ids.
+func (m *CountryMutation) RemoveCounProvIDs(ids ...int) {
+	if m.removedcoun_prov == nil {
+		m.removedcoun_prov = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.removedcoun_prov[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedCounProv returns the removed ids of coun_prov.
+func (m *CountryMutation) RemovedCounProvIDs() (ids []int) {
+	for id := range m.removedcoun_prov {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// CounProvIDs returns the coun_prov ids in the mutation.
+func (m *CountryMutation) CounProvIDs() (ids []int) {
+	for id := range m.coun_prov {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetCounProv reset all changes of the "coun_prov" edge.
+func (m *CountryMutation) ResetCounProv() {
+	m.coun_prov = nil
+	m.removedcoun_prov = nil
+}
+
+// Op returns the operation name.
+func (m *CountryMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (Country).
+func (m *CountryMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during
+// this mutation. Note that, in order to get all numeric
+// fields that were in/decremented, call AddedFields().
+func (m *CountryMutation) Fields() []string {
+	fields := make([]string, 0, 1)
+	if m.country != nil {
+		fields = append(fields, country.FieldCountry)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name.
+// The second boolean value indicates that this field was
+// not set, or was not define in the schema.
+func (m *CountryMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case country.FieldCountry:
+		return m.Country()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database.
+// An error is returned if the mutation operation is not UpdateOne,
+// or the query to the database was failed.
+func (m *CountryMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case country.FieldCountry:
+		return m.OldCountry(ctx)
+	}
+	return nil, fmt.Errorf("unknown Country field %s", name)
+}
+
+// SetField sets the value for the given name. It returns an
+// error if the field is not defined in the schema, or if the
+// type mismatch the field type.
+func (m *CountryMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case country.FieldCountry:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCountry(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Country field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented
+// or decremented during this mutation.
+func (m *CountryMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was in/decremented
+// from a field with the given name. The second value indicates
+// that this field was not set, or was not define in the schema.
+func (m *CountryMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value for the given name. It returns an
+// error if the field is not defined in the schema, or if the
+// type mismatch the field type.
+func (m *CountryMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown Country numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared
+// during this mutation.
+func (m *CountryMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicates if this field was
+// cleared in this mutation.
+func (m *CountryMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value for the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *CountryMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown Country nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation regarding the
+// given field name. It returns an error if the field is not
+// defined in the schema.
+func (m *CountryMutation) ResetField(name string) error {
+	switch name {
+	case country.FieldCountry:
+		m.ResetCountry()
+		return nil
+	}
+	return fmt.Errorf("unknown Country field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this
+// mutation.
+func (m *CountryMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.coun_prov != nil {
+		edges = append(edges, country.EdgeCounProv)
+	}
+	return edges
+}
+
+// AddedIDs returns all ids (to other nodes) that were added for
+// the given edge name.
+func (m *CountryMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case country.EdgeCounProv:
+		ids := make([]ent.Value, 0, len(m.coun_prov))
+		for id := range m.coun_prov {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this
+// mutation.
+func (m *CountryMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.removedcoun_prov != nil {
+		edges = append(edges, country.EdgeCounProv)
+	}
+	return edges
+}
+
+// RemovedIDs returns all ids (to other nodes) that were removed for
+// the given edge name.
+func (m *CountryMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case country.EdgeCounProv:
+		ids := make([]ent.Value, 0, len(m.removedcoun_prov))
+		for id := range m.removedcoun_prov {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this
+// mutation.
+func (m *CountryMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// EdgeCleared returns a boolean indicates if this edge was
+// cleared in this mutation.
+func (m *CountryMutation) EdgeCleared(name string) bool {
+	switch name {
+	}
+	return false
+}
+
+// ClearEdge clears the value for the given name. It returns an
+// error if the edge name is not defined in the schema.
+func (m *CountryMutation) ClearEdge(name string) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown Country unique edge %s", name)
+}
+
+// ResetEdge resets all changes in the mutation regarding the
+// given edge name. It returns an error if the edge is not
+// defined in the schema.
+func (m *CountryMutation) ResetEdge(name string) error {
+	switch name {
+	case country.EdgeCounProv:
+		m.ResetCounProv()
+		return nil
+	}
+	return fmt.Errorf("unknown Country edge %s", name)
+}
+
 // CourseMutation represents an operation that mutate the Courses
 // nodes in the graph.
 type CourseMutation struct {
@@ -2029,492 +2763,6 @@ func (m *DegreeMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown Degree edge %s", name)
-}
-
-// DistrictMutation represents an operation that mutate the Districts
-// nodes in the graph.
-type DistrictMutation struct {
-	config
-	op               Op
-	typ              string
-	id               *int
-	district         *string
-	clearedFields    map[string]struct{}
-	dist_subd        *int
-	cleareddist_subd bool
-	dist_post        *int
-	cleareddist_post bool
-	dist_prov        map[int]struct{}
-	removeddist_prov map[int]struct{}
-	done             bool
-	oldValue         func(context.Context) (*District, error)
-}
-
-var _ ent.Mutation = (*DistrictMutation)(nil)
-
-// districtOption allows to manage the mutation configuration using functional options.
-type districtOption func(*DistrictMutation)
-
-// newDistrictMutation creates new mutation for $n.Name.
-func newDistrictMutation(c config, op Op, opts ...districtOption) *DistrictMutation {
-	m := &DistrictMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeDistrict,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withDistrictID sets the id field of the mutation.
-func withDistrictID(id int) districtOption {
-	return func(m *DistrictMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *District
-		)
-		m.oldValue = func(ctx context.Context) (*District, error) {
-			once.Do(func() {
-				if m.done {
-					err = fmt.Errorf("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().District.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withDistrict sets the old District of the mutation.
-func withDistrict(node *District) districtOption {
-	return func(m *DistrictMutation) {
-		m.oldValue = func(context.Context) (*District, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m DistrictMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m DistrictMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, fmt.Errorf("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// ID returns the id value in the mutation. Note that, the id
-// is available only if it was provided to the builder.
-func (m *DistrictMutation) ID() (id int, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// SetDistrict sets the district field.
-func (m *DistrictMutation) SetDistrict(s string) {
-	m.district = &s
-}
-
-// District returns the district value in the mutation.
-func (m *DistrictMutation) District() (r string, exists bool) {
-	v := m.district
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDistrict returns the old district value of the District.
-// If the District object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *DistrictMutation) OldDistrict(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldDistrict is allowed only on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldDistrict requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDistrict: %w", err)
-	}
-	return oldValue.District, nil
-}
-
-// ResetDistrict reset all changes of the "district" field.
-func (m *DistrictMutation) ResetDistrict() {
-	m.district = nil
-}
-
-// SetDistSubdID sets the dist_subd edge to Subdistrict by id.
-func (m *DistrictMutation) SetDistSubdID(id int) {
-	m.dist_subd = &id
-}
-
-// ClearDistSubd clears the dist_subd edge to Subdistrict.
-func (m *DistrictMutation) ClearDistSubd() {
-	m.cleareddist_subd = true
-}
-
-// DistSubdCleared returns if the edge dist_subd was cleared.
-func (m *DistrictMutation) DistSubdCleared() bool {
-	return m.cleareddist_subd
-}
-
-// DistSubdID returns the dist_subd id in the mutation.
-func (m *DistrictMutation) DistSubdID() (id int, exists bool) {
-	if m.dist_subd != nil {
-		return *m.dist_subd, true
-	}
-	return
-}
-
-// DistSubdIDs returns the dist_subd ids in the mutation.
-// Note that ids always returns len(ids) <= 1 for unique edges, and you should use
-// DistSubdID instead. It exists only for internal usage by the builders.
-func (m *DistrictMutation) DistSubdIDs() (ids []int) {
-	if id := m.dist_subd; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetDistSubd reset all changes of the "dist_subd" edge.
-func (m *DistrictMutation) ResetDistSubd() {
-	m.dist_subd = nil
-	m.cleareddist_subd = false
-}
-
-// SetDistPostID sets the dist_post edge to Postal by id.
-func (m *DistrictMutation) SetDistPostID(id int) {
-	m.dist_post = &id
-}
-
-// ClearDistPost clears the dist_post edge to Postal.
-func (m *DistrictMutation) ClearDistPost() {
-	m.cleareddist_post = true
-}
-
-// DistPostCleared returns if the edge dist_post was cleared.
-func (m *DistrictMutation) DistPostCleared() bool {
-	return m.cleareddist_post
-}
-
-// DistPostID returns the dist_post id in the mutation.
-func (m *DistrictMutation) DistPostID() (id int, exists bool) {
-	if m.dist_post != nil {
-		return *m.dist_post, true
-	}
-	return
-}
-
-// DistPostIDs returns the dist_post ids in the mutation.
-// Note that ids always returns len(ids) <= 1 for unique edges, and you should use
-// DistPostID instead. It exists only for internal usage by the builders.
-func (m *DistrictMutation) DistPostIDs() (ids []int) {
-	if id := m.dist_post; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetDistPost reset all changes of the "dist_post" edge.
-func (m *DistrictMutation) ResetDistPost() {
-	m.dist_post = nil
-	m.cleareddist_post = false
-}
-
-// AddDistProvIDs adds the dist_prov edge to Province by ids.
-func (m *DistrictMutation) AddDistProvIDs(ids ...int) {
-	if m.dist_prov == nil {
-		m.dist_prov = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.dist_prov[ids[i]] = struct{}{}
-	}
-}
-
-// RemoveDistProvIDs removes the dist_prov edge to Province by ids.
-func (m *DistrictMutation) RemoveDistProvIDs(ids ...int) {
-	if m.removeddist_prov == nil {
-		m.removeddist_prov = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.removeddist_prov[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedDistProv returns the removed ids of dist_prov.
-func (m *DistrictMutation) RemovedDistProvIDs() (ids []int) {
-	for id := range m.removeddist_prov {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// DistProvIDs returns the dist_prov ids in the mutation.
-func (m *DistrictMutation) DistProvIDs() (ids []int) {
-	for id := range m.dist_prov {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetDistProv reset all changes of the "dist_prov" edge.
-func (m *DistrictMutation) ResetDistProv() {
-	m.dist_prov = nil
-	m.removeddist_prov = nil
-}
-
-// Op returns the operation name.
-func (m *DistrictMutation) Op() Op {
-	return m.op
-}
-
-// Type returns the node type of this mutation (District).
-func (m *DistrictMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during
-// this mutation. Note that, in order to get all numeric
-// fields that were in/decremented, call AddedFields().
-func (m *DistrictMutation) Fields() []string {
-	fields := make([]string, 0, 1)
-	if m.district != nil {
-		fields = append(fields, district.FieldDistrict)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name.
-// The second boolean value indicates that this field was
-// not set, or was not define in the schema.
-func (m *DistrictMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case district.FieldDistrict:
-		return m.District()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database.
-// An error is returned if the mutation operation is not UpdateOne,
-// or the query to the database was failed.
-func (m *DistrictMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case district.FieldDistrict:
-		return m.OldDistrict(ctx)
-	}
-	return nil, fmt.Errorf("unknown District field %s", name)
-}
-
-// SetField sets the value for the given name. It returns an
-// error if the field is not defined in the schema, or if the
-// type mismatch the field type.
-func (m *DistrictMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case district.FieldDistrict:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDistrict(v)
-		return nil
-	}
-	return fmt.Errorf("unknown District field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented
-// or decremented during this mutation.
-func (m *DistrictMutation) AddedFields() []string {
-	return nil
-}
-
-// AddedField returns the numeric value that was in/decremented
-// from a field with the given name. The second value indicates
-// that this field was not set, or was not define in the schema.
-func (m *DistrictMutation) AddedField(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// AddField adds the value for the given name. It returns an
-// error if the field is not defined in the schema, or if the
-// type mismatch the field type.
-func (m *DistrictMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown District numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared
-// during this mutation.
-func (m *DistrictMutation) ClearedFields() []string {
-	return nil
-}
-
-// FieldCleared returns a boolean indicates if this field was
-// cleared in this mutation.
-func (m *DistrictMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value for the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *DistrictMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown District nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation regarding the
-// given field name. It returns an error if the field is not
-// defined in the schema.
-func (m *DistrictMutation) ResetField(name string) error {
-	switch name {
-	case district.FieldDistrict:
-		m.ResetDistrict()
-		return nil
-	}
-	return fmt.Errorf("unknown District field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this
-// mutation.
-func (m *DistrictMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
-	if m.dist_subd != nil {
-		edges = append(edges, district.EdgeDistSubd)
-	}
-	if m.dist_post != nil {
-		edges = append(edges, district.EdgeDistPost)
-	}
-	if m.dist_prov != nil {
-		edges = append(edges, district.EdgeDistProv)
-	}
-	return edges
-}
-
-// AddedIDs returns all ids (to other nodes) that were added for
-// the given edge name.
-func (m *DistrictMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case district.EdgeDistSubd:
-		if id := m.dist_subd; id != nil {
-			return []ent.Value{*id}
-		}
-	case district.EdgeDistPost:
-		if id := m.dist_post; id != nil {
-			return []ent.Value{*id}
-		}
-	case district.EdgeDistProv:
-		ids := make([]ent.Value, 0, len(m.dist_prov))
-		for id := range m.dist_prov {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this
-// mutation.
-func (m *DistrictMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
-	if m.removeddist_prov != nil {
-		edges = append(edges, district.EdgeDistProv)
-	}
-	return edges
-}
-
-// RemovedIDs returns all ids (to other nodes) that were removed for
-// the given edge name.
-func (m *DistrictMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case district.EdgeDistProv:
-		ids := make([]ent.Value, 0, len(m.removeddist_prov))
-		for id := range m.removeddist_prov {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this
-// mutation.
-func (m *DistrictMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
-	if m.cleareddist_subd {
-		edges = append(edges, district.EdgeDistSubd)
-	}
-	if m.cleareddist_post {
-		edges = append(edges, district.EdgeDistPost)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean indicates if this edge was
-// cleared in this mutation.
-func (m *DistrictMutation) EdgeCleared(name string) bool {
-	switch name {
-	case district.EdgeDistSubd:
-		return m.cleareddist_subd
-	case district.EdgeDistPost:
-		return m.cleareddist_post
-	}
-	return false
-}
-
-// ClearEdge clears the value for the given name. It returns an
-// error if the edge name is not defined in the schema.
-func (m *DistrictMutation) ClearEdge(name string) error {
-	switch name {
-	case district.EdgeDistSubd:
-		m.ClearDistSubd()
-		return nil
-	case district.EdgeDistPost:
-		m.ClearDistPost()
-		return nil
-	}
-	return fmt.Errorf("unknown District unique edge %s", name)
-}
-
-// ResetEdge resets all changes in the mutation regarding the
-// given edge name. It returns an error if the edge is not
-// defined in the schema.
-func (m *DistrictMutation) ResetEdge(name string) error {
-	switch name {
-	case district.EdgeDistSubd:
-		m.ResetDistSubd()
-		return nil
-	case district.EdgeDistPost:
-		m.ResetDistPost()
-		return nil
-	case district.EdgeDistProv:
-		m.ResetDistProv()
-		return nil
-	}
-	return fmt.Errorf("unknown District edge %s", name)
 }
 
 // FacultyMutation represents an operation that mutate the Faculties
@@ -4054,374 +4302,6 @@ func (m *PlaceMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Place edge %s", name)
 }
 
-// PostalMutation represents an operation that mutate the Postals
-// nodes in the graph.
-type PostalMutation struct {
-	config
-	op               Op
-	typ              string
-	id               *int
-	postal           *string
-	clearedFields    map[string]struct{}
-	post_dist        map[int]struct{}
-	removedpost_dist map[int]struct{}
-	done             bool
-	oldValue         func(context.Context) (*Postal, error)
-}
-
-var _ ent.Mutation = (*PostalMutation)(nil)
-
-// postalOption allows to manage the mutation configuration using functional options.
-type postalOption func(*PostalMutation)
-
-// newPostalMutation creates new mutation for $n.Name.
-func newPostalMutation(c config, op Op, opts ...postalOption) *PostalMutation {
-	m := &PostalMutation{
-		config:        c,
-		op:            op,
-		typ:           TypePostal,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withPostalID sets the id field of the mutation.
-func withPostalID(id int) postalOption {
-	return func(m *PostalMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *Postal
-		)
-		m.oldValue = func(ctx context.Context) (*Postal, error) {
-			once.Do(func() {
-				if m.done {
-					err = fmt.Errorf("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().Postal.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withPostal sets the old Postal of the mutation.
-func withPostal(node *Postal) postalOption {
-	return func(m *PostalMutation) {
-		m.oldValue = func(context.Context) (*Postal, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m PostalMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m PostalMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, fmt.Errorf("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// ID returns the id value in the mutation. Note that, the id
-// is available only if it was provided to the builder.
-func (m *PostalMutation) ID() (id int, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// SetPostal sets the postal field.
-func (m *PostalMutation) SetPostal(s string) {
-	m.postal = &s
-}
-
-// Postal returns the postal value in the mutation.
-func (m *PostalMutation) Postal() (r string, exists bool) {
-	v := m.postal
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPostal returns the old postal value of the Postal.
-// If the Postal object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *PostalMutation) OldPostal(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldPostal is allowed only on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldPostal requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPostal: %w", err)
-	}
-	return oldValue.Postal, nil
-}
-
-// ResetPostal reset all changes of the "postal" field.
-func (m *PostalMutation) ResetPostal() {
-	m.postal = nil
-}
-
-// AddPostDistIDs adds the post_dist edge to District by ids.
-func (m *PostalMutation) AddPostDistIDs(ids ...int) {
-	if m.post_dist == nil {
-		m.post_dist = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.post_dist[ids[i]] = struct{}{}
-	}
-}
-
-// RemovePostDistIDs removes the post_dist edge to District by ids.
-func (m *PostalMutation) RemovePostDistIDs(ids ...int) {
-	if m.removedpost_dist == nil {
-		m.removedpost_dist = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.removedpost_dist[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedPostDist returns the removed ids of post_dist.
-func (m *PostalMutation) RemovedPostDistIDs() (ids []int) {
-	for id := range m.removedpost_dist {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// PostDistIDs returns the post_dist ids in the mutation.
-func (m *PostalMutation) PostDistIDs() (ids []int) {
-	for id := range m.post_dist {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetPostDist reset all changes of the "post_dist" edge.
-func (m *PostalMutation) ResetPostDist() {
-	m.post_dist = nil
-	m.removedpost_dist = nil
-}
-
-// Op returns the operation name.
-func (m *PostalMutation) Op() Op {
-	return m.op
-}
-
-// Type returns the node type of this mutation (Postal).
-func (m *PostalMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during
-// this mutation. Note that, in order to get all numeric
-// fields that were in/decremented, call AddedFields().
-func (m *PostalMutation) Fields() []string {
-	fields := make([]string, 0, 1)
-	if m.postal != nil {
-		fields = append(fields, postal.FieldPostal)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name.
-// The second boolean value indicates that this field was
-// not set, or was not define in the schema.
-func (m *PostalMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case postal.FieldPostal:
-		return m.Postal()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database.
-// An error is returned if the mutation operation is not UpdateOne,
-// or the query to the database was failed.
-func (m *PostalMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case postal.FieldPostal:
-		return m.OldPostal(ctx)
-	}
-	return nil, fmt.Errorf("unknown Postal field %s", name)
-}
-
-// SetField sets the value for the given name. It returns an
-// error if the field is not defined in the schema, or if the
-// type mismatch the field type.
-func (m *PostalMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case postal.FieldPostal:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPostal(v)
-		return nil
-	}
-	return fmt.Errorf("unknown Postal field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented
-// or decremented during this mutation.
-func (m *PostalMutation) AddedFields() []string {
-	return nil
-}
-
-// AddedField returns the numeric value that was in/decremented
-// from a field with the given name. The second value indicates
-// that this field was not set, or was not define in the schema.
-func (m *PostalMutation) AddedField(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// AddField adds the value for the given name. It returns an
-// error if the field is not defined in the schema, or if the
-// type mismatch the field type.
-func (m *PostalMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown Postal numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared
-// during this mutation.
-func (m *PostalMutation) ClearedFields() []string {
-	return nil
-}
-
-// FieldCleared returns a boolean indicates if this field was
-// cleared in this mutation.
-func (m *PostalMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value for the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *PostalMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown Postal nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation regarding the
-// given field name. It returns an error if the field is not
-// defined in the schema.
-func (m *PostalMutation) ResetField(name string) error {
-	switch name {
-	case postal.FieldPostal:
-		m.ResetPostal()
-		return nil
-	}
-	return fmt.Errorf("unknown Postal field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this
-// mutation.
-func (m *PostalMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.post_dist != nil {
-		edges = append(edges, postal.EdgePostDist)
-	}
-	return edges
-}
-
-// AddedIDs returns all ids (to other nodes) that were added for
-// the given edge name.
-func (m *PostalMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case postal.EdgePostDist:
-		ids := make([]ent.Value, 0, len(m.post_dist))
-		for id := range m.post_dist {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this
-// mutation.
-func (m *PostalMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.removedpost_dist != nil {
-		edges = append(edges, postal.EdgePostDist)
-	}
-	return edges
-}
-
-// RemovedIDs returns all ids (to other nodes) that were removed for
-// the given edge name.
-func (m *PostalMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case postal.EdgePostDist:
-		ids := make([]ent.Value, 0, len(m.removedpost_dist))
-		for id := range m.removedpost_dist {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this
-// mutation.
-func (m *PostalMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	return edges
-}
-
-// EdgeCleared returns a boolean indicates if this edge was
-// cleared in this mutation.
-func (m *PostalMutation) EdgeCleared(name string) bool {
-	switch name {
-	}
-	return false
-}
-
-// ClearEdge clears the value for the given name. It returns an
-// error if the edge name is not defined in the schema.
-func (m *PostalMutation) ClearEdge(name string) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown Postal unique edge %s", name)
-}
-
-// ResetEdge resets all changes in the mutation regarding the
-// given edge name. It returns an error if the edge is not
-// defined in the schema.
-func (m *PostalMutation) ResetEdge(name string) error {
-	switch name {
-	case postal.EdgePostDist:
-		m.ResetPostDist()
-		return nil
-	}
-	return fmt.Errorf("unknown Postal edge %s", name)
-}
-
 // PrefixMutation represents an operation that mutate the Prefixes
 // nodes in the graph.
 type PrefixMutation struct {
@@ -5820,14 +5700,26 @@ type ProvinceMutation struct {
 	op               Op
 	typ              string
 	id               *int
-	name             *string
+	province         *string
+	district         *string
+	subdistrict      *string
+	postal           *int
+	addpostal        *int
 	clearedFields    map[string]struct{}
 	prov_regi        *int
 	clearedprov_regi bool
-	prov_dist        *int
-	clearedprov_dist bool
+	prov_coun        *int
+	clearedprov_coun bool
+	prov_cont        *int
+	clearedprov_cont bool
 	prov_stud        map[int]struct{}
 	removedprov_stud map[int]struct{}
+	dist_stud        map[int]struct{}
+	removeddist_stud map[int]struct{}
+	subd_stud        map[int]struct{}
+	removedsubd_stud map[int]struct{}
+	post_stud        map[int]struct{}
+	removedpost_stud map[int]struct{}
 	done             bool
 	oldValue         func(context.Context) (*Province, error)
 }
@@ -5911,41 +5803,172 @@ func (m *ProvinceMutation) ID() (id int, exists bool) {
 	return *m.id, true
 }
 
-// SetName sets the name field.
-func (m *ProvinceMutation) SetName(s string) {
-	m.name = &s
+// SetProvince sets the province field.
+func (m *ProvinceMutation) SetProvince(s string) {
+	m.province = &s
 }
 
-// Name returns the name value in the mutation.
-func (m *ProvinceMutation) Name() (r string, exists bool) {
-	v := m.name
+// Province returns the province value in the mutation.
+func (m *ProvinceMutation) Province() (r string, exists bool) {
+	v := m.province
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldName returns the old name value of the Province.
+// OldProvince returns the old province value of the Province.
 // If the Province object wasn't provided to the builder, the object is fetched
 // from the database.
 // An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *ProvinceMutation) OldName(ctx context.Context) (v string, err error) {
+func (m *ProvinceMutation) OldProvince(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldName is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldProvince is allowed only on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldName requires an ID field in the mutation")
+		return v, fmt.Errorf("OldProvince requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldName: %w", err)
+		return v, fmt.Errorf("querying old value for OldProvince: %w", err)
 	}
-	return oldValue.Name, nil
+	return oldValue.Province, nil
 }
 
-// ResetName reset all changes of the "name" field.
-func (m *ProvinceMutation) ResetName() {
-	m.name = nil
+// ResetProvince reset all changes of the "province" field.
+func (m *ProvinceMutation) ResetProvince() {
+	m.province = nil
+}
+
+// SetDistrict sets the district field.
+func (m *ProvinceMutation) SetDistrict(s string) {
+	m.district = &s
+}
+
+// District returns the district value in the mutation.
+func (m *ProvinceMutation) District() (r string, exists bool) {
+	v := m.district
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDistrict returns the old district value of the Province.
+// If the Province object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *ProvinceMutation) OldDistrict(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldDistrict is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldDistrict requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDistrict: %w", err)
+	}
+	return oldValue.District, nil
+}
+
+// ResetDistrict reset all changes of the "district" field.
+func (m *ProvinceMutation) ResetDistrict() {
+	m.district = nil
+}
+
+// SetSubdistrict sets the subdistrict field.
+func (m *ProvinceMutation) SetSubdistrict(s string) {
+	m.subdistrict = &s
+}
+
+// Subdistrict returns the subdistrict value in the mutation.
+func (m *ProvinceMutation) Subdistrict() (r string, exists bool) {
+	v := m.subdistrict
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSubdistrict returns the old subdistrict value of the Province.
+// If the Province object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *ProvinceMutation) OldSubdistrict(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldSubdistrict is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldSubdistrict requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSubdistrict: %w", err)
+	}
+	return oldValue.Subdistrict, nil
+}
+
+// ResetSubdistrict reset all changes of the "subdistrict" field.
+func (m *ProvinceMutation) ResetSubdistrict() {
+	m.subdistrict = nil
+}
+
+// SetPostal sets the postal field.
+func (m *ProvinceMutation) SetPostal(i int) {
+	m.postal = &i
+	m.addpostal = nil
+}
+
+// Postal returns the postal value in the mutation.
+func (m *ProvinceMutation) Postal() (r int, exists bool) {
+	v := m.postal
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPostal returns the old postal value of the Province.
+// If the Province object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *ProvinceMutation) OldPostal(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldPostal is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldPostal requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPostal: %w", err)
+	}
+	return oldValue.Postal, nil
+}
+
+// AddPostal adds i to postal.
+func (m *ProvinceMutation) AddPostal(i int) {
+	if m.addpostal != nil {
+		*m.addpostal += i
+	} else {
+		m.addpostal = &i
+	}
+}
+
+// AddedPostal returns the value that was added to the postal field in this mutation.
+func (m *ProvinceMutation) AddedPostal() (r int, exists bool) {
+	v := m.addpostal
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetPostal reset all changes of the "postal" field.
+func (m *ProvinceMutation) ResetPostal() {
+	m.postal = nil
+	m.addpostal = nil
 }
 
 // SetProvRegiID sets the prov_regi edge to Region by id.
@@ -5987,43 +6010,82 @@ func (m *ProvinceMutation) ResetProvRegi() {
 	m.clearedprov_regi = false
 }
 
-// SetProvDistID sets the prov_dist edge to District by id.
-func (m *ProvinceMutation) SetProvDistID(id int) {
-	m.prov_dist = &id
+// SetProvCounID sets the prov_coun edge to Country by id.
+func (m *ProvinceMutation) SetProvCounID(id int) {
+	m.prov_coun = &id
 }
 
-// ClearProvDist clears the prov_dist edge to District.
-func (m *ProvinceMutation) ClearProvDist() {
-	m.clearedprov_dist = true
+// ClearProvCoun clears the prov_coun edge to Country.
+func (m *ProvinceMutation) ClearProvCoun() {
+	m.clearedprov_coun = true
 }
 
-// ProvDistCleared returns if the edge prov_dist was cleared.
-func (m *ProvinceMutation) ProvDistCleared() bool {
-	return m.clearedprov_dist
+// ProvCounCleared returns if the edge prov_coun was cleared.
+func (m *ProvinceMutation) ProvCounCleared() bool {
+	return m.clearedprov_coun
 }
 
-// ProvDistID returns the prov_dist id in the mutation.
-func (m *ProvinceMutation) ProvDistID() (id int, exists bool) {
-	if m.prov_dist != nil {
-		return *m.prov_dist, true
+// ProvCounID returns the prov_coun id in the mutation.
+func (m *ProvinceMutation) ProvCounID() (id int, exists bool) {
+	if m.prov_coun != nil {
+		return *m.prov_coun, true
 	}
 	return
 }
 
-// ProvDistIDs returns the prov_dist ids in the mutation.
+// ProvCounIDs returns the prov_coun ids in the mutation.
 // Note that ids always returns len(ids) <= 1 for unique edges, and you should use
-// ProvDistID instead. It exists only for internal usage by the builders.
-func (m *ProvinceMutation) ProvDistIDs() (ids []int) {
-	if id := m.prov_dist; id != nil {
+// ProvCounID instead. It exists only for internal usage by the builders.
+func (m *ProvinceMutation) ProvCounIDs() (ids []int) {
+	if id := m.prov_coun; id != nil {
 		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetProvDist reset all changes of the "prov_dist" edge.
-func (m *ProvinceMutation) ResetProvDist() {
-	m.prov_dist = nil
-	m.clearedprov_dist = false
+// ResetProvCoun reset all changes of the "prov_coun" edge.
+func (m *ProvinceMutation) ResetProvCoun() {
+	m.prov_coun = nil
+	m.clearedprov_coun = false
+}
+
+// SetProvContID sets the prov_cont edge to Continent by id.
+func (m *ProvinceMutation) SetProvContID(id int) {
+	m.prov_cont = &id
+}
+
+// ClearProvCont clears the prov_cont edge to Continent.
+func (m *ProvinceMutation) ClearProvCont() {
+	m.clearedprov_cont = true
+}
+
+// ProvContCleared returns if the edge prov_cont was cleared.
+func (m *ProvinceMutation) ProvContCleared() bool {
+	return m.clearedprov_cont
+}
+
+// ProvContID returns the prov_cont id in the mutation.
+func (m *ProvinceMutation) ProvContID() (id int, exists bool) {
+	if m.prov_cont != nil {
+		return *m.prov_cont, true
+	}
+	return
+}
+
+// ProvContIDs returns the prov_cont ids in the mutation.
+// Note that ids always returns len(ids) <= 1 for unique edges, and you should use
+// ProvContID instead. It exists only for internal usage by the builders.
+func (m *ProvinceMutation) ProvContIDs() (ids []int) {
+	if id := m.prov_cont; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetProvCont reset all changes of the "prov_cont" edge.
+func (m *ProvinceMutation) ResetProvCont() {
+	m.prov_cont = nil
+	m.clearedprov_cont = false
 }
 
 // AddProvStudIDs adds the prov_stud edge to Student by ids.
@@ -6068,6 +6130,132 @@ func (m *ProvinceMutation) ResetProvStud() {
 	m.removedprov_stud = nil
 }
 
+// AddDistStudIDs adds the dist_stud edge to Student by ids.
+func (m *ProvinceMutation) AddDistStudIDs(ids ...int) {
+	if m.dist_stud == nil {
+		m.dist_stud = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.dist_stud[ids[i]] = struct{}{}
+	}
+}
+
+// RemoveDistStudIDs removes the dist_stud edge to Student by ids.
+func (m *ProvinceMutation) RemoveDistStudIDs(ids ...int) {
+	if m.removeddist_stud == nil {
+		m.removeddist_stud = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.removeddist_stud[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedDistStud returns the removed ids of dist_stud.
+func (m *ProvinceMutation) RemovedDistStudIDs() (ids []int) {
+	for id := range m.removeddist_stud {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// DistStudIDs returns the dist_stud ids in the mutation.
+func (m *ProvinceMutation) DistStudIDs() (ids []int) {
+	for id := range m.dist_stud {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetDistStud reset all changes of the "dist_stud" edge.
+func (m *ProvinceMutation) ResetDistStud() {
+	m.dist_stud = nil
+	m.removeddist_stud = nil
+}
+
+// AddSubdStudIDs adds the subd_stud edge to Student by ids.
+func (m *ProvinceMutation) AddSubdStudIDs(ids ...int) {
+	if m.subd_stud == nil {
+		m.subd_stud = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.subd_stud[ids[i]] = struct{}{}
+	}
+}
+
+// RemoveSubdStudIDs removes the subd_stud edge to Student by ids.
+func (m *ProvinceMutation) RemoveSubdStudIDs(ids ...int) {
+	if m.removedsubd_stud == nil {
+		m.removedsubd_stud = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.removedsubd_stud[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedSubdStud returns the removed ids of subd_stud.
+func (m *ProvinceMutation) RemovedSubdStudIDs() (ids []int) {
+	for id := range m.removedsubd_stud {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// SubdStudIDs returns the subd_stud ids in the mutation.
+func (m *ProvinceMutation) SubdStudIDs() (ids []int) {
+	for id := range m.subd_stud {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetSubdStud reset all changes of the "subd_stud" edge.
+func (m *ProvinceMutation) ResetSubdStud() {
+	m.subd_stud = nil
+	m.removedsubd_stud = nil
+}
+
+// AddPostStudIDs adds the post_stud edge to Student by ids.
+func (m *ProvinceMutation) AddPostStudIDs(ids ...int) {
+	if m.post_stud == nil {
+		m.post_stud = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.post_stud[ids[i]] = struct{}{}
+	}
+}
+
+// RemovePostStudIDs removes the post_stud edge to Student by ids.
+func (m *ProvinceMutation) RemovePostStudIDs(ids ...int) {
+	if m.removedpost_stud == nil {
+		m.removedpost_stud = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.removedpost_stud[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedPostStud returns the removed ids of post_stud.
+func (m *ProvinceMutation) RemovedPostStudIDs() (ids []int) {
+	for id := range m.removedpost_stud {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// PostStudIDs returns the post_stud ids in the mutation.
+func (m *ProvinceMutation) PostStudIDs() (ids []int) {
+	for id := range m.post_stud {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetPostStud reset all changes of the "post_stud" edge.
+func (m *ProvinceMutation) ResetPostStud() {
+	m.post_stud = nil
+	m.removedpost_stud = nil
+}
+
 // Op returns the operation name.
 func (m *ProvinceMutation) Op() Op {
 	return m.op
@@ -6082,9 +6270,18 @@ func (m *ProvinceMutation) Type() string {
 // this mutation. Note that, in order to get all numeric
 // fields that were in/decremented, call AddedFields().
 func (m *ProvinceMutation) Fields() []string {
-	fields := make([]string, 0, 1)
-	if m.name != nil {
-		fields = append(fields, province.FieldName)
+	fields := make([]string, 0, 4)
+	if m.province != nil {
+		fields = append(fields, province.FieldProvince)
+	}
+	if m.district != nil {
+		fields = append(fields, province.FieldDistrict)
+	}
+	if m.subdistrict != nil {
+		fields = append(fields, province.FieldSubdistrict)
+	}
+	if m.postal != nil {
+		fields = append(fields, province.FieldPostal)
 	}
 	return fields
 }
@@ -6094,8 +6291,14 @@ func (m *ProvinceMutation) Fields() []string {
 // not set, or was not define in the schema.
 func (m *ProvinceMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case province.FieldName:
-		return m.Name()
+	case province.FieldProvince:
+		return m.Province()
+	case province.FieldDistrict:
+		return m.District()
+	case province.FieldSubdistrict:
+		return m.Subdistrict()
+	case province.FieldPostal:
+		return m.Postal()
 	}
 	return nil, false
 }
@@ -6105,8 +6308,14 @@ func (m *ProvinceMutation) Field(name string) (ent.Value, bool) {
 // or the query to the database was failed.
 func (m *ProvinceMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case province.FieldName:
-		return m.OldName(ctx)
+	case province.FieldProvince:
+		return m.OldProvince(ctx)
+	case province.FieldDistrict:
+		return m.OldDistrict(ctx)
+	case province.FieldSubdistrict:
+		return m.OldSubdistrict(ctx)
+	case province.FieldPostal:
+		return m.OldPostal(ctx)
 	}
 	return nil, fmt.Errorf("unknown Province field %s", name)
 }
@@ -6116,12 +6325,33 @@ func (m *ProvinceMutation) OldField(ctx context.Context, name string) (ent.Value
 // type mismatch the field type.
 func (m *ProvinceMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case province.FieldName:
+	case province.FieldProvince:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetName(v)
+		m.SetProvince(v)
+		return nil
+	case province.FieldDistrict:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDistrict(v)
+		return nil
+	case province.FieldSubdistrict:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSubdistrict(v)
+		return nil
+	case province.FieldPostal:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPostal(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Province field %s", name)
@@ -6130,13 +6360,21 @@ func (m *ProvinceMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented
 // or decremented during this mutation.
 func (m *ProvinceMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addpostal != nil {
+		fields = append(fields, province.FieldPostal)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was in/decremented
 // from a field with the given name. The second value indicates
 // that this field was not set, or was not define in the schema.
 func (m *ProvinceMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case province.FieldPostal:
+		return m.AddedPostal()
+	}
 	return nil, false
 }
 
@@ -6145,6 +6383,13 @@ func (m *ProvinceMutation) AddedField(name string) (ent.Value, bool) {
 // type mismatch the field type.
 func (m *ProvinceMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case province.FieldPostal:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddPostal(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Province numeric field %s", name)
 }
@@ -6173,8 +6418,17 @@ func (m *ProvinceMutation) ClearField(name string) error {
 // defined in the schema.
 func (m *ProvinceMutation) ResetField(name string) error {
 	switch name {
-	case province.FieldName:
-		m.ResetName()
+	case province.FieldProvince:
+		m.ResetProvince()
+		return nil
+	case province.FieldDistrict:
+		m.ResetDistrict()
+		return nil
+	case province.FieldSubdistrict:
+		m.ResetSubdistrict()
+		return nil
+	case province.FieldPostal:
+		m.ResetPostal()
 		return nil
 	}
 	return fmt.Errorf("unknown Province field %s", name)
@@ -6183,15 +6437,27 @@ func (m *ProvinceMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this
 // mutation.
 func (m *ProvinceMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 7)
 	if m.prov_regi != nil {
 		edges = append(edges, province.EdgeProvRegi)
 	}
-	if m.prov_dist != nil {
-		edges = append(edges, province.EdgeProvDist)
+	if m.prov_coun != nil {
+		edges = append(edges, province.EdgeProvCoun)
+	}
+	if m.prov_cont != nil {
+		edges = append(edges, province.EdgeProvCont)
 	}
 	if m.prov_stud != nil {
 		edges = append(edges, province.EdgeProvStud)
+	}
+	if m.dist_stud != nil {
+		edges = append(edges, province.EdgeDistStud)
+	}
+	if m.subd_stud != nil {
+		edges = append(edges, province.EdgeSubdStud)
+	}
+	if m.post_stud != nil {
+		edges = append(edges, province.EdgePostStud)
 	}
 	return edges
 }
@@ -6204,13 +6470,35 @@ func (m *ProvinceMutation) AddedIDs(name string) []ent.Value {
 		if id := m.prov_regi; id != nil {
 			return []ent.Value{*id}
 		}
-	case province.EdgeProvDist:
-		if id := m.prov_dist; id != nil {
+	case province.EdgeProvCoun:
+		if id := m.prov_coun; id != nil {
+			return []ent.Value{*id}
+		}
+	case province.EdgeProvCont:
+		if id := m.prov_cont; id != nil {
 			return []ent.Value{*id}
 		}
 	case province.EdgeProvStud:
 		ids := make([]ent.Value, 0, len(m.prov_stud))
 		for id := range m.prov_stud {
+			ids = append(ids, id)
+		}
+		return ids
+	case province.EdgeDistStud:
+		ids := make([]ent.Value, 0, len(m.dist_stud))
+		for id := range m.dist_stud {
+			ids = append(ids, id)
+		}
+		return ids
+	case province.EdgeSubdStud:
+		ids := make([]ent.Value, 0, len(m.subd_stud))
+		for id := range m.subd_stud {
+			ids = append(ids, id)
+		}
+		return ids
+	case province.EdgePostStud:
+		ids := make([]ent.Value, 0, len(m.post_stud))
+		for id := range m.post_stud {
 			ids = append(ids, id)
 		}
 		return ids
@@ -6221,9 +6509,18 @@ func (m *ProvinceMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this
 // mutation.
 func (m *ProvinceMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 7)
 	if m.removedprov_stud != nil {
 		edges = append(edges, province.EdgeProvStud)
+	}
+	if m.removeddist_stud != nil {
+		edges = append(edges, province.EdgeDistStud)
+	}
+	if m.removedsubd_stud != nil {
+		edges = append(edges, province.EdgeSubdStud)
+	}
+	if m.removedpost_stud != nil {
+		edges = append(edges, province.EdgePostStud)
 	}
 	return edges
 }
@@ -6238,6 +6535,24 @@ func (m *ProvinceMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case province.EdgeDistStud:
+		ids := make([]ent.Value, 0, len(m.removeddist_stud))
+		for id := range m.removeddist_stud {
+			ids = append(ids, id)
+		}
+		return ids
+	case province.EdgeSubdStud:
+		ids := make([]ent.Value, 0, len(m.removedsubd_stud))
+		for id := range m.removedsubd_stud {
+			ids = append(ids, id)
+		}
+		return ids
+	case province.EdgePostStud:
+		ids := make([]ent.Value, 0, len(m.removedpost_stud))
+		for id := range m.removedpost_stud {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
@@ -6245,12 +6560,15 @@ func (m *ProvinceMutation) RemovedIDs(name string) []ent.Value {
 // ClearedEdges returns all edge names that were cleared in this
 // mutation.
 func (m *ProvinceMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 7)
 	if m.clearedprov_regi {
 		edges = append(edges, province.EdgeProvRegi)
 	}
-	if m.clearedprov_dist {
-		edges = append(edges, province.EdgeProvDist)
+	if m.clearedprov_coun {
+		edges = append(edges, province.EdgeProvCoun)
+	}
+	if m.clearedprov_cont {
+		edges = append(edges, province.EdgeProvCont)
 	}
 	return edges
 }
@@ -6261,8 +6579,10 @@ func (m *ProvinceMutation) EdgeCleared(name string) bool {
 	switch name {
 	case province.EdgeProvRegi:
 		return m.clearedprov_regi
-	case province.EdgeProvDist:
-		return m.clearedprov_dist
+	case province.EdgeProvCoun:
+		return m.clearedprov_coun
+	case province.EdgeProvCont:
+		return m.clearedprov_cont
 	}
 	return false
 }
@@ -6274,8 +6594,11 @@ func (m *ProvinceMutation) ClearEdge(name string) error {
 	case province.EdgeProvRegi:
 		m.ClearProvRegi()
 		return nil
-	case province.EdgeProvDist:
-		m.ClearProvDist()
+	case province.EdgeProvCoun:
+		m.ClearProvCoun()
+		return nil
+	case province.EdgeProvCont:
+		m.ClearProvCont()
 		return nil
 	}
 	return fmt.Errorf("unknown Province unique edge %s", name)
@@ -6289,11 +6612,23 @@ func (m *ProvinceMutation) ResetEdge(name string) error {
 	case province.EdgeProvRegi:
 		m.ResetProvRegi()
 		return nil
-	case province.EdgeProvDist:
-		m.ResetProvDist()
+	case province.EdgeProvCoun:
+		m.ResetProvCoun()
+		return nil
+	case province.EdgeProvCont:
+		m.ResetProvCont()
 		return nil
 	case province.EdgeProvStud:
 		m.ResetProvStud()
+		return nil
+	case province.EdgeDistStud:
+		m.ResetDistStud()
+		return nil
+	case province.EdgeSubdStud:
+		m.ResetSubdStud()
+		return nil
+	case province.EdgePostStud:
+		m.ResetPostStud()
 		return nil
 	}
 	return fmt.Errorf("unknown Province edge %s", name)
@@ -7261,10 +7596,16 @@ type StudentMutation struct {
 	clearedstud_gend bool
 	stud_acti        map[int]struct{}
 	removedstud_acti map[int]struct{}
-	stud_prov        *int
-	clearedstud_prov bool
 	stud_resu        map[int]struct{}
 	removedstud_resu map[int]struct{}
+	stud_prov        *int
+	clearedstud_prov bool
+	stud_dist        *int
+	clearedstud_dist bool
+	stud_subd        *int
+	clearedstud_subd bool
+	stud_post        *int
+	clearedstud_post bool
 	stud_pref        *int
 	clearedstud_pref bool
 	stud_degr        *int
@@ -7675,45 +8016,6 @@ func (m *StudentMutation) ResetStudActi() {
 	m.removedstud_acti = nil
 }
 
-// SetStudProvID sets the stud_prov edge to Province by id.
-func (m *StudentMutation) SetStudProvID(id int) {
-	m.stud_prov = &id
-}
-
-// ClearStudProv clears the stud_prov edge to Province.
-func (m *StudentMutation) ClearStudProv() {
-	m.clearedstud_prov = true
-}
-
-// StudProvCleared returns if the edge stud_prov was cleared.
-func (m *StudentMutation) StudProvCleared() bool {
-	return m.clearedstud_prov
-}
-
-// StudProvID returns the stud_prov id in the mutation.
-func (m *StudentMutation) StudProvID() (id int, exists bool) {
-	if m.stud_prov != nil {
-		return *m.stud_prov, true
-	}
-	return
-}
-
-// StudProvIDs returns the stud_prov ids in the mutation.
-// Note that ids always returns len(ids) <= 1 for unique edges, and you should use
-// StudProvID instead. It exists only for internal usage by the builders.
-func (m *StudentMutation) StudProvIDs() (ids []int) {
-	if id := m.stud_prov; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetStudProv reset all changes of the "stud_prov" edge.
-func (m *StudentMutation) ResetStudProv() {
-	m.stud_prov = nil
-	m.clearedstud_prov = false
-}
-
 // AddStudResuIDs adds the stud_resu edge to Results by ids.
 func (m *StudentMutation) AddStudResuIDs(ids ...int) {
 	if m.stud_resu == nil {
@@ -7754,6 +8056,162 @@ func (m *StudentMutation) StudResuIDs() (ids []int) {
 func (m *StudentMutation) ResetStudResu() {
 	m.stud_resu = nil
 	m.removedstud_resu = nil
+}
+
+// SetStudProvID sets the stud_prov edge to Province by id.
+func (m *StudentMutation) SetStudProvID(id int) {
+	m.stud_prov = &id
+}
+
+// ClearStudProv clears the stud_prov edge to Province.
+func (m *StudentMutation) ClearStudProv() {
+	m.clearedstud_prov = true
+}
+
+// StudProvCleared returns if the edge stud_prov was cleared.
+func (m *StudentMutation) StudProvCleared() bool {
+	return m.clearedstud_prov
+}
+
+// StudProvID returns the stud_prov id in the mutation.
+func (m *StudentMutation) StudProvID() (id int, exists bool) {
+	if m.stud_prov != nil {
+		return *m.stud_prov, true
+	}
+	return
+}
+
+// StudProvIDs returns the stud_prov ids in the mutation.
+// Note that ids always returns len(ids) <= 1 for unique edges, and you should use
+// StudProvID instead. It exists only for internal usage by the builders.
+func (m *StudentMutation) StudProvIDs() (ids []int) {
+	if id := m.stud_prov; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetStudProv reset all changes of the "stud_prov" edge.
+func (m *StudentMutation) ResetStudProv() {
+	m.stud_prov = nil
+	m.clearedstud_prov = false
+}
+
+// SetStudDistID sets the stud_dist edge to Province by id.
+func (m *StudentMutation) SetStudDistID(id int) {
+	m.stud_dist = &id
+}
+
+// ClearStudDist clears the stud_dist edge to Province.
+func (m *StudentMutation) ClearStudDist() {
+	m.clearedstud_dist = true
+}
+
+// StudDistCleared returns if the edge stud_dist was cleared.
+func (m *StudentMutation) StudDistCleared() bool {
+	return m.clearedstud_dist
+}
+
+// StudDistID returns the stud_dist id in the mutation.
+func (m *StudentMutation) StudDistID() (id int, exists bool) {
+	if m.stud_dist != nil {
+		return *m.stud_dist, true
+	}
+	return
+}
+
+// StudDistIDs returns the stud_dist ids in the mutation.
+// Note that ids always returns len(ids) <= 1 for unique edges, and you should use
+// StudDistID instead. It exists only for internal usage by the builders.
+func (m *StudentMutation) StudDistIDs() (ids []int) {
+	if id := m.stud_dist; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetStudDist reset all changes of the "stud_dist" edge.
+func (m *StudentMutation) ResetStudDist() {
+	m.stud_dist = nil
+	m.clearedstud_dist = false
+}
+
+// SetStudSubdID sets the stud_subd edge to Province by id.
+func (m *StudentMutation) SetStudSubdID(id int) {
+	m.stud_subd = &id
+}
+
+// ClearStudSubd clears the stud_subd edge to Province.
+func (m *StudentMutation) ClearStudSubd() {
+	m.clearedstud_subd = true
+}
+
+// StudSubdCleared returns if the edge stud_subd was cleared.
+func (m *StudentMutation) StudSubdCleared() bool {
+	return m.clearedstud_subd
+}
+
+// StudSubdID returns the stud_subd id in the mutation.
+func (m *StudentMutation) StudSubdID() (id int, exists bool) {
+	if m.stud_subd != nil {
+		return *m.stud_subd, true
+	}
+	return
+}
+
+// StudSubdIDs returns the stud_subd ids in the mutation.
+// Note that ids always returns len(ids) <= 1 for unique edges, and you should use
+// StudSubdID instead. It exists only for internal usage by the builders.
+func (m *StudentMutation) StudSubdIDs() (ids []int) {
+	if id := m.stud_subd; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetStudSubd reset all changes of the "stud_subd" edge.
+func (m *StudentMutation) ResetStudSubd() {
+	m.stud_subd = nil
+	m.clearedstud_subd = false
+}
+
+// SetStudPostID sets the stud_post edge to Province by id.
+func (m *StudentMutation) SetStudPostID(id int) {
+	m.stud_post = &id
+}
+
+// ClearStudPost clears the stud_post edge to Province.
+func (m *StudentMutation) ClearStudPost() {
+	m.clearedstud_post = true
+}
+
+// StudPostCleared returns if the edge stud_post was cleared.
+func (m *StudentMutation) StudPostCleared() bool {
+	return m.clearedstud_post
+}
+
+// StudPostID returns the stud_post id in the mutation.
+func (m *StudentMutation) StudPostID() (id int, exists bool) {
+	if m.stud_post != nil {
+		return *m.stud_post, true
+	}
+	return
+}
+
+// StudPostIDs returns the stud_post ids in the mutation.
+// Note that ids always returns len(ids) <= 1 for unique edges, and you should use
+// StudPostID instead. It exists only for internal usage by the builders.
+func (m *StudentMutation) StudPostIDs() (ids []int) {
+	if id := m.stud_post; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetStudPost reset all changes of the "stud_post" edge.
+func (m *StudentMutation) ResetStudPost() {
+	m.stud_post = nil
+	m.clearedstud_post = false
 }
 
 // SetStudPrefID sets the stud_pref edge to Prefix by id.
@@ -8049,18 +8507,27 @@ func (m *StudentMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this
 // mutation.
 func (m *StudentMutation) AddedEdges() []string {
-	edges := make([]string, 0, 6)
+	edges := make([]string, 0, 9)
 	if m.stud_gend != nil {
 		edges = append(edges, student.EdgeStudGend)
 	}
 	if m.stud_acti != nil {
 		edges = append(edges, student.EdgeStudActi)
 	}
+	if m.stud_resu != nil {
+		edges = append(edges, student.EdgeStudResu)
+	}
 	if m.stud_prov != nil {
 		edges = append(edges, student.EdgeStudProv)
 	}
-	if m.stud_resu != nil {
-		edges = append(edges, student.EdgeStudResu)
+	if m.stud_dist != nil {
+		edges = append(edges, student.EdgeStudDist)
+	}
+	if m.stud_subd != nil {
+		edges = append(edges, student.EdgeStudSubd)
+	}
+	if m.stud_post != nil {
+		edges = append(edges, student.EdgeStudPost)
 	}
 	if m.stud_pref != nil {
 		edges = append(edges, student.EdgeStudPref)
@@ -8085,16 +8552,28 @@ func (m *StudentMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case student.EdgeStudProv:
-		if id := m.stud_prov; id != nil {
-			return []ent.Value{*id}
-		}
 	case student.EdgeStudResu:
 		ids := make([]ent.Value, 0, len(m.stud_resu))
 		for id := range m.stud_resu {
 			ids = append(ids, id)
 		}
 		return ids
+	case student.EdgeStudProv:
+		if id := m.stud_prov; id != nil {
+			return []ent.Value{*id}
+		}
+	case student.EdgeStudDist:
+		if id := m.stud_dist; id != nil {
+			return []ent.Value{*id}
+		}
+	case student.EdgeStudSubd:
+		if id := m.stud_subd; id != nil {
+			return []ent.Value{*id}
+		}
+	case student.EdgeStudPost:
+		if id := m.stud_post; id != nil {
+			return []ent.Value{*id}
+		}
 	case student.EdgeStudPref:
 		if id := m.stud_pref; id != nil {
 			return []ent.Value{*id}
@@ -8110,7 +8589,7 @@ func (m *StudentMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this
 // mutation.
 func (m *StudentMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 6)
+	edges := make([]string, 0, 9)
 	if m.removedstud_acti != nil {
 		edges = append(edges, student.EdgeStudActi)
 	}
@@ -8143,12 +8622,21 @@ func (m *StudentMutation) RemovedIDs(name string) []ent.Value {
 // ClearedEdges returns all edge names that were cleared in this
 // mutation.
 func (m *StudentMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 6)
+	edges := make([]string, 0, 9)
 	if m.clearedstud_gend {
 		edges = append(edges, student.EdgeStudGend)
 	}
 	if m.clearedstud_prov {
 		edges = append(edges, student.EdgeStudProv)
+	}
+	if m.clearedstud_dist {
+		edges = append(edges, student.EdgeStudDist)
+	}
+	if m.clearedstud_subd {
+		edges = append(edges, student.EdgeStudSubd)
+	}
+	if m.clearedstud_post {
+		edges = append(edges, student.EdgeStudPost)
 	}
 	if m.clearedstud_pref {
 		edges = append(edges, student.EdgeStudPref)
@@ -8167,6 +8655,12 @@ func (m *StudentMutation) EdgeCleared(name string) bool {
 		return m.clearedstud_gend
 	case student.EdgeStudProv:
 		return m.clearedstud_prov
+	case student.EdgeStudDist:
+		return m.clearedstud_dist
+	case student.EdgeStudSubd:
+		return m.clearedstud_subd
+	case student.EdgeStudPost:
+		return m.clearedstud_post
 	case student.EdgeStudPref:
 		return m.clearedstud_pref
 	case student.EdgeStudDegr:
@@ -8184,6 +8678,15 @@ func (m *StudentMutation) ClearEdge(name string) error {
 		return nil
 	case student.EdgeStudProv:
 		m.ClearStudProv()
+		return nil
+	case student.EdgeStudDist:
+		m.ClearStudDist()
+		return nil
+	case student.EdgeStudSubd:
+		m.ClearStudSubd()
+		return nil
+	case student.EdgeStudPost:
+		m.ClearStudPost()
 		return nil
 	case student.EdgeStudPref:
 		m.ClearStudPref()
@@ -8206,11 +8709,20 @@ func (m *StudentMutation) ResetEdge(name string) error {
 	case student.EdgeStudActi:
 		m.ResetStudActi()
 		return nil
+	case student.EdgeStudResu:
+		m.ResetStudResu()
+		return nil
 	case student.EdgeStudProv:
 		m.ResetStudProv()
 		return nil
-	case student.EdgeStudResu:
-		m.ResetStudResu()
+	case student.EdgeStudDist:
+		m.ResetStudDist()
+		return nil
+	case student.EdgeStudSubd:
+		m.ResetStudSubd()
+		return nil
+	case student.EdgeStudPost:
+		m.ResetStudPost()
 		return nil
 	case student.EdgeStudPref:
 		m.ResetStudPref()
@@ -8220,374 +8732,6 @@ func (m *StudentMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown Student edge %s", name)
-}
-
-// SubdistrictMutation represents an operation that mutate the Subdistricts
-// nodes in the graph.
-type SubdistrictMutation struct {
-	config
-	op               Op
-	typ              string
-	id               *int
-	subdistrict      *string
-	clearedFields    map[string]struct{}
-	subd_dist        map[int]struct{}
-	removedsubd_dist map[int]struct{}
-	done             bool
-	oldValue         func(context.Context) (*Subdistrict, error)
-}
-
-var _ ent.Mutation = (*SubdistrictMutation)(nil)
-
-// subdistrictOption allows to manage the mutation configuration using functional options.
-type subdistrictOption func(*SubdistrictMutation)
-
-// newSubdistrictMutation creates new mutation for $n.Name.
-func newSubdistrictMutation(c config, op Op, opts ...subdistrictOption) *SubdistrictMutation {
-	m := &SubdistrictMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeSubdistrict,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withSubdistrictID sets the id field of the mutation.
-func withSubdistrictID(id int) subdistrictOption {
-	return func(m *SubdistrictMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *Subdistrict
-		)
-		m.oldValue = func(ctx context.Context) (*Subdistrict, error) {
-			once.Do(func() {
-				if m.done {
-					err = fmt.Errorf("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().Subdistrict.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withSubdistrict sets the old Subdistrict of the mutation.
-func withSubdistrict(node *Subdistrict) subdistrictOption {
-	return func(m *SubdistrictMutation) {
-		m.oldValue = func(context.Context) (*Subdistrict, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m SubdistrictMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m SubdistrictMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, fmt.Errorf("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// ID returns the id value in the mutation. Note that, the id
-// is available only if it was provided to the builder.
-func (m *SubdistrictMutation) ID() (id int, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// SetSubdistrict sets the subdistrict field.
-func (m *SubdistrictMutation) SetSubdistrict(s string) {
-	m.subdistrict = &s
-}
-
-// Subdistrict returns the subdistrict value in the mutation.
-func (m *SubdistrictMutation) Subdistrict() (r string, exists bool) {
-	v := m.subdistrict
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldSubdistrict returns the old subdistrict value of the Subdistrict.
-// If the Subdistrict object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *SubdistrictMutation) OldSubdistrict(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldSubdistrict is allowed only on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldSubdistrict requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSubdistrict: %w", err)
-	}
-	return oldValue.Subdistrict, nil
-}
-
-// ResetSubdistrict reset all changes of the "subdistrict" field.
-func (m *SubdistrictMutation) ResetSubdistrict() {
-	m.subdistrict = nil
-}
-
-// AddSubdDistIDs adds the subd_dist edge to District by ids.
-func (m *SubdistrictMutation) AddSubdDistIDs(ids ...int) {
-	if m.subd_dist == nil {
-		m.subd_dist = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.subd_dist[ids[i]] = struct{}{}
-	}
-}
-
-// RemoveSubdDistIDs removes the subd_dist edge to District by ids.
-func (m *SubdistrictMutation) RemoveSubdDistIDs(ids ...int) {
-	if m.removedsubd_dist == nil {
-		m.removedsubd_dist = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.removedsubd_dist[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedSubdDist returns the removed ids of subd_dist.
-func (m *SubdistrictMutation) RemovedSubdDistIDs() (ids []int) {
-	for id := range m.removedsubd_dist {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// SubdDistIDs returns the subd_dist ids in the mutation.
-func (m *SubdistrictMutation) SubdDistIDs() (ids []int) {
-	for id := range m.subd_dist {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetSubdDist reset all changes of the "subd_dist" edge.
-func (m *SubdistrictMutation) ResetSubdDist() {
-	m.subd_dist = nil
-	m.removedsubd_dist = nil
-}
-
-// Op returns the operation name.
-func (m *SubdistrictMutation) Op() Op {
-	return m.op
-}
-
-// Type returns the node type of this mutation (Subdistrict).
-func (m *SubdistrictMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during
-// this mutation. Note that, in order to get all numeric
-// fields that were in/decremented, call AddedFields().
-func (m *SubdistrictMutation) Fields() []string {
-	fields := make([]string, 0, 1)
-	if m.subdistrict != nil {
-		fields = append(fields, subdistrict.FieldSubdistrict)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name.
-// The second boolean value indicates that this field was
-// not set, or was not define in the schema.
-func (m *SubdistrictMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case subdistrict.FieldSubdistrict:
-		return m.Subdistrict()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database.
-// An error is returned if the mutation operation is not UpdateOne,
-// or the query to the database was failed.
-func (m *SubdistrictMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case subdistrict.FieldSubdistrict:
-		return m.OldSubdistrict(ctx)
-	}
-	return nil, fmt.Errorf("unknown Subdistrict field %s", name)
-}
-
-// SetField sets the value for the given name. It returns an
-// error if the field is not defined in the schema, or if the
-// type mismatch the field type.
-func (m *SubdistrictMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case subdistrict.FieldSubdistrict:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetSubdistrict(v)
-		return nil
-	}
-	return fmt.Errorf("unknown Subdistrict field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented
-// or decremented during this mutation.
-func (m *SubdistrictMutation) AddedFields() []string {
-	return nil
-}
-
-// AddedField returns the numeric value that was in/decremented
-// from a field with the given name. The second value indicates
-// that this field was not set, or was not define in the schema.
-func (m *SubdistrictMutation) AddedField(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// AddField adds the value for the given name. It returns an
-// error if the field is not defined in the schema, or if the
-// type mismatch the field type.
-func (m *SubdistrictMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown Subdistrict numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared
-// during this mutation.
-func (m *SubdistrictMutation) ClearedFields() []string {
-	return nil
-}
-
-// FieldCleared returns a boolean indicates if this field was
-// cleared in this mutation.
-func (m *SubdistrictMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value for the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *SubdistrictMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown Subdistrict nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation regarding the
-// given field name. It returns an error if the field is not
-// defined in the schema.
-func (m *SubdistrictMutation) ResetField(name string) error {
-	switch name {
-	case subdistrict.FieldSubdistrict:
-		m.ResetSubdistrict()
-		return nil
-	}
-	return fmt.Errorf("unknown Subdistrict field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this
-// mutation.
-func (m *SubdistrictMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.subd_dist != nil {
-		edges = append(edges, subdistrict.EdgeSubdDist)
-	}
-	return edges
-}
-
-// AddedIDs returns all ids (to other nodes) that were added for
-// the given edge name.
-func (m *SubdistrictMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case subdistrict.EdgeSubdDist:
-		ids := make([]ent.Value, 0, len(m.subd_dist))
-		for id := range m.subd_dist {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this
-// mutation.
-func (m *SubdistrictMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.removedsubd_dist != nil {
-		edges = append(edges, subdistrict.EdgeSubdDist)
-	}
-	return edges
-}
-
-// RemovedIDs returns all ids (to other nodes) that were removed for
-// the given edge name.
-func (m *SubdistrictMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case subdistrict.EdgeSubdDist:
-		ids := make([]ent.Value, 0, len(m.removedsubd_dist))
-		for id := range m.removedsubd_dist {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this
-// mutation.
-func (m *SubdistrictMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	return edges
-}
-
-// EdgeCleared returns a boolean indicates if this edge was
-// cleared in this mutation.
-func (m *SubdistrictMutation) EdgeCleared(name string) bool {
-	switch name {
-	}
-	return false
-}
-
-// ClearEdge clears the value for the given name. It returns an
-// error if the edge name is not defined in the schema.
-func (m *SubdistrictMutation) ClearEdge(name string) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown Subdistrict unique edge %s", name)
-}
-
-// ResetEdge resets all changes in the mutation regarding the
-// given edge name. It returns an error if the edge is not
-// defined in the schema.
-func (m *SubdistrictMutation) ResetEdge(name string) error {
-	switch name {
-	case subdistrict.EdgeSubdDist:
-		m.ResetSubdDist()
-		return nil
-	}
-	return fmt.Errorf("unknown Subdistrict edge %s", name)
 }
 
 // SubjectMutation represents an operation that mutate the Subjects
@@ -9149,6 +9293,8 @@ type TermMutation struct {
 	clearedFields    map[string]struct{}
 	term_resu        map[int]struct{}
 	removedterm_resu map[int]struct{}
+	term_acti        map[int]struct{}
+	removedterm_acti map[int]struct{}
 	done             bool
 	oldValue         func(context.Context) (*Term, error)
 }
@@ -9331,6 +9477,48 @@ func (m *TermMutation) ResetTermResu() {
 	m.removedterm_resu = nil
 }
 
+// AddTermActiIDs adds the term_acti edge to Activity by ids.
+func (m *TermMutation) AddTermActiIDs(ids ...int) {
+	if m.term_acti == nil {
+		m.term_acti = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.term_acti[ids[i]] = struct{}{}
+	}
+}
+
+// RemoveTermActiIDs removes the term_acti edge to Activity by ids.
+func (m *TermMutation) RemoveTermActiIDs(ids ...int) {
+	if m.removedterm_acti == nil {
+		m.removedterm_acti = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.removedterm_acti[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedTermActi returns the removed ids of term_acti.
+func (m *TermMutation) RemovedTermActiIDs() (ids []int) {
+	for id := range m.removedterm_acti {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// TermActiIDs returns the term_acti ids in the mutation.
+func (m *TermMutation) TermActiIDs() (ids []int) {
+	for id := range m.term_acti {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetTermActi reset all changes of the "term_acti" edge.
+func (m *TermMutation) ResetTermActi() {
+	m.term_acti = nil
+	m.removedterm_acti = nil
+}
+
 // Op returns the operation name.
 func (m *TermMutation) Op() Op {
 	return m.op
@@ -9461,9 +9649,12 @@ func (m *TermMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this
 // mutation.
 func (m *TermMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.term_resu != nil {
 		edges = append(edges, term.EdgeTermResu)
+	}
+	if m.term_acti != nil {
+		edges = append(edges, term.EdgeTermActi)
 	}
 	return edges
 }
@@ -9478,6 +9669,12 @@ func (m *TermMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case term.EdgeTermActi:
+		ids := make([]ent.Value, 0, len(m.term_acti))
+		for id := range m.term_acti {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
@@ -9485,9 +9682,12 @@ func (m *TermMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this
 // mutation.
 func (m *TermMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.removedterm_resu != nil {
 		edges = append(edges, term.EdgeTermResu)
+	}
+	if m.removedterm_acti != nil {
+		edges = append(edges, term.EdgeTermActi)
 	}
 	return edges
 }
@@ -9502,6 +9702,12 @@ func (m *TermMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case term.EdgeTermActi:
+		ids := make([]ent.Value, 0, len(m.removedterm_acti))
+		for id := range m.removedterm_acti {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
@@ -9509,7 +9715,7 @@ func (m *TermMutation) RemovedIDs(name string) []ent.Value {
 // ClearedEdges returns all edge names that were cleared in this
 // mutation.
 func (m *TermMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	return edges
 }
 
@@ -9536,6 +9742,9 @@ func (m *TermMutation) ResetEdge(name string) error {
 	switch name {
 	case term.EdgeTermResu:
 		m.ResetTermResu()
+		return nil
+	case term.EdgeTermActi:
+		m.ResetTermActi()
 		return nil
 	}
 	return fmt.Errorf("unknown Term edge %s", name)

@@ -202,6 +202,34 @@ func HasTermResuWith(preds ...predicate.Results) predicate.Term {
 	})
 }
 
+// HasTermActi applies the HasEdge predicate on the "term_acti" edge.
+func HasTermActi() predicate.Term {
+	return predicate.Term(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(TermActiTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, TermActiTable, TermActiColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasTermActiWith applies the HasEdge predicate on the "term_acti" edge with a given conditions (other predicates).
+func HasTermActiWith(preds ...predicate.Activity) predicate.Term {
+	return predicate.Term(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(TermActiInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, TermActiTable, TermActiColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups list of predicates with the AND operator between them.
 func And(predicates ...predicate.Term) predicate.Term {
 	return predicate.Term(func(s *sql.Selector) {

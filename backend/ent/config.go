@@ -26,14 +26,14 @@ type config struct {
 type hooks struct {
 	Activity      []ent.Hook
 	Agency        []ent.Hook
+	Continent     []ent.Hook
+	Country       []ent.Hook
 	Course        []ent.Hook
 	Degree        []ent.Hook
-	District      []ent.Hook
 	Faculty       []ent.Hook
 	Gender        []ent.Hook
 	Institution   []ent.Hook
 	Place         []ent.Hook
-	Postal        []ent.Hook
 	Prefix        []ent.Hook
 	Professor     []ent.Hook
 	Professorship []ent.Hook
@@ -41,7 +41,6 @@ type hooks struct {
 	Region        []ent.Hook
 	Results       []ent.Hook
 	Student       []ent.Hook
-	Subdistrict   []ent.Hook
 	Subject       []ent.Hook
 	Term          []ent.Hook
 	Year          []ent.Hook

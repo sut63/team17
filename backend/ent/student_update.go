@@ -110,6 +110,21 @@ func (su *StudentUpdate) AddStudActi(a ...*Activity) *StudentUpdate {
 	return su.AddStudActiIDs(ids...)
 }
 
+// AddStudResuIDs adds the stud_resu edge to Results by ids.
+func (su *StudentUpdate) AddStudResuIDs(ids ...int) *StudentUpdate {
+	su.mutation.AddStudResuIDs(ids...)
+	return su
+}
+
+// AddStudResu adds the stud_resu edges to Results.
+func (su *StudentUpdate) AddStudResu(r ...*Results) *StudentUpdate {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return su.AddStudResuIDs(ids...)
+}
+
 // SetStudProvID sets the stud_prov edge to Province by id.
 func (su *StudentUpdate) SetStudProvID(id int) *StudentUpdate {
 	su.mutation.SetStudProvID(id)
@@ -129,19 +144,61 @@ func (su *StudentUpdate) SetStudProv(p *Province) *StudentUpdate {
 	return su.SetStudProvID(p.ID)
 }
 
-// AddStudResuIDs adds the stud_resu edge to Results by ids.
-func (su *StudentUpdate) AddStudResuIDs(ids ...int) *StudentUpdate {
-	su.mutation.AddStudResuIDs(ids...)
+// SetStudDistID sets the stud_dist edge to Province by id.
+func (su *StudentUpdate) SetStudDistID(id int) *StudentUpdate {
+	su.mutation.SetStudDistID(id)
 	return su
 }
 
-// AddStudResu adds the stud_resu edges to Results.
-func (su *StudentUpdate) AddStudResu(r ...*Results) *StudentUpdate {
-	ids := make([]int, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+// SetNillableStudDistID sets the stud_dist edge to Province by id if the given value is not nil.
+func (su *StudentUpdate) SetNillableStudDistID(id *int) *StudentUpdate {
+	if id != nil {
+		su = su.SetStudDistID(*id)
 	}
-	return su.AddStudResuIDs(ids...)
+	return su
+}
+
+// SetStudDist sets the stud_dist edge to Province.
+func (su *StudentUpdate) SetStudDist(p *Province) *StudentUpdate {
+	return su.SetStudDistID(p.ID)
+}
+
+// SetStudSubdID sets the stud_subd edge to Province by id.
+func (su *StudentUpdate) SetStudSubdID(id int) *StudentUpdate {
+	su.mutation.SetStudSubdID(id)
+	return su
+}
+
+// SetNillableStudSubdID sets the stud_subd edge to Province by id if the given value is not nil.
+func (su *StudentUpdate) SetNillableStudSubdID(id *int) *StudentUpdate {
+	if id != nil {
+		su = su.SetStudSubdID(*id)
+	}
+	return su
+}
+
+// SetStudSubd sets the stud_subd edge to Province.
+func (su *StudentUpdate) SetStudSubd(p *Province) *StudentUpdate {
+	return su.SetStudSubdID(p.ID)
+}
+
+// SetStudPostID sets the stud_post edge to Province by id.
+func (su *StudentUpdate) SetStudPostID(id int) *StudentUpdate {
+	su.mutation.SetStudPostID(id)
+	return su
+}
+
+// SetNillableStudPostID sets the stud_post edge to Province by id if the given value is not nil.
+func (su *StudentUpdate) SetNillableStudPostID(id *int) *StudentUpdate {
+	if id != nil {
+		su = su.SetStudPostID(*id)
+	}
+	return su
+}
+
+// SetStudPost sets the stud_post edge to Province.
+func (su *StudentUpdate) SetStudPost(p *Province) *StudentUpdate {
+	return su.SetStudPostID(p.ID)
 }
 
 // SetStudPrefID sets the stud_pref edge to Prefix by id.
@@ -208,12 +265,6 @@ func (su *StudentUpdate) RemoveStudActi(a ...*Activity) *StudentUpdate {
 	return su.RemoveStudActiIDs(ids...)
 }
 
-// ClearStudProv clears the stud_prov edge to Province.
-func (su *StudentUpdate) ClearStudProv() *StudentUpdate {
-	su.mutation.ClearStudProv()
-	return su
-}
-
 // RemoveStudResuIDs removes the stud_resu edge to Results by ids.
 func (su *StudentUpdate) RemoveStudResuIDs(ids ...int) *StudentUpdate {
 	su.mutation.RemoveStudResuIDs(ids...)
@@ -227,6 +278,30 @@ func (su *StudentUpdate) RemoveStudResu(r ...*Results) *StudentUpdate {
 		ids[i] = r[i].ID
 	}
 	return su.RemoveStudResuIDs(ids...)
+}
+
+// ClearStudProv clears the stud_prov edge to Province.
+func (su *StudentUpdate) ClearStudProv() *StudentUpdate {
+	su.mutation.ClearStudProv()
+	return su
+}
+
+// ClearStudDist clears the stud_dist edge to Province.
+func (su *StudentUpdate) ClearStudDist() *StudentUpdate {
+	su.mutation.ClearStudDist()
+	return su
+}
+
+// ClearStudSubd clears the stud_subd edge to Province.
+func (su *StudentUpdate) ClearStudSubd() *StudentUpdate {
+	su.mutation.ClearStudSubd()
+	return su
+}
+
+// ClearStudPost clears the stud_post edge to Province.
+func (su *StudentUpdate) ClearStudPost() *StudentUpdate {
+	su.mutation.ClearStudPost()
+	return su
 }
 
 // ClearStudPref clears the stud_pref edge to Prefix.
@@ -453,6 +528,44 @@ func (su *StudentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if nodes := su.mutation.RemovedStudResuIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   student.StudResuTable,
+			Columns: []string{student.StudResuColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: results.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := su.mutation.StudResuIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   student.StudResuTable,
+			Columns: []string{student.StudResuColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: results.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if su.mutation.StudProvCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -488,36 +601,103 @@ func (su *StudentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nodes := su.mutation.RemovedStudResuIDs(); len(nodes) > 0 {
+	if su.mutation.StudDistCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   student.StudResuTable,
-			Columns: []string{student.StudResuColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   student.StudDistTable,
+			Columns: []string{student.StudDistColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: results.FieldID,
+					Column: province.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := su.mutation.StudDistIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   student.StudDistTable,
+			Columns: []string{student.StudDistColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: province.FieldID,
 				},
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nodes := su.mutation.StudResuIDs(); len(nodes) > 0 {
+	if su.mutation.StudSubdCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   student.StudResuTable,
-			Columns: []string{student.StudResuColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   student.StudSubdTable,
+			Columns: []string{student.StudSubdColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: results.FieldID,
+					Column: province.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := su.mutation.StudSubdIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   student.StudSubdTable,
+			Columns: []string{student.StudSubdColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: province.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if su.mutation.StudPostCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   student.StudPostTable,
+			Columns: []string{student.StudPostColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: province.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := su.mutation.StudPostIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   student.StudPostTable,
+			Columns: []string{student.StudPostColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: province.FieldID,
 				},
 			},
 		}
@@ -691,6 +871,21 @@ func (suo *StudentUpdateOne) AddStudActi(a ...*Activity) *StudentUpdateOne {
 	return suo.AddStudActiIDs(ids...)
 }
 
+// AddStudResuIDs adds the stud_resu edge to Results by ids.
+func (suo *StudentUpdateOne) AddStudResuIDs(ids ...int) *StudentUpdateOne {
+	suo.mutation.AddStudResuIDs(ids...)
+	return suo
+}
+
+// AddStudResu adds the stud_resu edges to Results.
+func (suo *StudentUpdateOne) AddStudResu(r ...*Results) *StudentUpdateOne {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return suo.AddStudResuIDs(ids...)
+}
+
 // SetStudProvID sets the stud_prov edge to Province by id.
 func (suo *StudentUpdateOne) SetStudProvID(id int) *StudentUpdateOne {
 	suo.mutation.SetStudProvID(id)
@@ -710,19 +905,61 @@ func (suo *StudentUpdateOne) SetStudProv(p *Province) *StudentUpdateOne {
 	return suo.SetStudProvID(p.ID)
 }
 
-// AddStudResuIDs adds the stud_resu edge to Results by ids.
-func (suo *StudentUpdateOne) AddStudResuIDs(ids ...int) *StudentUpdateOne {
-	suo.mutation.AddStudResuIDs(ids...)
+// SetStudDistID sets the stud_dist edge to Province by id.
+func (suo *StudentUpdateOne) SetStudDistID(id int) *StudentUpdateOne {
+	suo.mutation.SetStudDistID(id)
 	return suo
 }
 
-// AddStudResu adds the stud_resu edges to Results.
-func (suo *StudentUpdateOne) AddStudResu(r ...*Results) *StudentUpdateOne {
-	ids := make([]int, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+// SetNillableStudDistID sets the stud_dist edge to Province by id if the given value is not nil.
+func (suo *StudentUpdateOne) SetNillableStudDistID(id *int) *StudentUpdateOne {
+	if id != nil {
+		suo = suo.SetStudDistID(*id)
 	}
-	return suo.AddStudResuIDs(ids...)
+	return suo
+}
+
+// SetStudDist sets the stud_dist edge to Province.
+func (suo *StudentUpdateOne) SetStudDist(p *Province) *StudentUpdateOne {
+	return suo.SetStudDistID(p.ID)
+}
+
+// SetStudSubdID sets the stud_subd edge to Province by id.
+func (suo *StudentUpdateOne) SetStudSubdID(id int) *StudentUpdateOne {
+	suo.mutation.SetStudSubdID(id)
+	return suo
+}
+
+// SetNillableStudSubdID sets the stud_subd edge to Province by id if the given value is not nil.
+func (suo *StudentUpdateOne) SetNillableStudSubdID(id *int) *StudentUpdateOne {
+	if id != nil {
+		suo = suo.SetStudSubdID(*id)
+	}
+	return suo
+}
+
+// SetStudSubd sets the stud_subd edge to Province.
+func (suo *StudentUpdateOne) SetStudSubd(p *Province) *StudentUpdateOne {
+	return suo.SetStudSubdID(p.ID)
+}
+
+// SetStudPostID sets the stud_post edge to Province by id.
+func (suo *StudentUpdateOne) SetStudPostID(id int) *StudentUpdateOne {
+	suo.mutation.SetStudPostID(id)
+	return suo
+}
+
+// SetNillableStudPostID sets the stud_post edge to Province by id if the given value is not nil.
+func (suo *StudentUpdateOne) SetNillableStudPostID(id *int) *StudentUpdateOne {
+	if id != nil {
+		suo = suo.SetStudPostID(*id)
+	}
+	return suo
+}
+
+// SetStudPost sets the stud_post edge to Province.
+func (suo *StudentUpdateOne) SetStudPost(p *Province) *StudentUpdateOne {
+	return suo.SetStudPostID(p.ID)
 }
 
 // SetStudPrefID sets the stud_pref edge to Prefix by id.
@@ -789,12 +1026,6 @@ func (suo *StudentUpdateOne) RemoveStudActi(a ...*Activity) *StudentUpdateOne {
 	return suo.RemoveStudActiIDs(ids...)
 }
 
-// ClearStudProv clears the stud_prov edge to Province.
-func (suo *StudentUpdateOne) ClearStudProv() *StudentUpdateOne {
-	suo.mutation.ClearStudProv()
-	return suo
-}
-
 // RemoveStudResuIDs removes the stud_resu edge to Results by ids.
 func (suo *StudentUpdateOne) RemoveStudResuIDs(ids ...int) *StudentUpdateOne {
 	suo.mutation.RemoveStudResuIDs(ids...)
@@ -808,6 +1039,30 @@ func (suo *StudentUpdateOne) RemoveStudResu(r ...*Results) *StudentUpdateOne {
 		ids[i] = r[i].ID
 	}
 	return suo.RemoveStudResuIDs(ids...)
+}
+
+// ClearStudProv clears the stud_prov edge to Province.
+func (suo *StudentUpdateOne) ClearStudProv() *StudentUpdateOne {
+	suo.mutation.ClearStudProv()
+	return suo
+}
+
+// ClearStudDist clears the stud_dist edge to Province.
+func (suo *StudentUpdateOne) ClearStudDist() *StudentUpdateOne {
+	suo.mutation.ClearStudDist()
+	return suo
+}
+
+// ClearStudSubd clears the stud_subd edge to Province.
+func (suo *StudentUpdateOne) ClearStudSubd() *StudentUpdateOne {
+	suo.mutation.ClearStudSubd()
+	return suo
+}
+
+// ClearStudPost clears the stud_post edge to Province.
+func (suo *StudentUpdateOne) ClearStudPost() *StudentUpdateOne {
+	suo.mutation.ClearStudPost()
+	return suo
 }
 
 // ClearStudPref clears the stud_pref edge to Prefix.
@@ -1032,6 +1287,44 @@ func (suo *StudentUpdateOne) sqlSave(ctx context.Context) (s *Student, err error
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if nodes := suo.mutation.RemovedStudResuIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   student.StudResuTable,
+			Columns: []string{student.StudResuColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: results.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := suo.mutation.StudResuIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   student.StudResuTable,
+			Columns: []string{student.StudResuColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: results.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if suo.mutation.StudProvCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -1067,36 +1360,103 @@ func (suo *StudentUpdateOne) sqlSave(ctx context.Context) (s *Student, err error
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nodes := suo.mutation.RemovedStudResuIDs(); len(nodes) > 0 {
+	if suo.mutation.StudDistCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   student.StudResuTable,
-			Columns: []string{student.StudResuColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   student.StudDistTable,
+			Columns: []string{student.StudDistColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: results.FieldID,
+					Column: province.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := suo.mutation.StudDistIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   student.StudDistTable,
+			Columns: []string{student.StudDistColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: province.FieldID,
 				},
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nodes := suo.mutation.StudResuIDs(); len(nodes) > 0 {
+	if suo.mutation.StudSubdCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   student.StudResuTable,
-			Columns: []string{student.StudResuColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   student.StudSubdTable,
+			Columns: []string{student.StudSubdColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: results.FieldID,
+					Column: province.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := suo.mutation.StudSubdIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   student.StudSubdTable,
+			Columns: []string{student.StudSubdColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: province.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if suo.mutation.StudPostCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   student.StudPostTable,
+			Columns: []string{student.StudPostColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: province.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := suo.mutation.StudPostIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   student.StudPostTable,
+			Columns: []string{student.StudPostColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: province.FieldID,
 				},
 			},
 		}

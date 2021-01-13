@@ -28,6 +28,9 @@ type Student struct {
 	Tel    int
 	Sex    int
 	Province   int
+	District   int
+	Zone   int
+	Postal   int
 	Degree   int
 	Title  int
 }
@@ -95,6 +98,39 @@ func (ctl *StudentController) CreateStudent(c *gin.Context) {
 		})
 		return
 	}
+	dis, err := ctl.client.Province.
+		Query().
+		Where(province.IDEQ(int(obj.District))).
+		Only(context.Background())
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "user not found",
+		})
+		return
+	}
+	sub, err := ctl.client.Province.
+		Query().
+		Where(province.IDEQ(int(obj.Zone))).
+		Only(context.Background())
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "user not found",
+		})
+		return
+	}
+	pos, err := ctl.client.Province.
+		Query().
+		Where(province.IDEQ(int(obj.Postal))).
+		Only(context.Background())
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": "user not found",
+		})
+		return
+	}
 
 	save, err := ctl.client.Student.
 		Create().
@@ -108,6 +144,9 @@ func (ctl *StudentController) CreateStudent(c *gin.Context) {
 		SetStudGend(s).
 		SetStudPref(pre).
 		SetStudProv(pro).
+		SetStudDist(dis).
+		SetStudSubd(sub).
+		SetStudPost(pos).
 		Save(context.Background())
 	if err != nil {
 		c.JSON(400, gin.H{

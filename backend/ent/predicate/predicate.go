@@ -12,14 +12,17 @@ type Activity func(*sql.Selector)
 // Agency is the predicate function for agency builders.
 type Agency func(*sql.Selector)
 
+// Continent is the predicate function for continent builders.
+type Continent func(*sql.Selector)
+
+// Country is the predicate function for country builders.
+type Country func(*sql.Selector)
+
 // Course is the predicate function for course builders.
 type Course func(*sql.Selector)
 
 // Degree is the predicate function for degree builders.
 type Degree func(*sql.Selector)
-
-// District is the predicate function for district builders.
-type District func(*sql.Selector)
 
 // Faculty is the predicate function for faculty builders.
 type Faculty func(*sql.Selector)
@@ -32,9 +35,6 @@ type Institution func(*sql.Selector)
 
 // Place is the predicate function for place builders.
 type Place func(*sql.Selector)
-
-// Postal is the predicate function for postal builders.
-type Postal func(*sql.Selector)
 
 // Prefix is the predicate function for prefix builders.
 type Prefix func(*sql.Selector)
@@ -56,9 +56,6 @@ type Results func(*sql.Selector)
 
 // Student is the predicate function for student builders.
 type Student func(*sql.Selector)
-
-// Subdistrict is the predicate function for subdistrict builders.
-type Subdistrict func(*sql.Selector)
 
 // Subject is the predicate function for subject builders.
 type Subject func(*sql.Selector)

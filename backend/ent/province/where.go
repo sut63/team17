@@ -91,29 +91,50 @@ func IDLTE(id int) predicate.Province {
 	})
 }
 
-// Name applies equality check predicate on the "name" field. It's identical to NameEQ.
-func Name(v string) predicate.Province {
+// Province applies equality check predicate on the "province" field. It's identical to ProvinceEQ.
+func Province(v string) predicate.Province {
 	return predicate.Province(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldName), v))
+		s.Where(sql.EQ(s.C(FieldProvince), v))
 	})
 }
 
-// NameEQ applies the EQ predicate on the "name" field.
-func NameEQ(v string) predicate.Province {
+// District applies equality check predicate on the "district" field. It's identical to DistrictEQ.
+func District(v string) predicate.Province {
 	return predicate.Province(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldName), v))
+		s.Where(sql.EQ(s.C(FieldDistrict), v))
 	})
 }
 
-// NameNEQ applies the NEQ predicate on the "name" field.
-func NameNEQ(v string) predicate.Province {
+// Subdistrict applies equality check predicate on the "subdistrict" field. It's identical to SubdistrictEQ.
+func Subdistrict(v string) predicate.Province {
 	return predicate.Province(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldName), v))
+		s.Where(sql.EQ(s.C(FieldSubdistrict), v))
 	})
 }
 
-// NameIn applies the In predicate on the "name" field.
-func NameIn(vs ...string) predicate.Province {
+// Postal applies equality check predicate on the "postal" field. It's identical to PostalEQ.
+func Postal(v int) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldPostal), v))
+	})
+}
+
+// ProvinceEQ applies the EQ predicate on the "province" field.
+func ProvinceEQ(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldProvince), v))
+	})
+}
+
+// ProvinceNEQ applies the NEQ predicate on the "province" field.
+func ProvinceNEQ(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldProvince), v))
+	})
+}
+
+// ProvinceIn applies the In predicate on the "province" field.
+func ProvinceIn(vs ...string) predicate.Province {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -125,12 +146,12 @@ func NameIn(vs ...string) predicate.Province {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.In(s.C(FieldName), v...))
+		s.Where(sql.In(s.C(FieldProvince), v...))
 	})
 }
 
-// NameNotIn applies the NotIn predicate on the "name" field.
-func NameNotIn(vs ...string) predicate.Province {
+// ProvinceNotIn applies the NotIn predicate on the "province" field.
+func ProvinceNotIn(vs ...string) predicate.Province {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -142,70 +163,368 @@ func NameNotIn(vs ...string) predicate.Province {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.NotIn(s.C(FieldName), v...))
+		s.Where(sql.NotIn(s.C(FieldProvince), v...))
 	})
 }
 
-// NameGT applies the GT predicate on the "name" field.
-func NameGT(v string) predicate.Province {
+// ProvinceGT applies the GT predicate on the "province" field.
+func ProvinceGT(v string) predicate.Province {
 	return predicate.Province(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldName), v))
+		s.Where(sql.GT(s.C(FieldProvince), v))
 	})
 }
 
-// NameGTE applies the GTE predicate on the "name" field.
-func NameGTE(v string) predicate.Province {
+// ProvinceGTE applies the GTE predicate on the "province" field.
+func ProvinceGTE(v string) predicate.Province {
 	return predicate.Province(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldName), v))
+		s.Where(sql.GTE(s.C(FieldProvince), v))
 	})
 }
 
-// NameLT applies the LT predicate on the "name" field.
-func NameLT(v string) predicate.Province {
+// ProvinceLT applies the LT predicate on the "province" field.
+func ProvinceLT(v string) predicate.Province {
 	return predicate.Province(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldName), v))
+		s.Where(sql.LT(s.C(FieldProvince), v))
 	})
 }
 
-// NameLTE applies the LTE predicate on the "name" field.
-func NameLTE(v string) predicate.Province {
+// ProvinceLTE applies the LTE predicate on the "province" field.
+func ProvinceLTE(v string) predicate.Province {
 	return predicate.Province(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldName), v))
+		s.Where(sql.LTE(s.C(FieldProvince), v))
 	})
 }
 
-// NameContains applies the Contains predicate on the "name" field.
-func NameContains(v string) predicate.Province {
+// ProvinceContains applies the Contains predicate on the "province" field.
+func ProvinceContains(v string) predicate.Province {
 	return predicate.Province(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldName), v))
+		s.Where(sql.Contains(s.C(FieldProvince), v))
 	})
 }
 
-// NameHasPrefix applies the HasPrefix predicate on the "name" field.
-func NameHasPrefix(v string) predicate.Province {
+// ProvinceHasPrefix applies the HasPrefix predicate on the "province" field.
+func ProvinceHasPrefix(v string) predicate.Province {
 	return predicate.Province(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldName), v))
+		s.Where(sql.HasPrefix(s.C(FieldProvince), v))
 	})
 }
 
-// NameHasSuffix applies the HasSuffix predicate on the "name" field.
-func NameHasSuffix(v string) predicate.Province {
+// ProvinceHasSuffix applies the HasSuffix predicate on the "province" field.
+func ProvinceHasSuffix(v string) predicate.Province {
 	return predicate.Province(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldName), v))
+		s.Where(sql.HasSuffix(s.C(FieldProvince), v))
 	})
 }
 
-// NameEqualFold applies the EqualFold predicate on the "name" field.
-func NameEqualFold(v string) predicate.Province {
+// ProvinceEqualFold applies the EqualFold predicate on the "province" field.
+func ProvinceEqualFold(v string) predicate.Province {
 	return predicate.Province(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldName), v))
+		s.Where(sql.EqualFold(s.C(FieldProvince), v))
 	})
 }
 
-// NameContainsFold applies the ContainsFold predicate on the "name" field.
-func NameContainsFold(v string) predicate.Province {
+// ProvinceContainsFold applies the ContainsFold predicate on the "province" field.
+func ProvinceContainsFold(v string) predicate.Province {
 	return predicate.Province(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldName), v))
+		s.Where(sql.ContainsFold(s.C(FieldProvince), v))
+	})
+}
+
+// DistrictEQ applies the EQ predicate on the "district" field.
+func DistrictEQ(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldDistrict), v))
+	})
+}
+
+// DistrictNEQ applies the NEQ predicate on the "district" field.
+func DistrictNEQ(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldDistrict), v))
+	})
+}
+
+// DistrictIn applies the In predicate on the "district" field.
+func DistrictIn(vs ...string) predicate.Province {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Province(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldDistrict), v...))
+	})
+}
+
+// DistrictNotIn applies the NotIn predicate on the "district" field.
+func DistrictNotIn(vs ...string) predicate.Province {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Province(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldDistrict), v...))
+	})
+}
+
+// DistrictGT applies the GT predicate on the "district" field.
+func DistrictGT(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldDistrict), v))
+	})
+}
+
+// DistrictGTE applies the GTE predicate on the "district" field.
+func DistrictGTE(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldDistrict), v))
+	})
+}
+
+// DistrictLT applies the LT predicate on the "district" field.
+func DistrictLT(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldDistrict), v))
+	})
+}
+
+// DistrictLTE applies the LTE predicate on the "district" field.
+func DistrictLTE(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldDistrict), v))
+	})
+}
+
+// DistrictContains applies the Contains predicate on the "district" field.
+func DistrictContains(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldDistrict), v))
+	})
+}
+
+// DistrictHasPrefix applies the HasPrefix predicate on the "district" field.
+func DistrictHasPrefix(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldDistrict), v))
+	})
+}
+
+// DistrictHasSuffix applies the HasSuffix predicate on the "district" field.
+func DistrictHasSuffix(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldDistrict), v))
+	})
+}
+
+// DistrictEqualFold applies the EqualFold predicate on the "district" field.
+func DistrictEqualFold(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldDistrict), v))
+	})
+}
+
+// DistrictContainsFold applies the ContainsFold predicate on the "district" field.
+func DistrictContainsFold(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldDistrict), v))
+	})
+}
+
+// SubdistrictEQ applies the EQ predicate on the "subdistrict" field.
+func SubdistrictEQ(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldSubdistrict), v))
+	})
+}
+
+// SubdistrictNEQ applies the NEQ predicate on the "subdistrict" field.
+func SubdistrictNEQ(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldSubdistrict), v))
+	})
+}
+
+// SubdistrictIn applies the In predicate on the "subdistrict" field.
+func SubdistrictIn(vs ...string) predicate.Province {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Province(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldSubdistrict), v...))
+	})
+}
+
+// SubdistrictNotIn applies the NotIn predicate on the "subdistrict" field.
+func SubdistrictNotIn(vs ...string) predicate.Province {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Province(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldSubdistrict), v...))
+	})
+}
+
+// SubdistrictGT applies the GT predicate on the "subdistrict" field.
+func SubdistrictGT(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldSubdistrict), v))
+	})
+}
+
+// SubdistrictGTE applies the GTE predicate on the "subdistrict" field.
+func SubdistrictGTE(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldSubdistrict), v))
+	})
+}
+
+// SubdistrictLT applies the LT predicate on the "subdistrict" field.
+func SubdistrictLT(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldSubdistrict), v))
+	})
+}
+
+// SubdistrictLTE applies the LTE predicate on the "subdistrict" field.
+func SubdistrictLTE(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldSubdistrict), v))
+	})
+}
+
+// SubdistrictContains applies the Contains predicate on the "subdistrict" field.
+func SubdistrictContains(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldSubdistrict), v))
+	})
+}
+
+// SubdistrictHasPrefix applies the HasPrefix predicate on the "subdistrict" field.
+func SubdistrictHasPrefix(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldSubdistrict), v))
+	})
+}
+
+// SubdistrictHasSuffix applies the HasSuffix predicate on the "subdistrict" field.
+func SubdistrictHasSuffix(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldSubdistrict), v))
+	})
+}
+
+// SubdistrictEqualFold applies the EqualFold predicate on the "subdistrict" field.
+func SubdistrictEqualFold(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldSubdistrict), v))
+	})
+}
+
+// SubdistrictContainsFold applies the ContainsFold predicate on the "subdistrict" field.
+func SubdistrictContainsFold(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldSubdistrict), v))
+	})
+}
+
+// PostalEQ applies the EQ predicate on the "postal" field.
+func PostalEQ(v int) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldPostal), v))
+	})
+}
+
+// PostalNEQ applies the NEQ predicate on the "postal" field.
+func PostalNEQ(v int) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldPostal), v))
+	})
+}
+
+// PostalIn applies the In predicate on the "postal" field.
+func PostalIn(vs ...int) predicate.Province {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Province(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldPostal), v...))
+	})
+}
+
+// PostalNotIn applies the NotIn predicate on the "postal" field.
+func PostalNotIn(vs ...int) predicate.Province {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Province(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldPostal), v...))
+	})
+}
+
+// PostalGT applies the GT predicate on the "postal" field.
+func PostalGT(v int) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldPostal), v))
+	})
+}
+
+// PostalGTE applies the GTE predicate on the "postal" field.
+func PostalGTE(v int) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldPostal), v))
+	})
+}
+
+// PostalLT applies the LT predicate on the "postal" field.
+func PostalLT(v int) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldPostal), v))
+	})
+}
+
+// PostalLTE applies the LTE predicate on the "postal" field.
+func PostalLTE(v int) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldPostal), v))
 	})
 }
 
@@ -237,25 +556,53 @@ func HasProvRegiWith(preds ...predicate.Region) predicate.Province {
 	})
 }
 
-// HasProvDist applies the HasEdge predicate on the "prov_dist" edge.
-func HasProvDist() predicate.Province {
+// HasProvCoun applies the HasEdge predicate on the "prov_coun" edge.
+func HasProvCoun() predicate.Province {
 	return predicate.Province(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(ProvDistTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, ProvDistTable, ProvDistColumn),
+			sqlgraph.To(ProvCounTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ProvCounTable, ProvCounColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasProvDistWith applies the HasEdge predicate on the "prov_dist" edge with a given conditions (other predicates).
-func HasProvDistWith(preds ...predicate.District) predicate.Province {
+// HasProvCounWith applies the HasEdge predicate on the "prov_coun" edge with a given conditions (other predicates).
+func HasProvCounWith(preds ...predicate.Country) predicate.Province {
 	return predicate.Province(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(ProvDistInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, ProvDistTable, ProvDistColumn),
+			sqlgraph.To(ProvCounInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ProvCounTable, ProvCounColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasProvCont applies the HasEdge predicate on the "prov_cont" edge.
+func HasProvCont() predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ProvContTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ProvContTable, ProvContColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasProvContWith applies the HasEdge predicate on the "prov_cont" edge with a given conditions (other predicates).
+func HasProvContWith(preds ...predicate.Continent) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ProvContInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ProvContTable, ProvContColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
@@ -284,6 +631,90 @@ func HasProvStudWith(preds ...predicate.Student) predicate.Province {
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(ProvStudInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, ProvStudTable, ProvStudColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasDistStud applies the HasEdge predicate on the "dist_stud" edge.
+func HasDistStud() predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(DistStudTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, DistStudTable, DistStudColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasDistStudWith applies the HasEdge predicate on the "dist_stud" edge with a given conditions (other predicates).
+func HasDistStudWith(preds ...predicate.Student) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(DistStudInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, DistStudTable, DistStudColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasSubdStud applies the HasEdge predicate on the "subd_stud" edge.
+func HasSubdStud() predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(SubdStudTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, SubdStudTable, SubdStudColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasSubdStudWith applies the HasEdge predicate on the "subd_stud" edge with a given conditions (other predicates).
+func HasSubdStudWith(preds ...predicate.Student) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(SubdStudInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, SubdStudTable, SubdStudColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasPostStud applies the HasEdge predicate on the "post_stud" edge.
+func HasPostStud() predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(PostStudTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, PostStudTable, PostStudColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasPostStudWith applies the HasEdge predicate on the "post_stud" edge with a given conditions (other predicates).
+func HasPostStudWith(preds ...predicate.Student) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(PostStudInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, PostStudTable, PostStudColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

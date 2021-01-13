@@ -12,6 +12,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
+	"github.com/sut63/team17/app/ent/activity"
 	"github.com/sut63/team17/app/ent/predicate"
 	"github.com/sut63/team17/app/ent/results"
 	"github.com/sut63/team17/app/ent/term"
@@ -27,6 +28,7 @@ type TermQuery struct {
 	predicates []predicate.Term
 	// eager-loading edges.
 	withTermResu *ResultsQuery
+	withTermActi *ActivityQuery
 	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -68,6 +70,24 @@ func (tq *TermQuery) QueryTermResu() *ResultsQuery {
 			sqlgraph.From(term.Table, term.FieldID, tq.sqlQuery()),
 			sqlgraph.To(results.Table, results.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, term.TermResuTable, term.TermResuColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryTermActi chains the current query on the term_acti edge.
+func (tq *TermQuery) QueryTermActi() *ActivityQuery {
+	query := &ActivityQuery{config: tq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := tq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(term.Table, term.FieldID, tq.sqlQuery()),
+			sqlgraph.To(activity.Table, activity.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, term.TermActiTable, term.TermActiColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
 		return fromU, nil
@@ -265,6 +285,17 @@ func (tq *TermQuery) WithTermResu(opts ...func(*ResultsQuery)) *TermQuery {
 	return tq
 }
 
+//  WithTermActi tells the query-builder to eager-loads the nodes that are connected to
+// the "term_acti" edge. The optional arguments used to configure the query builder of the edge.
+func (tq *TermQuery) WithTermActi(opts ...func(*ActivityQuery)) *TermQuery {
+	query := &ActivityQuery{config: tq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	tq.withTermActi = query
+	return tq
+}
+
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
@@ -332,8 +363,9 @@ func (tq *TermQuery) sqlAll(ctx context.Context) ([]*Term, error) {
 		nodes       = []*Term{}
 		withFKs     = tq.withFKs
 		_spec       = tq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			tq.withTermResu != nil,
+			tq.withTermActi != nil,
 		}
 	)
 	if withFKs {
@@ -388,6 +420,34 @@ func (tq *TermQuery) sqlAll(ctx context.Context) ([]*Term, error) {
 				return nil, fmt.Errorf(`unexpected foreign-key "term_term_resu" returned %v for node %v`, *fk, n.ID)
 			}
 			node.Edges.TermResu = append(node.Edges.TermResu, n)
+		}
+	}
+
+	if query := tq.withTermActi; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[int]*Term)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+		}
+		query.withFKs = true
+		query.Where(predicate.Activity(func(s *sql.Selector) {
+			s.Where(sql.InValues(term.TermActiColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.term_term_acti
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "term_term_acti" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "term_term_acti" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.TermActi = append(node.Edges.TermActi, n)
 		}
 	}
 

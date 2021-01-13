@@ -68,5 +68,6 @@ var ForeignKeys = []string{
 	"agency_agen_acti",
 	"place_place_acti",
 	"student_stud_acti",
+	"term_term_acti",
 	"year_year_acti",
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
+	"github.com/sut63/team17/app/ent/activity"
 	"github.com/sut63/team17/app/ent/predicate"
 	"github.com/sut63/team17/app/ent/results"
 	"github.com/sut63/team17/app/ent/term"
@@ -56,6 +57,21 @@ func (tu *TermUpdate) AddTermResu(r ...*Results) *TermUpdate {
 	return tu.AddTermResuIDs(ids...)
 }
 
+// AddTermActiIDs adds the term_acti edge to Activity by ids.
+func (tu *TermUpdate) AddTermActiIDs(ids ...int) *TermUpdate {
+	tu.mutation.AddTermActiIDs(ids...)
+	return tu
+}
+
+// AddTermActi adds the term_acti edges to Activity.
+func (tu *TermUpdate) AddTermActi(a ...*Activity) *TermUpdate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return tu.AddTermActiIDs(ids...)
+}
+
 // Mutation returns the TermMutation object of the builder.
 func (tu *TermUpdate) Mutation() *TermMutation {
 	return tu.mutation
@@ -74,6 +90,21 @@ func (tu *TermUpdate) RemoveTermResu(r ...*Results) *TermUpdate {
 		ids[i] = r[i].ID
 	}
 	return tu.RemoveTermResuIDs(ids...)
+}
+
+// RemoveTermActiIDs removes the term_acti edge to Activity by ids.
+func (tu *TermUpdate) RemoveTermActiIDs(ids ...int) *TermUpdate {
+	tu.mutation.RemoveTermActiIDs(ids...)
+	return tu
+}
+
+// RemoveTermActi removes term_acti edges to Activity.
+func (tu *TermUpdate) RemoveTermActi(a ...*Activity) *TermUpdate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return tu.RemoveTermActiIDs(ids...)
 }
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
@@ -203,6 +234,44 @@ func (tu *TermUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if nodes := tu.mutation.RemovedTermActiIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   term.TermActiTable,
+			Columns: []string{term.TermActiColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: activity.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tu.mutation.TermActiIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   term.TermActiTable,
+			Columns: []string{term.TermActiColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: activity.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, tu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{term.Label}
@@ -249,6 +318,21 @@ func (tuo *TermUpdateOne) AddTermResu(r ...*Results) *TermUpdateOne {
 	return tuo.AddTermResuIDs(ids...)
 }
 
+// AddTermActiIDs adds the term_acti edge to Activity by ids.
+func (tuo *TermUpdateOne) AddTermActiIDs(ids ...int) *TermUpdateOne {
+	tuo.mutation.AddTermActiIDs(ids...)
+	return tuo
+}
+
+// AddTermActi adds the term_acti edges to Activity.
+func (tuo *TermUpdateOne) AddTermActi(a ...*Activity) *TermUpdateOne {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return tuo.AddTermActiIDs(ids...)
+}
+
 // Mutation returns the TermMutation object of the builder.
 func (tuo *TermUpdateOne) Mutation() *TermMutation {
 	return tuo.mutation
@@ -267,6 +351,21 @@ func (tuo *TermUpdateOne) RemoveTermResu(r ...*Results) *TermUpdateOne {
 		ids[i] = r[i].ID
 	}
 	return tuo.RemoveTermResuIDs(ids...)
+}
+
+// RemoveTermActiIDs removes the term_acti edge to Activity by ids.
+func (tuo *TermUpdateOne) RemoveTermActiIDs(ids ...int) *TermUpdateOne {
+	tuo.mutation.RemoveTermActiIDs(ids...)
+	return tuo
+}
+
+// RemoveTermActi removes term_acti edges to Activity.
+func (tuo *TermUpdateOne) RemoveTermActi(a ...*Activity) *TermUpdateOne {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return tuo.RemoveTermActiIDs(ids...)
 }
 
 // Save executes the query and returns the updated entity.
@@ -386,6 +485,44 @@ func (tuo *TermUpdateOne) sqlSave(ctx context.Context) (t *Term, err error) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: results.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if nodes := tuo.mutation.RemovedTermActiIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   term.TermActiTable,
+			Columns: []string{term.TermActiColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: activity.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tuo.mutation.TermActiIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   term.TermActiTable,
+			Columns: []string{term.TermActiColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: activity.FieldID,
 				},
 			},
 		}

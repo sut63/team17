@@ -27,9 +27,11 @@ type Term struct {
 type TermEdges struct {
 	// TermResu holds the value of the term_resu edge.
 	TermResu []*Results
+	// TermActi holds the value of the term_acti edge.
+	TermActi []*Activity
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 }
 
 // TermResuOrErr returns the TermResu value or an error if the edge
@@ -39,6 +41,15 @@ func (e TermEdges) TermResuOrErr() ([]*Results, error) {
 		return e.TermResu, nil
 	}
 	return nil, &NotLoadedError{edge: "term_resu"}
+}
+
+// TermActiOrErr returns the TermActi value or an error if the edge
+// was not loaded in eager-loading.
+func (e TermEdges) TermActiOrErr() ([]*Activity, error) {
+	if e.loadedTypes[1] {
+		return e.TermActi, nil
+	}
+	return nil, &NotLoadedError{edge: "term_acti"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -88,6 +99,11 @@ func (t *Term) assignValues(values ...interface{}) error {
 // QueryTermResu queries the term_resu edge of the Term.
 func (t *Term) QueryTermResu() *ResultsQuery {
 	return (&TermClient{config: t.config}).QueryTermResu(t)
+}
+
+// QueryTermActi queries the term_acti edge of the Term.
+func (t *Term) QueryTermActi() *ActivityQuery {
+	return (&TermClient{config: t.config}).QueryTermActi(t)
 }
 
 // Update returns a builder for updating this Term.

@@ -9,7 +9,8 @@ import (
 
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
-	"github.com/sut63/team17/app/ent/district"
+	"github.com/sut63/team17/app/ent/continent"
+	"github.com/sut63/team17/app/ent/country"
 	"github.com/sut63/team17/app/ent/province"
 	"github.com/sut63/team17/app/ent/region"
 	"github.com/sut63/team17/app/ent/student"
@@ -22,9 +23,27 @@ type ProvinceCreate struct {
 	hooks    []Hook
 }
 
-// SetName sets the name field.
-func (pc *ProvinceCreate) SetName(s string) *ProvinceCreate {
-	pc.mutation.SetName(s)
+// SetProvince sets the province field.
+func (pc *ProvinceCreate) SetProvince(s string) *ProvinceCreate {
+	pc.mutation.SetProvince(s)
+	return pc
+}
+
+// SetDistrict sets the district field.
+func (pc *ProvinceCreate) SetDistrict(s string) *ProvinceCreate {
+	pc.mutation.SetDistrict(s)
+	return pc
+}
+
+// SetSubdistrict sets the subdistrict field.
+func (pc *ProvinceCreate) SetSubdistrict(s string) *ProvinceCreate {
+	pc.mutation.SetSubdistrict(s)
+	return pc
+}
+
+// SetPostal sets the postal field.
+func (pc *ProvinceCreate) SetPostal(i int) *ProvinceCreate {
+	pc.mutation.SetPostal(i)
 	return pc
 }
 
@@ -47,23 +66,42 @@ func (pc *ProvinceCreate) SetProvRegi(r *Region) *ProvinceCreate {
 	return pc.SetProvRegiID(r.ID)
 }
 
-// SetProvDistID sets the prov_dist edge to District by id.
-func (pc *ProvinceCreate) SetProvDistID(id int) *ProvinceCreate {
-	pc.mutation.SetProvDistID(id)
+// SetProvCounID sets the prov_coun edge to Country by id.
+func (pc *ProvinceCreate) SetProvCounID(id int) *ProvinceCreate {
+	pc.mutation.SetProvCounID(id)
 	return pc
 }
 
-// SetNillableProvDistID sets the prov_dist edge to District by id if the given value is not nil.
-func (pc *ProvinceCreate) SetNillableProvDistID(id *int) *ProvinceCreate {
+// SetNillableProvCounID sets the prov_coun edge to Country by id if the given value is not nil.
+func (pc *ProvinceCreate) SetNillableProvCounID(id *int) *ProvinceCreate {
 	if id != nil {
-		pc = pc.SetProvDistID(*id)
+		pc = pc.SetProvCounID(*id)
 	}
 	return pc
 }
 
-// SetProvDist sets the prov_dist edge to District.
-func (pc *ProvinceCreate) SetProvDist(d *District) *ProvinceCreate {
-	return pc.SetProvDistID(d.ID)
+// SetProvCoun sets the prov_coun edge to Country.
+func (pc *ProvinceCreate) SetProvCoun(c *Country) *ProvinceCreate {
+	return pc.SetProvCounID(c.ID)
+}
+
+// SetProvContID sets the prov_cont edge to Continent by id.
+func (pc *ProvinceCreate) SetProvContID(id int) *ProvinceCreate {
+	pc.mutation.SetProvContID(id)
+	return pc
+}
+
+// SetNillableProvContID sets the prov_cont edge to Continent by id if the given value is not nil.
+func (pc *ProvinceCreate) SetNillableProvContID(id *int) *ProvinceCreate {
+	if id != nil {
+		pc = pc.SetProvContID(*id)
+	}
+	return pc
+}
+
+// SetProvCont sets the prov_cont edge to Continent.
+func (pc *ProvinceCreate) SetProvCont(c *Continent) *ProvinceCreate {
+	return pc.SetProvContID(c.ID)
 }
 
 // AddProvStudIDs adds the prov_stud edge to Student by ids.
@@ -81,6 +119,51 @@ func (pc *ProvinceCreate) AddProvStud(s ...*Student) *ProvinceCreate {
 	return pc.AddProvStudIDs(ids...)
 }
 
+// AddDistStudIDs adds the dist_stud edge to Student by ids.
+func (pc *ProvinceCreate) AddDistStudIDs(ids ...int) *ProvinceCreate {
+	pc.mutation.AddDistStudIDs(ids...)
+	return pc
+}
+
+// AddDistStud adds the dist_stud edges to Student.
+func (pc *ProvinceCreate) AddDistStud(s ...*Student) *ProvinceCreate {
+	ids := make([]int, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return pc.AddDistStudIDs(ids...)
+}
+
+// AddSubdStudIDs adds the subd_stud edge to Student by ids.
+func (pc *ProvinceCreate) AddSubdStudIDs(ids ...int) *ProvinceCreate {
+	pc.mutation.AddSubdStudIDs(ids...)
+	return pc
+}
+
+// AddSubdStud adds the subd_stud edges to Student.
+func (pc *ProvinceCreate) AddSubdStud(s ...*Student) *ProvinceCreate {
+	ids := make([]int, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return pc.AddSubdStudIDs(ids...)
+}
+
+// AddPostStudIDs adds the post_stud edge to Student by ids.
+func (pc *ProvinceCreate) AddPostStudIDs(ids ...int) *ProvinceCreate {
+	pc.mutation.AddPostStudIDs(ids...)
+	return pc
+}
+
+// AddPostStud adds the post_stud edges to Student.
+func (pc *ProvinceCreate) AddPostStud(s ...*Student) *ProvinceCreate {
+	ids := make([]int, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return pc.AddPostStudIDs(ids...)
+}
+
 // Mutation returns the ProvinceMutation object of the builder.
 func (pc *ProvinceCreate) Mutation() *ProvinceMutation {
 	return pc.mutation
@@ -88,12 +171,36 @@ func (pc *ProvinceCreate) Mutation() *ProvinceMutation {
 
 // Save creates the Province in the database.
 func (pc *ProvinceCreate) Save(ctx context.Context) (*Province, error) {
-	if _, ok := pc.mutation.Name(); !ok {
-		return nil, &ValidationError{Name: "name", err: errors.New("ent: missing required field \"name\"")}
+	if _, ok := pc.mutation.Province(); !ok {
+		return nil, &ValidationError{Name: "province", err: errors.New("ent: missing required field \"province\"")}
 	}
-	if v, ok := pc.mutation.Name(); ok {
-		if err := province.NameValidator(v); err != nil {
-			return nil, &ValidationError{Name: "name", err: fmt.Errorf("ent: validator failed for field \"name\": %w", err)}
+	if v, ok := pc.mutation.Province(); ok {
+		if err := province.ProvinceValidator(v); err != nil {
+			return nil, &ValidationError{Name: "province", err: fmt.Errorf("ent: validator failed for field \"province\": %w", err)}
+		}
+	}
+	if _, ok := pc.mutation.District(); !ok {
+		return nil, &ValidationError{Name: "district", err: errors.New("ent: missing required field \"district\"")}
+	}
+	if v, ok := pc.mutation.District(); ok {
+		if err := province.DistrictValidator(v); err != nil {
+			return nil, &ValidationError{Name: "district", err: fmt.Errorf("ent: validator failed for field \"district\": %w", err)}
+		}
+	}
+	if _, ok := pc.mutation.Subdistrict(); !ok {
+		return nil, &ValidationError{Name: "subdistrict", err: errors.New("ent: missing required field \"subdistrict\"")}
+	}
+	if v, ok := pc.mutation.Subdistrict(); ok {
+		if err := province.SubdistrictValidator(v); err != nil {
+			return nil, &ValidationError{Name: "subdistrict", err: fmt.Errorf("ent: validator failed for field \"subdistrict\": %w", err)}
+		}
+	}
+	if _, ok := pc.mutation.Postal(); !ok {
+		return nil, &ValidationError{Name: "postal", err: errors.New("ent: missing required field \"postal\"")}
+	}
+	if v, ok := pc.mutation.Postal(); ok {
+		if err := province.PostalValidator(v); err != nil {
+			return nil, &ValidationError{Name: "postal", err: fmt.Errorf("ent: validator failed for field \"postal\": %w", err)}
 		}
 	}
 	var (
@@ -156,13 +263,37 @@ func (pc *ProvinceCreate) createSpec() (*Province, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
-	if value, ok := pc.mutation.Name(); ok {
+	if value, ok := pc.mutation.Province(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: province.FieldName,
+			Column: province.FieldProvince,
 		})
-		pr.Name = value
+		pr.Province = value
+	}
+	if value, ok := pc.mutation.District(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: province.FieldDistrict,
+		})
+		pr.District = value
+	}
+	if value, ok := pc.mutation.Subdistrict(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: province.FieldSubdistrict,
+		})
+		pr.Subdistrict = value
+	}
+	if value, ok := pc.mutation.Postal(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: province.FieldPostal,
+		})
+		pr.Postal = value
 	}
 	if nodes := pc.mutation.ProvRegiIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -183,17 +314,36 @@ func (pc *ProvinceCreate) createSpec() (*Province, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := pc.mutation.ProvDistIDs(); len(nodes) > 0 {
+	if nodes := pc.mutation.ProvCounIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   province.ProvDistTable,
-			Columns: []string{province.ProvDistColumn},
+			Table:   province.ProvCounTable,
+			Columns: []string{province.ProvCounColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: district.FieldID,
+					Column: country.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := pc.mutation.ProvContIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   province.ProvContTable,
+			Columns: []string{province.ProvContColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: continent.FieldID,
 				},
 			},
 		}
@@ -208,6 +358,63 @@ func (pc *ProvinceCreate) createSpec() (*Province, *sqlgraph.CreateSpec) {
 			Inverse: false,
 			Table:   province.ProvStudTable,
 			Columns: []string{province.ProvStudColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: student.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := pc.mutation.DistStudIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   province.DistStudTable,
+			Columns: []string{province.DistStudColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: student.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := pc.mutation.SubdStudIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   province.SubdStudTable,
+			Columns: []string{province.SubdStudColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: student.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := pc.mutation.PostStudIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   province.PostStudTable,
+			Columns: []string{province.PostStudColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{

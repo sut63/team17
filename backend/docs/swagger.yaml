@@ -45,12 +45,20 @@ definitions:
     type: object
   controllers.Province:
     properties:
-      district:
+      continent:
         type: integer
-      name:
+      country:
+        type: integer
+      district:
+        type: string
+      postal:
+        type: integer
+      province:
         type: string
       region:
         type: integer
+      subdistrict:
+        type: string
     type: object
   controllers.Results:
     properties:
@@ -71,12 +79,16 @@ definitions:
         type: string
       degree:
         type: integer
+      district:
+        type: integer
       email:
         type: string
       fname:
         type: string
       lname:
         type: string
+      postal:
+        type: integer
       province:
         type: integer
       school:
@@ -86,6 +98,8 @@ definitions:
       tel:
         type: integer
       title:
+        type: integer
+      zone:
         type: integer
     type: object
   ent.Activity:
@@ -151,6 +165,52 @@ definitions:
           $ref: '#/definitions/ent.Activity'
         type: array
     type: object
+  ent.Continent:
+    properties:
+      continent:
+        description: Continent holds the value of the "continent" field.
+        type: string
+      edges:
+        $ref: '#/definitions/ent.ContinentEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the ContinentQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+    type: object
+  ent.ContinentEdges:
+    properties:
+      contProv:
+        description: ContProv holds the value of the cont_prov edge.
+        items:
+          $ref: '#/definitions/ent.Province'
+        type: array
+    type: object
+  ent.Country:
+    properties:
+      country:
+        description: Country holds the value of the "country" field.
+        type: string
+      edges:
+        $ref: '#/definitions/ent.CountryEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the CountryQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+    type: object
+  ent.CountryEdges:
+    properties:
+      counProv:
+        description: CounProv holds the value of the coun_prov edge.
+        items:
+          $ref: '#/definitions/ent.Province'
+        type: array
+    type: object
   ent.Course:
     properties:
       course:
@@ -208,37 +268,6 @@ definitions:
         items:
           $ref: '#/definitions/ent.Student'
         type: array
-    type: object
-  ent.District:
-    properties:
-      district:
-        description: District holds the value of the "district" field.
-        type: string
-      edges:
-        $ref: '#/definitions/ent.DistrictEdges'
-        description: |-
-          Edges holds the relations/edges for other nodes in the graph.
-          The values are being populated by the DistrictQuery when eager-loading is set.
-        type: object
-      id:
-        description: ID of the ent.
-        type: integer
-    type: object
-  ent.DistrictEdges:
-    properties:
-      distPost:
-        $ref: '#/definitions/ent.Postal'
-        description: DistPost holds the value of the dist_post edge.
-        type: object
-      distProv:
-        description: DistProv holds the value of the dist_prov edge.
-        items:
-          $ref: '#/definitions/ent.Province'
-        type: array
-      distSubd:
-        $ref: '#/definitions/ent.Subdistrict'
-        description: DistSubd holds the value of the dist_subd edge.
-        type: object
     type: object
   ent.Faculty:
     properties:
@@ -337,29 +366,6 @@ definitions:
           $ref: '#/definitions/ent.Activity'
         type: array
     type: object
-  ent.Postal:
-    properties:
-      edges:
-        $ref: '#/definitions/ent.PostalEdges'
-        description: |-
-          Edges holds the relations/edges for other nodes in the graph.
-          The values are being populated by the PostalQuery when eager-loading is set.
-        type: object
-      id:
-        description: ID of the ent.
-        type: integer
-      postal:
-        description: Postal holds the value of the "postal" field.
-        type: string
-    type: object
-  ent.PostalEdges:
-    properties:
-      postDist:
-        description: PostDist holds the value of the post_dist edge.
-        items:
-          $ref: '#/definitions/ent.District'
-        type: array
-    type: object
   ent.Prefix:
     properties:
       edges:
@@ -449,6 +455,9 @@ definitions:
     type: object
   ent.Province:
     properties:
+      district:
+        description: District holds the value of the "district" field.
+        type: string
       edges:
         $ref: '#/definitions/ent.ProvinceEdges'
         description: |-
@@ -458,15 +467,35 @@ definitions:
       id:
         description: ID of the ent.
         type: integer
-      name:
-        description: Name holds the value of the "name" field.
+      postal:
+        description: Postal holds the value of the "postal" field.
+        type: integer
+      province:
+        description: Province holds the value of the "province" field.
+        type: string
+      subdistrict:
+        description: Subdistrict holds the value of the "subdistrict" field.
         type: string
     type: object
   ent.ProvinceEdges:
     properties:
-      provDist:
-        $ref: '#/definitions/ent.District'
-        description: ProvDist holds the value of the prov_dist edge.
+      distStud:
+        description: DistStud holds the value of the dist_stud edge.
+        items:
+          $ref: '#/definitions/ent.Student'
+        type: array
+      postStud:
+        description: PostStud holds the value of the post_stud edge.
+        items:
+          $ref: '#/definitions/ent.Student'
+        type: array
+      provCont:
+        $ref: '#/definitions/ent.Continent'
+        description: ProvCont holds the value of the prov_cont edge.
+        type: object
+      provCoun:
+        $ref: '#/definitions/ent.Country'
+        description: ProvCoun holds the value of the prov_coun edge.
         type: object
       provRegi:
         $ref: '#/definitions/ent.Region'
@@ -474,6 +503,11 @@ definitions:
         type: object
       provStud:
         description: ProvStud holds the value of the prov_stud edge.
+        items:
+          $ref: '#/definitions/ent.Student'
+        type: array
+      subdStud:
+        description: SubdStud holds the value of the subd_stud edge.
         items:
           $ref: '#/definitions/ent.Student'
         type: array
@@ -576,9 +610,17 @@ definitions:
         $ref: '#/definitions/ent.Degree'
         description: StudDegr holds the value of the stud_degr edge.
         type: object
+      studDist:
+        $ref: '#/definitions/ent.Province'
+        description: StudDist holds the value of the stud_dist edge.
+        type: object
       studGend:
         $ref: '#/definitions/ent.Gender'
         description: StudGend holds the value of the stud_gend edge.
+        type: object
+      studPost:
+        $ref: '#/definitions/ent.Province'
+        description: StudPost holds the value of the stud_post edge.
         type: object
       studPref:
         $ref: '#/definitions/ent.Prefix'
@@ -593,29 +635,10 @@ definitions:
         items:
           $ref: '#/definitions/ent.Results'
         type: array
-    type: object
-  ent.Subdistrict:
-    properties:
-      edges:
-        $ref: '#/definitions/ent.SubdistrictEdges'
-        description: |-
-          Edges holds the relations/edges for other nodes in the graph.
-          The values are being populated by the SubdistrictQuery when eager-loading is set.
+      studSubd:
+        $ref: '#/definitions/ent.Province'
+        description: StudSubd holds the value of the stud_subd edge.
         type: object
-      id:
-        description: ID of the ent.
-        type: integer
-      subdistrict:
-        description: Subdistrict holds the value of the "subdistrict" field.
-        type: string
-    type: object
-  ent.SubdistrictEdges:
-    properties:
-      subdDist:
-        description: SubdDist holds the value of the subd_dist edge.
-        items:
-          $ref: '#/definitions/ent.District'
-        type: array
     type: object
   ent.Subject:
     properties:
@@ -663,6 +686,11 @@ definitions:
     type: object
   ent.TermEdges:
     properties:
+      termActi:
+        description: TermActi holds the value of the term_acti edge.
+        items:
+          $ref: '#/definitions/ent.Activity'
+        type: array
       termResu:
         description: TermResu holds the value of the term_resu edge.
         items:
@@ -869,6 +897,128 @@ paths:
           schema:
             $ref: '#/definitions/gin.H'
       summary: Get a agency entity by ID
+  /continents:
+    get:
+      description: list continent entities
+      operationId: list-continent
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Continent'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List continent entities
+  /continents/{id}:
+    get:
+      description: get continent by ID
+      operationId: get-continent
+      parameters:
+      - description: Continent ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Continent'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a continent entity by ID
+  /countrys:
+    get:
+      description: list country entities
+      operationId: list-country
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Country'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List country entities
+  /countrys/{id}:
+    get:
+      description: get country by ID
+      operationId: get-country
+      parameters:
+      - description: Country ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Country'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a country entity by ID
   /courses:
     get:
       description: list course entities
@@ -1019,67 +1169,6 @@ paths:
           schema:
             $ref: '#/definitions/gin.H'
       summary: Get a degree entity by ID
-  /districts:
-    get:
-      description: list district entities
-      operationId: list-district
-      parameters:
-      - description: Limit
-        in: query
-        name: limit
-        type: integer
-      - description: Offset
-        in: query
-        name: offset
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/ent.District'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/gin.H'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/gin.H'
-      summary: List district entities
-  /districts/{id}:
-    get:
-      description: get district by ID
-      operationId: get-district
-      parameters:
-      - description: District ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/ent.District'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/gin.H'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/gin.H'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/gin.H'
-      summary: Get a district entity by ID
   /facultys:
     get:
       description: list faculty entities
@@ -1324,67 +1413,6 @@ paths:
           schema:
             $ref: '#/definitions/gin.H'
       summary: Get a place entity by ID
-  /postals:
-    get:
-      description: list postal entities
-      operationId: list-postal
-      parameters:
-      - description: Limit
-        in: query
-        name: limit
-        type: integer
-      - description: Offset
-        in: query
-        name: offset
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/ent.Postal'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/gin.H'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/gin.H'
-      summary: List postal entities
-  /postals/{id}:
-    get:
-      description: get postal by ID
-      operationId: get-postal
-      parameters:
-      - description: Postal ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/ent.Postal'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/gin.H'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/gin.H'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/gin.H'
-      summary: Get a postal entity by ID
   /prefixs:
     get:
       description: list prefix entities
@@ -1956,67 +1984,6 @@ paths:
           schema:
             $ref: '#/definitions/gin.H'
       summary: Get a student entity by ID
-  /subdistricts:
-    get:
-      description: list subdistrict entities
-      operationId: list-subdistrict
-      parameters:
-      - description: Limit
-        in: query
-        name: limit
-        type: integer
-      - description: Offset
-        in: query
-        name: offset
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/ent.Subdistrict'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/gin.H'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/gin.H'
-      summary: List subdistrict entities
-  /subdistricts/{id}:
-    get:
-      description: get subdistrict by ID
-      operationId: get-subdistrict
-      parameters:
-      - description: Subdistrict ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/ent.Subdistrict'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/gin.H'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/gin.H'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/gin.H'
-      summary: Get a subdistrict entity by ID
   /subjects:
     get:
       description: list subject entities

@@ -17,6 +17,7 @@ var (
 		{Name: "agency_agen_acti", Type: field.TypeInt, Nullable: true},
 		{Name: "place_place_acti", Type: field.TypeInt, Nullable: true},
 		{Name: "student_stud_acti", Type: field.TypeInt, Nullable: true},
+		{Name: "term_term_acti", Type: field.TypeInt, Nullable: true},
 		{Name: "year_year_acti", Type: field.TypeInt, Nullable: true},
 	}
 	// ActivitiesTable holds the schema information for the "activities" table.
@@ -47,8 +48,15 @@ var (
 				OnDelete:   schema.SetNull,
 			},
 			{
-				Symbol:  "activities_years_year_acti",
+				Symbol:  "activities_terms_term_acti",
 				Columns: []*schema.Column{ActivitiesColumns[7]},
+
+				RefColumns: []*schema.Column{TermsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:  "activities_years_year_acti",
+				Columns: []*schema.Column{ActivitiesColumns[8]},
 
 				RefColumns: []*schema.Column{YearsColumns[0]},
 				OnDelete:   schema.SetNull,
@@ -65,6 +73,30 @@ var (
 		Name:        "agencies",
 		Columns:     AgenciesColumns,
 		PrimaryKey:  []*schema.Column{AgenciesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{},
+	}
+	// ContinentsColumns holds the columns for the "continents" table.
+	ContinentsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "continent", Type: field.TypeString, Unique: true},
+	}
+	// ContinentsTable holds the schema information for the "continents" table.
+	ContinentsTable = &schema.Table{
+		Name:        "continents",
+		Columns:     ContinentsColumns,
+		PrimaryKey:  []*schema.Column{ContinentsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{},
+	}
+	// CountriesColumns holds the columns for the "countries" table.
+	CountriesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "country", Type: field.TypeString, Unique: true},
+	}
+	// CountriesTable holds the schema information for the "countries" table.
+	CountriesTable = &schema.Table{
+		Name:        "countries",
+		Columns:     CountriesColumns,
+		PrimaryKey:  []*schema.Column{CountriesColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{},
 	}
 	// CoursesColumns holds the columns for the "courses" table.
@@ -116,35 +148,6 @@ var (
 		PrimaryKey:  []*schema.Column{DegreesColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{},
 	}
-	// DistrictsColumns holds the columns for the "districts" table.
-	DistrictsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "district", Type: field.TypeString},
-		{Name: "postal_post_dist", Type: field.TypeInt, Nullable: true},
-		{Name: "subdistrict_subd_dist", Type: field.TypeInt, Nullable: true},
-	}
-	// DistrictsTable holds the schema information for the "districts" table.
-	DistrictsTable = &schema.Table{
-		Name:       "districts",
-		Columns:    DistrictsColumns,
-		PrimaryKey: []*schema.Column{DistrictsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:  "districts_postals_post_dist",
-				Columns: []*schema.Column{DistrictsColumns[2]},
-
-				RefColumns: []*schema.Column{PostalsColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-			{
-				Symbol:  "districts_subdistricts_subd_dist",
-				Columns: []*schema.Column{DistrictsColumns[3]},
-
-				RefColumns: []*schema.Column{SubdistrictsColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-		},
-	}
 	// FacultiesColumns holds the columns for the "faculties" table.
 	FacultiesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -191,18 +194,6 @@ var (
 		Name:        "places",
 		Columns:     PlacesColumns,
 		PrimaryKey:  []*schema.Column{PlacesColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{},
-	}
-	// PostalsColumns holds the columns for the "postals" table.
-	PostalsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "postal", Type: field.TypeString},
-	}
-	// PostalsTable holds the schema information for the "postals" table.
-	PostalsTable = &schema.Table{
-		Name:        "postals",
-		Columns:     PostalsColumns,
-		PrimaryKey:  []*schema.Column{PostalsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{},
 	}
 	// PrefixesColumns holds the columns for the "prefixes" table.
@@ -271,8 +262,12 @@ var (
 	// ProvincesColumns holds the columns for the "provinces" table.
 	ProvincesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "name", Type: field.TypeString},
-		{Name: "district_dist_prov", Type: field.TypeInt, Nullable: true},
+		{Name: "province", Type: field.TypeString, Unique: true},
+		{Name: "district", Type: field.TypeString},
+		{Name: "subdistrict", Type: field.TypeString},
+		{Name: "postal", Type: field.TypeInt},
+		{Name: "continent_cont_prov", Type: field.TypeInt, Nullable: true},
+		{Name: "country_coun_prov", Type: field.TypeInt, Nullable: true},
 		{Name: "region_regi_prov", Type: field.TypeInt, Nullable: true},
 	}
 	// ProvincesTable holds the schema information for the "provinces" table.
@@ -282,15 +277,22 @@ var (
 		PrimaryKey: []*schema.Column{ProvincesColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:  "provinces_districts_dist_prov",
-				Columns: []*schema.Column{ProvincesColumns[2]},
+				Symbol:  "provinces_continents_cont_prov",
+				Columns: []*schema.Column{ProvincesColumns[5]},
 
-				RefColumns: []*schema.Column{DistrictsColumns[0]},
+				RefColumns: []*schema.Column{ContinentsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:  "provinces_countries_coun_prov",
+				Columns: []*schema.Column{ProvincesColumns[6]},
+
+				RefColumns: []*schema.Column{CountriesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:  "provinces_regions_regi_prov",
-				Columns: []*schema.Column{ProvincesColumns[3]},
+				Columns: []*schema.Column{ProvincesColumns[7]},
 
 				RefColumns: []*schema.Column{RegionsColumns[0]},
 				OnDelete:   schema.SetNull,
@@ -367,6 +369,9 @@ var (
 		{Name: "gender_gend_stud", Type: field.TypeInt, Nullable: true},
 		{Name: "prefix_pref_stud", Type: field.TypeInt, Nullable: true},
 		{Name: "province_prov_stud", Type: field.TypeInt, Nullable: true},
+		{Name: "province_dist_stud", Type: field.TypeInt, Nullable: true},
+		{Name: "province_subd_stud", Type: field.TypeInt, Nullable: true},
+		{Name: "province_post_stud", Type: field.TypeInt, Nullable: true},
 	}
 	// StudentsTable holds the schema information for the "students" table.
 	StudentsTable = &schema.Table{
@@ -402,19 +407,28 @@ var (
 				RefColumns: []*schema.Column{ProvincesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
+			{
+				Symbol:  "students_provinces_dist_stud",
+				Columns: []*schema.Column{StudentsColumns[11]},
+
+				RefColumns: []*schema.Column{ProvincesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:  "students_provinces_subd_stud",
+				Columns: []*schema.Column{StudentsColumns[12]},
+
+				RefColumns: []*schema.Column{ProvincesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:  "students_provinces_post_stud",
+				Columns: []*schema.Column{StudentsColumns[13]},
+
+				RefColumns: []*schema.Column{ProvincesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
 		},
-	}
-	// SubdistrictsColumns holds the columns for the "subdistricts" table.
-	SubdistrictsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "subdistrict", Type: field.TypeString},
-	}
-	// SubdistrictsTable holds the schema information for the "subdistricts" table.
-	SubdistrictsTable = &schema.Table{
-		Name:        "subdistricts",
-		Columns:     SubdistrictsColumns,
-		PrimaryKey:  []*schema.Column{SubdistrictsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{},
 	}
 	// SubjectsColumns holds the columns for the "subjects" table.
 	SubjectsColumns = []*schema.Column{
@@ -467,14 +481,14 @@ var (
 	Tables = []*schema.Table{
 		ActivitiesTable,
 		AgenciesTable,
+		ContinentsTable,
+		CountriesTable,
 		CoursesTable,
 		DegreesTable,
-		DistrictsTable,
 		FacultiesTable,
 		GendersTable,
 		InstitutionsTable,
 		PlacesTable,
-		PostalsTable,
 		PrefixesTable,
 		ProfessorsTable,
 		ProfessorshipsTable,
@@ -482,7 +496,6 @@ var (
 		RegionsTable,
 		ResultsTable,
 		StudentsTable,
-		SubdistrictsTable,
 		SubjectsTable,
 		TermsTable,
 		YearsTable,
@@ -493,17 +506,17 @@ func init() {
 	ActivitiesTable.ForeignKeys[0].RefTable = AgenciesTable
 	ActivitiesTable.ForeignKeys[1].RefTable = PlacesTable
 	ActivitiesTable.ForeignKeys[2].RefTable = StudentsTable
-	ActivitiesTable.ForeignKeys[3].RefTable = YearsTable
+	ActivitiesTable.ForeignKeys[3].RefTable = TermsTable
+	ActivitiesTable.ForeignKeys[4].RefTable = YearsTable
 	CoursesTable.ForeignKeys[0].RefTable = DegreesTable
 	CoursesTable.ForeignKeys[1].RefTable = FacultiesTable
 	CoursesTable.ForeignKeys[2].RefTable = InstitutionsTable
-	DistrictsTable.ForeignKeys[0].RefTable = PostalsTable
-	DistrictsTable.ForeignKeys[1].RefTable = SubdistrictsTable
 	ProfessorsTable.ForeignKeys[0].RefTable = FacultiesTable
 	ProfessorsTable.ForeignKeys[1].RefTable = PrefixesTable
 	ProfessorsTable.ForeignKeys[2].RefTable = ProfessorshipsTable
-	ProvincesTable.ForeignKeys[0].RefTable = DistrictsTable
-	ProvincesTable.ForeignKeys[1].RefTable = RegionsTable
+	ProvincesTable.ForeignKeys[0].RefTable = ContinentsTable
+	ProvincesTable.ForeignKeys[1].RefTable = CountriesTable
+	ProvincesTable.ForeignKeys[2].RefTable = RegionsTable
 	ResultsTable.ForeignKeys[0].RefTable = StudentsTable
 	ResultsTable.ForeignKeys[1].RefTable = SubjectsTable
 	ResultsTable.ForeignKeys[2].RefTable = TermsTable
@@ -512,5 +525,8 @@ func init() {
 	StudentsTable.ForeignKeys[1].RefTable = GendersTable
 	StudentsTable.ForeignKeys[2].RefTable = PrefixesTable
 	StudentsTable.ForeignKeys[3].RefTable = ProvincesTable
+	StudentsTable.ForeignKeys[4].RefTable = ProvincesTable
+	StudentsTable.ForeignKeys[5].RefTable = ProvincesTable
+	StudentsTable.ForeignKeys[6].RefTable = ProvincesTable
 	TermsTable.ForeignKeys[0].RefTable = YearsTable
 }
