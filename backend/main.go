@@ -378,37 +378,6 @@ func main() {
 			Save(context.Background())
 	}
 
-	//Set District Data
-	districts := Districts{
-		District: []District{
-			District{"เมืองนครราชสีมา"},
-			District{"โนนสูง"},
-			District{"สีคิ้ว"},
-			District{"สีดา"},
-		},
-	}
-	for _, di := range districts.District {
-		client.District.
-			Create().
-			SetDistrict(di.District).
-			Save(context.Background())
-	}
-
-	//Set Subdistrict Data
-	subdistricts := Subdistricts{
-		Subdistrict: []Subdistrict{
-			Subdistrict{"ในเมือง"},
-			Subdistrict{"สุรนารี"},
-			Subdistrict{"จอหอ"},
-		},
-	}
-	for _, sd := range subdistricts.Subdistrict {
-		client.Subdistrict.
-			Create().
-			SetSubdistrict(sd.Subdistrict).
-			Save(context.Background())
-	}
-
 	//Set Region Data
 	regions := Regions{
 		Region: []Region{
@@ -422,22 +391,6 @@ func main() {
 		client.Region.
 			Create().
 			SetName(st.Region).
-			Save(context.Background())
-	}
-
-	//Set Postal Data
-	Postals := Postals{
-		Postal: []Postal{
-			Postal{"30000"},
-			Postal{"30430"},
-			Postal{"30310"},
-			Postal{"30280"},
-		},
-	}
-	for _, st := range Postals.Postal {
-		client.Postal.
-			Create().
-			SetPostal(st.Postal).
 			Save(context.Background())
 	}
 

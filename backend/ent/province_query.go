@@ -12,7 +12,8 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
-	"github.com/sut63/team17/app/ent/district"
+	"github.com/sut63/team17/app/ent/continent"
+	"github.com/sut63/team17/app/ent/country"
 	"github.com/sut63/team17/app/ent/predicate"
 	"github.com/sut63/team17/app/ent/province"
 	"github.com/sut63/team17/app/ent/region"
@@ -29,8 +30,12 @@ type ProvinceQuery struct {
 	predicates []predicate.Province
 	// eager-loading edges.
 	withProvRegi *RegionQuery
-	withProvDist *DistrictQuery
+	withProvCoun *CountryQuery
+	withProvCont *ContinentQuery
 	withProvStud *StudentQuery
+	withDistStud *StudentQuery
+	withSubdStud *StudentQuery
+	withPostStud *StudentQuery
 	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -79,17 +84,35 @@ func (pq *ProvinceQuery) QueryProvRegi() *RegionQuery {
 	return query
 }
 
-// QueryProvDist chains the current query on the prov_dist edge.
-func (pq *ProvinceQuery) QueryProvDist() *DistrictQuery {
-	query := &DistrictQuery{config: pq.config}
+// QueryProvCoun chains the current query on the prov_coun edge.
+func (pq *ProvinceQuery) QueryProvCoun() *CountryQuery {
+	query := &CountryQuery{config: pq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := pq.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(province.Table, province.FieldID, pq.sqlQuery()),
-			sqlgraph.To(district.Table, district.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, province.ProvDistTable, province.ProvDistColumn),
+			sqlgraph.To(country.Table, country.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, province.ProvCounTable, province.ProvCounColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryProvCont chains the current query on the prov_cont edge.
+func (pq *ProvinceQuery) QueryProvCont() *ContinentQuery {
+	query := &ContinentQuery{config: pq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := pq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(province.Table, province.FieldID, pq.sqlQuery()),
+			sqlgraph.To(continent.Table, continent.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, province.ProvContTable, province.ProvContColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
 		return fromU, nil
@@ -108,6 +131,60 @@ func (pq *ProvinceQuery) QueryProvStud() *StudentQuery {
 			sqlgraph.From(province.Table, province.FieldID, pq.sqlQuery()),
 			sqlgraph.To(student.Table, student.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, province.ProvStudTable, province.ProvStudColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryDistStud chains the current query on the dist_stud edge.
+func (pq *ProvinceQuery) QueryDistStud() *StudentQuery {
+	query := &StudentQuery{config: pq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := pq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(province.Table, province.FieldID, pq.sqlQuery()),
+			sqlgraph.To(student.Table, student.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, province.DistStudTable, province.DistStudColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QuerySubdStud chains the current query on the subd_stud edge.
+func (pq *ProvinceQuery) QuerySubdStud() *StudentQuery {
+	query := &StudentQuery{config: pq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := pq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(province.Table, province.FieldID, pq.sqlQuery()),
+			sqlgraph.To(student.Table, student.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, province.SubdStudTable, province.SubdStudColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryPostStud chains the current query on the post_stud edge.
+func (pq *ProvinceQuery) QueryPostStud() *StudentQuery {
+	query := &StudentQuery{config: pq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := pq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(province.Table, province.FieldID, pq.sqlQuery()),
+			sqlgraph.To(student.Table, student.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, province.PostStudTable, province.PostStudColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
 		return fromU, nil
@@ -305,14 +382,25 @@ func (pq *ProvinceQuery) WithProvRegi(opts ...func(*RegionQuery)) *ProvinceQuery
 	return pq
 }
 
-//  WithProvDist tells the query-builder to eager-loads the nodes that are connected to
-// the "prov_dist" edge. The optional arguments used to configure the query builder of the edge.
-func (pq *ProvinceQuery) WithProvDist(opts ...func(*DistrictQuery)) *ProvinceQuery {
-	query := &DistrictQuery{config: pq.config}
+//  WithProvCoun tells the query-builder to eager-loads the nodes that are connected to
+// the "prov_coun" edge. The optional arguments used to configure the query builder of the edge.
+func (pq *ProvinceQuery) WithProvCoun(opts ...func(*CountryQuery)) *ProvinceQuery {
+	query := &CountryQuery{config: pq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
-	pq.withProvDist = query
+	pq.withProvCoun = query
+	return pq
+}
+
+//  WithProvCont tells the query-builder to eager-loads the nodes that are connected to
+// the "prov_cont" edge. The optional arguments used to configure the query builder of the edge.
+func (pq *ProvinceQuery) WithProvCont(opts ...func(*ContinentQuery)) *ProvinceQuery {
+	query := &ContinentQuery{config: pq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	pq.withProvCont = query
 	return pq
 }
 
@@ -327,18 +415,51 @@ func (pq *ProvinceQuery) WithProvStud(opts ...func(*StudentQuery)) *ProvinceQuer
 	return pq
 }
 
+//  WithDistStud tells the query-builder to eager-loads the nodes that are connected to
+// the "dist_stud" edge. The optional arguments used to configure the query builder of the edge.
+func (pq *ProvinceQuery) WithDistStud(opts ...func(*StudentQuery)) *ProvinceQuery {
+	query := &StudentQuery{config: pq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	pq.withDistStud = query
+	return pq
+}
+
+//  WithSubdStud tells the query-builder to eager-loads the nodes that are connected to
+// the "subd_stud" edge. The optional arguments used to configure the query builder of the edge.
+func (pq *ProvinceQuery) WithSubdStud(opts ...func(*StudentQuery)) *ProvinceQuery {
+	query := &StudentQuery{config: pq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	pq.withSubdStud = query
+	return pq
+}
+
+//  WithPostStud tells the query-builder to eager-loads the nodes that are connected to
+// the "post_stud" edge. The optional arguments used to configure the query builder of the edge.
+func (pq *ProvinceQuery) WithPostStud(opts ...func(*StudentQuery)) *ProvinceQuery {
+	query := &StudentQuery{config: pq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	pq.withPostStud = query
+	return pq
+}
+
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		Province string `json:"province,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Province.Query().
-//		GroupBy(province.FieldName).
+//		GroupBy(province.FieldProvince).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 //
@@ -359,11 +480,11 @@ func (pq *ProvinceQuery) GroupBy(field string, fields ...string) *ProvinceGroupB
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		Province string `json:"province,omitempty"`
 //	}
 //
 //	client.Province.Query().
-//		Select(province.FieldName).
+//		Select(province.FieldProvince).
 //		Scan(ctx, &v)
 //
 func (pq *ProvinceQuery) Select(field string, fields ...string) *ProvinceSelect {
@@ -394,13 +515,17 @@ func (pq *ProvinceQuery) sqlAll(ctx context.Context) ([]*Province, error) {
 		nodes       = []*Province{}
 		withFKs     = pq.withFKs
 		_spec       = pq.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [7]bool{
 			pq.withProvRegi != nil,
-			pq.withProvDist != nil,
+			pq.withProvCoun != nil,
+			pq.withProvCont != nil,
 			pq.withProvStud != nil,
+			pq.withDistStud != nil,
+			pq.withSubdStud != nil,
+			pq.withPostStud != nil,
 		}
 	)
-	if pq.withProvRegi != nil || pq.withProvDist != nil {
+	if pq.withProvRegi != nil || pq.withProvCoun != nil || pq.withProvCont != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -455,16 +580,16 @@ func (pq *ProvinceQuery) sqlAll(ctx context.Context) ([]*Province, error) {
 		}
 	}
 
-	if query := pq.withProvDist; query != nil {
+	if query := pq.withProvCoun; query != nil {
 		ids := make([]int, 0, len(nodes))
 		nodeids := make(map[int][]*Province)
 		for i := range nodes {
-			if fk := nodes[i].district_dist_prov; fk != nil {
+			if fk := nodes[i].country_coun_prov; fk != nil {
 				ids = append(ids, *fk)
 				nodeids[*fk] = append(nodeids[*fk], nodes[i])
 			}
 		}
-		query.Where(district.IDIn(ids...))
+		query.Where(country.IDIn(ids...))
 		neighbors, err := query.All(ctx)
 		if err != nil {
 			return nil, err
@@ -472,10 +597,35 @@ func (pq *ProvinceQuery) sqlAll(ctx context.Context) ([]*Province, error) {
 		for _, n := range neighbors {
 			nodes, ok := nodeids[n.ID]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "district_dist_prov" returned %v`, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "country_coun_prov" returned %v`, n.ID)
 			}
 			for i := range nodes {
-				nodes[i].Edges.ProvDist = n
+				nodes[i].Edges.ProvCoun = n
+			}
+		}
+	}
+
+	if query := pq.withProvCont; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*Province)
+		for i := range nodes {
+			if fk := nodes[i].continent_cont_prov; fk != nil {
+				ids = append(ids, *fk)
+				nodeids[*fk] = append(nodeids[*fk], nodes[i])
+			}
+		}
+		query.Where(continent.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "continent_cont_prov" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.ProvCont = n
 			}
 		}
 	}
@@ -505,6 +655,90 @@ func (pq *ProvinceQuery) sqlAll(ctx context.Context) ([]*Province, error) {
 				return nil, fmt.Errorf(`unexpected foreign-key "province_prov_stud" returned %v for node %v`, *fk, n.ID)
 			}
 			node.Edges.ProvStud = append(node.Edges.ProvStud, n)
+		}
+	}
+
+	if query := pq.withDistStud; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[int]*Province)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+		}
+		query.withFKs = true
+		query.Where(predicate.Student(func(s *sql.Selector) {
+			s.Where(sql.InValues(province.DistStudColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.province_dist_stud
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "province_dist_stud" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "province_dist_stud" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.DistStud = append(node.Edges.DistStud, n)
+		}
+	}
+
+	if query := pq.withSubdStud; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[int]*Province)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+		}
+		query.withFKs = true
+		query.Where(predicate.Student(func(s *sql.Selector) {
+			s.Where(sql.InValues(province.SubdStudColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.province_subd_stud
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "province_subd_stud" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "province_subd_stud" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.SubdStud = append(node.Edges.SubdStud, n)
+		}
+	}
+
+	if query := pq.withPostStud; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[int]*Province)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+		}
+		query.withFKs = true
+		query.Where(predicate.Student(func(s *sql.Selector) {
+			s.Where(sql.InValues(province.PostStudColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.province_post_stud
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "province_post_stud" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "province_post_stud" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.PostStud = append(node.Edges.PostStud, n)
 		}
 	}
 

@@ -4,13 +4,13 @@ package ent
 
 import (
 	"github.com/sut63/team17/app/ent/agency"
+	"github.com/sut63/team17/app/ent/continent"
+	"github.com/sut63/team17/app/ent/country"
 	"github.com/sut63/team17/app/ent/course"
 	"github.com/sut63/team17/app/ent/degree"
-	"github.com/sut63/team17/app/ent/district"
 	"github.com/sut63/team17/app/ent/faculty"
 	"github.com/sut63/team17/app/ent/institution"
 	"github.com/sut63/team17/app/ent/place"
-	"github.com/sut63/team17/app/ent/postal"
 	"github.com/sut63/team17/app/ent/prefix"
 	"github.com/sut63/team17/app/ent/professorship"
 	"github.com/sut63/team17/app/ent/province"
@@ -18,7 +18,6 @@ import (
 	"github.com/sut63/team17/app/ent/results"
 	"github.com/sut63/team17/app/ent/schema"
 	"github.com/sut63/team17/app/ent/student"
-	"github.com/sut63/team17/app/ent/subdistrict"
 	"github.com/sut63/team17/app/ent/subject"
 	"github.com/sut63/team17/app/ent/term"
 	"github.com/sut63/team17/app/ent/year"
@@ -34,6 +33,18 @@ func init() {
 	agencyDescAGENCY := agencyFields[0].Descriptor()
 	// agency.AGENCYValidator is a validator for the "AGENCY" field. It is called by the builders before save.
 	agency.AGENCYValidator = agencyDescAGENCY.Validators[0].(func(string) error)
+	continentFields := schema.Continent{}.Fields()
+	_ = continentFields
+	// continentDescContinent is the schema descriptor for continent field.
+	continentDescContinent := continentFields[0].Descriptor()
+	// continent.ContinentValidator is a validator for the "continent" field. It is called by the builders before save.
+	continent.ContinentValidator = continentDescContinent.Validators[0].(func(string) error)
+	countryFields := schema.Country{}.Fields()
+	_ = countryFields
+	// countryDescCountry is the schema descriptor for country field.
+	countryDescCountry := countryFields[0].Descriptor()
+	// country.CountryValidator is a validator for the "country" field. It is called by the builders before save.
+	country.CountryValidator = countryDescCountry.Validators[0].(func(string) error)
 	courseFields := schema.Course{}.Fields()
 	_ = courseFields
 	// courseDescCourse is the schema descriptor for course field.
@@ -46,12 +57,6 @@ func init() {
 	degreeDescDegree := degreeFields[0].Descriptor()
 	// degree.DegreeValidator is a validator for the "degree" field. It is called by the builders before save.
 	degree.DegreeValidator = degreeDescDegree.Validators[0].(func(string) error)
-	districtFields := schema.District{}.Fields()
-	_ = districtFields
-	// districtDescDistrict is the schema descriptor for district field.
-	districtDescDistrict := districtFields[0].Descriptor()
-	// district.DistrictValidator is a validator for the "district" field. It is called by the builders before save.
-	district.DistrictValidator = districtDescDistrict.Validators[0].(func(string) error)
 	facultyFields := schema.Faculty{}.Fields()
 	_ = facultyFields
 	// facultyDescFaculty is the schema descriptor for faculty field.
@@ -70,12 +75,6 @@ func init() {
 	placeDescPLACE := placeFields[0].Descriptor()
 	// place.PLACEValidator is a validator for the "PLACE" field. It is called by the builders before save.
 	place.PLACEValidator = placeDescPLACE.Validators[0].(func(string) error)
-	postalFields := schema.Postal{}.Fields()
-	_ = postalFields
-	// postalDescPostal is the schema descriptor for postal field.
-	postalDescPostal := postalFields[0].Descriptor()
-	// postal.PostalValidator is a validator for the "postal" field. It is called by the builders before save.
-	postal.PostalValidator = postalDescPostal.Validators[0].(func(string) error)
 	prefixFields := schema.Prefix{}.Fields()
 	_ = prefixFields
 	// prefixDescPrefix is the schema descriptor for prefix field.
@@ -90,10 +89,22 @@ func init() {
 	professorship.ProfessorshipValidator = professorshipDescProfessorship.Validators[0].(func(string) error)
 	provinceFields := schema.Province{}.Fields()
 	_ = provinceFields
-	// provinceDescName is the schema descriptor for name field.
-	provinceDescName := provinceFields[0].Descriptor()
-	// province.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	province.NameValidator = provinceDescName.Validators[0].(func(string) error)
+	// provinceDescProvince is the schema descriptor for province field.
+	provinceDescProvince := provinceFields[0].Descriptor()
+	// province.ProvinceValidator is a validator for the "province" field. It is called by the builders before save.
+	province.ProvinceValidator = provinceDescProvince.Validators[0].(func(string) error)
+	// provinceDescDistrict is the schema descriptor for district field.
+	provinceDescDistrict := provinceFields[1].Descriptor()
+	// province.DistrictValidator is a validator for the "district" field. It is called by the builders before save.
+	province.DistrictValidator = provinceDescDistrict.Validators[0].(func(string) error)
+	// provinceDescSubdistrict is the schema descriptor for subdistrict field.
+	provinceDescSubdistrict := provinceFields[2].Descriptor()
+	// province.SubdistrictValidator is a validator for the "subdistrict" field. It is called by the builders before save.
+	province.SubdistrictValidator = provinceDescSubdistrict.Validators[0].(func(string) error)
+	// provinceDescPostal is the schema descriptor for postal field.
+	provinceDescPostal := provinceFields[3].Descriptor()
+	// province.PostalValidator is a validator for the "postal" field. It is called by the builders before save.
+	province.PostalValidator = provinceDescPostal.Validators[0].(func(int) error)
 	regionFields := schema.Region{}.Fields()
 	_ = regionFields
 	// regionDescName is the schema descriptor for name field.
@@ -124,12 +135,6 @@ func init() {
 	studentDescRecentAddress := studentFields[3].Descriptor()
 	// student.RecentAddressValidator is a validator for the "recent_address" field. It is called by the builders before save.
 	student.RecentAddressValidator = studentDescRecentAddress.Validators[0].(func(string) error)
-	subdistrictFields := schema.Subdistrict{}.Fields()
-	_ = subdistrictFields
-	// subdistrictDescSubdistrict is the schema descriptor for subdistrict field.
-	subdistrictDescSubdistrict := subdistrictFields[0].Descriptor()
-	// subdistrict.SubdistrictValidator is a validator for the "subdistrict" field. It is called by the builders before save.
-	subdistrict.SubdistrictValidator = subdistrictDescSubdistrict.Validators[0].(func(string) error)
 	subjectFields := schema.Subject{}.Fields()
 	_ = subjectFields
 	// subjectDescCode is the schema descriptor for code field.

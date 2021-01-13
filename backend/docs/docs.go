@@ -259,6 +259,190 @@ var doc = `{
                 }
             }
         },
+        "/continents": {
+            "get": {
+                "description": "list continent entities",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "List continent entities",
+                "operationId": "list-continent",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ent.Continent"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/continents/{id}": {
+            "get": {
+                "description": "get continent by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a continent entity by ID",
+                "operationId": "get-continent",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Continent ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.Continent"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/countrys": {
+            "get": {
+                "description": "list country entities",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "List country entities",
+                "operationId": "list-country",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ent.Country"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/countrys/{id}": {
+            "get": {
+                "description": "get country by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a country entity by ID",
+                "operationId": "get-country",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Country ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.Country"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
         "/courses": {
             "get": {
                 "description": "list course entities",
@@ -462,98 +646,6 @@ var doc = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/ent.Degree"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    }
-                }
-            }
-        },
-        "/districts": {
-            "get": {
-                "description": "list district entities",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "List district entities",
-                "operationId": "list-district",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Limit",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Offset",
-                        "name": "offset",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/ent.District"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    }
-                }
-            }
-        },
-        "/districts/{id}": {
-            "get": {
-                "description": "get district by ID",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Get a district entity by ID",
-                "operationId": "get-district",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "District ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/ent.District"
                         }
                     },
                     "400": {
@@ -922,98 +1014,6 @@ var doc = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/ent.Place"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    }
-                }
-            }
-        },
-        "/postals": {
-            "get": {
-                "description": "list postal entities",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "List postal entities",
-                "operationId": "list-postal",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Limit",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Offset",
-                        "name": "offset",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/ent.Postal"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    }
-                }
-            }
-        },
-        "/postals/{id}": {
-            "get": {
-                "description": "get postal by ID",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Get a postal entity by ID",
-                "operationId": "get-postal",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Postal ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/ent.Postal"
                         }
                     },
                     "400": {
@@ -1896,98 +1896,6 @@ var doc = `{
                 }
             }
         },
-        "/subdistricts": {
-            "get": {
-                "description": "list subdistrict entities",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "List subdistrict entities",
-                "operationId": "list-subdistrict",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Limit",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Offset",
-                        "name": "offset",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/ent.Subdistrict"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    }
-                }
-            }
-        },
-        "/subdistricts/{id}": {
-            "get": {
-                "description": "get subdistrict by ID",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Get a subdistrict entity by ID",
-                "operationId": "get-subdistrict",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Subdistrict ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/ent.Subdistrict"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    }
-                }
-            }
-        },
         "/subjects": {
             "get": {
                 "description": "list subject entities",
@@ -2335,14 +2243,26 @@ var doc = `{
         "controllers.Province": {
             "type": "object",
             "properties": {
-                "district": {
+                "continent": {
                     "type": "integer"
                 },
-                "name": {
+                "country": {
+                    "type": "integer"
+                },
+                "district": {
+                    "type": "string"
+                },
+                "postal": {
+                    "type": "integer"
+                },
+                "province": {
                     "type": "string"
                 },
                 "region": {
                     "type": "integer"
+                },
+                "subdistrict": {
+                    "type": "string"
                 }
             }
         },
@@ -2375,6 +2295,9 @@ var doc = `{
                 "degree": {
                     "type": "integer"
                 },
+                "district": {
+                    "type": "integer"
+                },
                 "email": {
                     "type": "string"
                 },
@@ -2383,6 +2306,9 @@ var doc = `{
                 },
                 "lname": {
                     "type": "string"
+                },
+                "postal": {
+                    "type": "integer"
                 },
                 "province": {
                     "type": "integer"
@@ -2397,6 +2323,9 @@ var doc = `{
                     "type": "integer"
                 },
                 "title": {
+                    "type": "integer"
+                },
+                "zone": {
                     "type": "integer"
                 }
             }
@@ -2482,6 +2411,66 @@ var doc = `{
                 }
             }
         },
+        "ent.Continent": {
+            "type": "object",
+            "properties": {
+                "continent": {
+                    "description": "Continent holds the value of the \"continent\" field.",
+                    "type": "string"
+                },
+                "edges": {
+                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the ContinentQuery when eager-loading is set.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.ContinentEdges"
+                },
+                "id": {
+                    "description": "ID of the ent.",
+                    "type": "integer"
+                }
+            }
+        },
+        "ent.ContinentEdges": {
+            "type": "object",
+            "properties": {
+                "contProv": {
+                    "description": "ContProv holds the value of the cont_prov edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.Province"
+                    }
+                }
+            }
+        },
+        "ent.Country": {
+            "type": "object",
+            "properties": {
+                "country": {
+                    "description": "Country holds the value of the \"country\" field.",
+                    "type": "string"
+                },
+                "edges": {
+                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the CountryQuery when eager-loading is set.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.CountryEdges"
+                },
+                "id": {
+                    "description": "ID of the ent.",
+                    "type": "integer"
+                }
+            }
+        },
+        "ent.CountryEdges": {
+            "type": "object",
+            "properties": {
+                "counProv": {
+                    "description": "CounProv holds the value of the coun_prov edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.Province"
+                    }
+                }
+            }
+        },
         "ent.Course": {
             "type": "object",
             "properties": {
@@ -2554,46 +2543,6 @@ var doc = `{
                     "items": {
                         "$ref": "#/definitions/ent.Student"
                     }
-                }
-            }
-        },
-        "ent.District": {
-            "type": "object",
-            "properties": {
-                "district": {
-                    "description": "District holds the value of the \"district\" field.",
-                    "type": "string"
-                },
-                "edges": {
-                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the DistrictQuery when eager-loading is set.",
-                    "type": "object",
-                    "$ref": "#/definitions/ent.DistrictEdges"
-                },
-                "id": {
-                    "description": "ID of the ent.",
-                    "type": "integer"
-                }
-            }
-        },
-        "ent.DistrictEdges": {
-            "type": "object",
-            "properties": {
-                "distPost": {
-                    "description": "DistPost holds the value of the dist_post edge.",
-                    "type": "object",
-                    "$ref": "#/definitions/ent.Postal"
-                },
-                "distProv": {
-                    "description": "DistProv holds the value of the dist_prov edge.",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/ent.Province"
-                    }
-                },
-                "distSubd": {
-                    "description": "DistSubd holds the value of the dist_subd edge.",
-                    "type": "object",
-                    "$ref": "#/definitions/ent.Subdistrict"
                 }
             }
         },
@@ -2724,36 +2673,6 @@ var doc = `{
                 }
             }
         },
-        "ent.Postal": {
-            "type": "object",
-            "properties": {
-                "edges": {
-                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the PostalQuery when eager-loading is set.",
-                    "type": "object",
-                    "$ref": "#/definitions/ent.PostalEdges"
-                },
-                "id": {
-                    "description": "ID of the ent.",
-                    "type": "integer"
-                },
-                "postal": {
-                    "description": "Postal holds the value of the \"postal\" field.",
-                    "type": "string"
-                }
-            }
-        },
-        "ent.PostalEdges": {
-            "type": "object",
-            "properties": {
-                "postDist": {
-                    "description": "PostDist holds the value of the post_dist edge.",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/ent.District"
-                    }
-                }
-            }
-        },
         "ent.Prefix": {
             "type": "object",
             "properties": {
@@ -2870,6 +2789,10 @@ var doc = `{
         "ent.Province": {
             "type": "object",
             "properties": {
+                "district": {
+                    "description": "District holds the value of the \"district\" field.",
+                    "type": "string"
+                },
                 "edges": {
                     "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the ProvinceQuery when eager-loading is set.",
                     "type": "object",
@@ -2879,8 +2802,16 @@ var doc = `{
                     "description": "ID of the ent.",
                     "type": "integer"
                 },
-                "name": {
-                    "description": "Name holds the value of the \"name\" field.",
+                "postal": {
+                    "description": "Postal holds the value of the \"postal\" field.",
+                    "type": "integer"
+                },
+                "province": {
+                    "description": "Province holds the value of the \"province\" field.",
+                    "type": "string"
+                },
+                "subdistrict": {
+                    "description": "Subdistrict holds the value of the \"subdistrict\" field.",
                     "type": "string"
                 }
             }
@@ -2888,10 +2819,29 @@ var doc = `{
         "ent.ProvinceEdges": {
             "type": "object",
             "properties": {
-                "provDist": {
-                    "description": "ProvDist holds the value of the prov_dist edge.",
+                "distStud": {
+                    "description": "DistStud holds the value of the dist_stud edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.Student"
+                    }
+                },
+                "postStud": {
+                    "description": "PostStud holds the value of the post_stud edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.Student"
+                    }
+                },
+                "provCont": {
+                    "description": "ProvCont holds the value of the prov_cont edge.",
                     "type": "object",
-                    "$ref": "#/definitions/ent.District"
+                    "$ref": "#/definitions/ent.Continent"
+                },
+                "provCoun": {
+                    "description": "ProvCoun holds the value of the prov_coun edge.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.Country"
                 },
                 "provRegi": {
                     "description": "ProvRegi holds the value of the prov_regi edge.",
@@ -2900,6 +2850,13 @@ var doc = `{
                 },
                 "provStud": {
                     "description": "ProvStud holds the value of the prov_stud edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.Student"
+                    }
+                },
+                "subdStud": {
+                    "description": "SubdStud holds the value of the subd_stud edge.",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/ent.Student"
@@ -3033,10 +2990,20 @@ var doc = `{
                     "type": "object",
                     "$ref": "#/definitions/ent.Degree"
                 },
+                "studDist": {
+                    "description": "StudDist holds the value of the stud_dist edge.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.Province"
+                },
                 "studGend": {
                     "description": "StudGend holds the value of the stud_gend edge.",
                     "type": "object",
                     "$ref": "#/definitions/ent.Gender"
+                },
+                "studPost": {
+                    "description": "StudPost holds the value of the stud_post edge.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.Province"
                 },
                 "studPref": {
                     "description": "StudPref holds the value of the stud_pref edge.",
@@ -3054,36 +3021,11 @@ var doc = `{
                     "items": {
                         "$ref": "#/definitions/ent.Results"
                     }
-                }
-            }
-        },
-        "ent.Subdistrict": {
-            "type": "object",
-            "properties": {
-                "edges": {
-                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the SubdistrictQuery when eager-loading is set.",
+                },
+                "studSubd": {
+                    "description": "StudSubd holds the value of the stud_subd edge.",
                     "type": "object",
-                    "$ref": "#/definitions/ent.SubdistrictEdges"
-                },
-                "id": {
-                    "description": "ID of the ent.",
-                    "type": "integer"
-                },
-                "subdistrict": {
-                    "description": "Subdistrict holds the value of the \"subdistrict\" field.",
-                    "type": "string"
-                }
-            }
-        },
-        "ent.SubdistrictEdges": {
-            "type": "object",
-            "properties": {
-                "subdDist": {
-                    "description": "SubdDist holds the value of the subd_dist edge.",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/ent.District"
-                    }
+                    "$ref": "#/definitions/ent.Province"
                 }
             }
         },
@@ -3146,6 +3088,13 @@ var doc = `{
         "ent.TermEdges": {
             "type": "object",
             "properties": {
+                "termActi": {
+                    "description": "TermActi holds the value of the term_acti edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.Activity"
+                    }
+                },
                 "termResu": {
                     "description": "TermResu holds the value of the term_resu edge.",
                     "type": "array",

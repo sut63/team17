@@ -11,14 +11,14 @@ import (
 
 	"github.com/sut63/team17/app/ent/activity"
 	"github.com/sut63/team17/app/ent/agency"
+	"github.com/sut63/team17/app/ent/continent"
+	"github.com/sut63/team17/app/ent/country"
 	"github.com/sut63/team17/app/ent/course"
 	"github.com/sut63/team17/app/ent/degree"
-	"github.com/sut63/team17/app/ent/district"
 	"github.com/sut63/team17/app/ent/faculty"
 	"github.com/sut63/team17/app/ent/gender"
 	"github.com/sut63/team17/app/ent/institution"
 	"github.com/sut63/team17/app/ent/place"
-	"github.com/sut63/team17/app/ent/postal"
 	"github.com/sut63/team17/app/ent/prefix"
 	"github.com/sut63/team17/app/ent/professor"
 	"github.com/sut63/team17/app/ent/professorship"
@@ -26,7 +26,6 @@ import (
 	"github.com/sut63/team17/app/ent/region"
 	"github.com/sut63/team17/app/ent/results"
 	"github.com/sut63/team17/app/ent/student"
-	"github.com/sut63/team17/app/ent/subdistrict"
 	"github.com/sut63/team17/app/ent/subject"
 	"github.com/sut63/team17/app/ent/term"
 	"github.com/sut63/team17/app/ent/year"
@@ -45,12 +44,14 @@ type Client struct {
 	Activity *ActivityClient
 	// Agency is the client for interacting with the Agency builders.
 	Agency *AgencyClient
+	// Continent is the client for interacting with the Continent builders.
+	Continent *ContinentClient
+	// Country is the client for interacting with the Country builders.
+	Country *CountryClient
 	// Course is the client for interacting with the Course builders.
 	Course *CourseClient
 	// Degree is the client for interacting with the Degree builders.
 	Degree *DegreeClient
-	// District is the client for interacting with the District builders.
-	District *DistrictClient
 	// Faculty is the client for interacting with the Faculty builders.
 	Faculty *FacultyClient
 	// Gender is the client for interacting with the Gender builders.
@@ -59,8 +60,6 @@ type Client struct {
 	Institution *InstitutionClient
 	// Place is the client for interacting with the Place builders.
 	Place *PlaceClient
-	// Postal is the client for interacting with the Postal builders.
-	Postal *PostalClient
 	// Prefix is the client for interacting with the Prefix builders.
 	Prefix *PrefixClient
 	// Professor is the client for interacting with the Professor builders.
@@ -75,8 +74,6 @@ type Client struct {
 	Results *ResultsClient
 	// Student is the client for interacting with the Student builders.
 	Student *StudentClient
-	// Subdistrict is the client for interacting with the Subdistrict builders.
-	Subdistrict *SubdistrictClient
 	// Subject is the client for interacting with the Subject builders.
 	Subject *SubjectClient
 	// Term is the client for interacting with the Term builders.
@@ -98,14 +95,14 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Activity = NewActivityClient(c.config)
 	c.Agency = NewAgencyClient(c.config)
+	c.Continent = NewContinentClient(c.config)
+	c.Country = NewCountryClient(c.config)
 	c.Course = NewCourseClient(c.config)
 	c.Degree = NewDegreeClient(c.config)
-	c.District = NewDistrictClient(c.config)
 	c.Faculty = NewFacultyClient(c.config)
 	c.Gender = NewGenderClient(c.config)
 	c.Institution = NewInstitutionClient(c.config)
 	c.Place = NewPlaceClient(c.config)
-	c.Postal = NewPostalClient(c.config)
 	c.Prefix = NewPrefixClient(c.config)
 	c.Professor = NewProfessorClient(c.config)
 	c.Professorship = NewProfessorshipClient(c.config)
@@ -113,7 +110,6 @@ func (c *Client) init() {
 	c.Region = NewRegionClient(c.config)
 	c.Results = NewResultsClient(c.config)
 	c.Student = NewStudentClient(c.config)
-	c.Subdistrict = NewSubdistrictClient(c.config)
 	c.Subject = NewSubjectClient(c.config)
 	c.Term = NewTermClient(c.config)
 	c.Year = NewYearClient(c.config)
@@ -151,14 +147,14 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		config:        cfg,
 		Activity:      NewActivityClient(cfg),
 		Agency:        NewAgencyClient(cfg),
+		Continent:     NewContinentClient(cfg),
+		Country:       NewCountryClient(cfg),
 		Course:        NewCourseClient(cfg),
 		Degree:        NewDegreeClient(cfg),
-		District:      NewDistrictClient(cfg),
 		Faculty:       NewFacultyClient(cfg),
 		Gender:        NewGenderClient(cfg),
 		Institution:   NewInstitutionClient(cfg),
 		Place:         NewPlaceClient(cfg),
-		Postal:        NewPostalClient(cfg),
 		Prefix:        NewPrefixClient(cfg),
 		Professor:     NewProfessorClient(cfg),
 		Professorship: NewProfessorshipClient(cfg),
@@ -166,7 +162,6 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Region:        NewRegionClient(cfg),
 		Results:       NewResultsClient(cfg),
 		Student:       NewStudentClient(cfg),
-		Subdistrict:   NewSubdistrictClient(cfg),
 		Subject:       NewSubjectClient(cfg),
 		Term:          NewTermClient(cfg),
 		Year:          NewYearClient(cfg),
@@ -187,14 +182,14 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		config:        cfg,
 		Activity:      NewActivityClient(cfg),
 		Agency:        NewAgencyClient(cfg),
+		Continent:     NewContinentClient(cfg),
+		Country:       NewCountryClient(cfg),
 		Course:        NewCourseClient(cfg),
 		Degree:        NewDegreeClient(cfg),
-		District:      NewDistrictClient(cfg),
 		Faculty:       NewFacultyClient(cfg),
 		Gender:        NewGenderClient(cfg),
 		Institution:   NewInstitutionClient(cfg),
 		Place:         NewPlaceClient(cfg),
-		Postal:        NewPostalClient(cfg),
 		Prefix:        NewPrefixClient(cfg),
 		Professor:     NewProfessorClient(cfg),
 		Professorship: NewProfessorshipClient(cfg),
@@ -202,7 +197,6 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Region:        NewRegionClient(cfg),
 		Results:       NewResultsClient(cfg),
 		Student:       NewStudentClient(cfg),
-		Subdistrict:   NewSubdistrictClient(cfg),
 		Subject:       NewSubjectClient(cfg),
 		Term:          NewTermClient(cfg),
 		Year:          NewYearClient(cfg),
@@ -236,14 +230,14 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	c.Activity.Use(hooks...)
 	c.Agency.Use(hooks...)
+	c.Continent.Use(hooks...)
+	c.Country.Use(hooks...)
 	c.Course.Use(hooks...)
 	c.Degree.Use(hooks...)
-	c.District.Use(hooks...)
 	c.Faculty.Use(hooks...)
 	c.Gender.Use(hooks...)
 	c.Institution.Use(hooks...)
 	c.Place.Use(hooks...)
-	c.Postal.Use(hooks...)
 	c.Prefix.Use(hooks...)
 	c.Professor.Use(hooks...)
 	c.Professorship.Use(hooks...)
@@ -251,7 +245,6 @@ func (c *Client) Use(hooks ...Hook) {
 	c.Region.Use(hooks...)
 	c.Results.Use(hooks...)
 	c.Student.Use(hooks...)
-	c.Subdistrict.Use(hooks...)
 	c.Subject.Use(hooks...)
 	c.Term.Use(hooks...)
 	c.Year.Use(hooks...)
@@ -503,6 +496,204 @@ func (c *AgencyClient) Hooks() []Hook {
 	return c.hooks.Agency
 }
 
+// ContinentClient is a client for the Continent schema.
+type ContinentClient struct {
+	config
+}
+
+// NewContinentClient returns a client for the Continent from the given config.
+func NewContinentClient(c config) *ContinentClient {
+	return &ContinentClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `continent.Hooks(f(g(h())))`.
+func (c *ContinentClient) Use(hooks ...Hook) {
+	c.hooks.Continent = append(c.hooks.Continent, hooks...)
+}
+
+// Create returns a create builder for Continent.
+func (c *ContinentClient) Create() *ContinentCreate {
+	mutation := newContinentMutation(c.config, OpCreate)
+	return &ContinentCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Update returns an update builder for Continent.
+func (c *ContinentClient) Update() *ContinentUpdate {
+	mutation := newContinentMutation(c.config, OpUpdate)
+	return &ContinentUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ContinentClient) UpdateOne(co *Continent) *ContinentUpdateOne {
+	mutation := newContinentMutation(c.config, OpUpdateOne, withContinent(co))
+	return &ContinentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ContinentClient) UpdateOneID(id int) *ContinentUpdateOne {
+	mutation := newContinentMutation(c.config, OpUpdateOne, withContinentID(id))
+	return &ContinentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Continent.
+func (c *ContinentClient) Delete() *ContinentDelete {
+	mutation := newContinentMutation(c.config, OpDelete)
+	return &ContinentDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *ContinentClient) DeleteOne(co *Continent) *ContinentDeleteOne {
+	return c.DeleteOneID(co.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *ContinentClient) DeleteOneID(id int) *ContinentDeleteOne {
+	builder := c.Delete().Where(continent.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ContinentDeleteOne{builder}
+}
+
+// Create returns a query builder for Continent.
+func (c *ContinentClient) Query() *ContinentQuery {
+	return &ContinentQuery{config: c.config}
+}
+
+// Get returns a Continent entity by its id.
+func (c *ContinentClient) Get(ctx context.Context, id int) (*Continent, error) {
+	return c.Query().Where(continent.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ContinentClient) GetX(ctx context.Context, id int) *Continent {
+	co, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return co
+}
+
+// QueryContProv queries the cont_prov edge of a Continent.
+func (c *ContinentClient) QueryContProv(co *Continent) *ProvinceQuery {
+	query := &ProvinceQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := co.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(continent.Table, continent.FieldID, id),
+			sqlgraph.To(province.Table, province.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, continent.ContProvTable, continent.ContProvColumn),
+		)
+		fromV = sqlgraph.Neighbors(co.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ContinentClient) Hooks() []Hook {
+	return c.hooks.Continent
+}
+
+// CountryClient is a client for the Country schema.
+type CountryClient struct {
+	config
+}
+
+// NewCountryClient returns a client for the Country from the given config.
+func NewCountryClient(c config) *CountryClient {
+	return &CountryClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `country.Hooks(f(g(h())))`.
+func (c *CountryClient) Use(hooks ...Hook) {
+	c.hooks.Country = append(c.hooks.Country, hooks...)
+}
+
+// Create returns a create builder for Country.
+func (c *CountryClient) Create() *CountryCreate {
+	mutation := newCountryMutation(c.config, OpCreate)
+	return &CountryCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Update returns an update builder for Country.
+func (c *CountryClient) Update() *CountryUpdate {
+	mutation := newCountryMutation(c.config, OpUpdate)
+	return &CountryUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CountryClient) UpdateOne(co *Country) *CountryUpdateOne {
+	mutation := newCountryMutation(c.config, OpUpdateOne, withCountry(co))
+	return &CountryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CountryClient) UpdateOneID(id int) *CountryUpdateOne {
+	mutation := newCountryMutation(c.config, OpUpdateOne, withCountryID(id))
+	return &CountryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Country.
+func (c *CountryClient) Delete() *CountryDelete {
+	mutation := newCountryMutation(c.config, OpDelete)
+	return &CountryDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *CountryClient) DeleteOne(co *Country) *CountryDeleteOne {
+	return c.DeleteOneID(co.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *CountryClient) DeleteOneID(id int) *CountryDeleteOne {
+	builder := c.Delete().Where(country.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CountryDeleteOne{builder}
+}
+
+// Create returns a query builder for Country.
+func (c *CountryClient) Query() *CountryQuery {
+	return &CountryQuery{config: c.config}
+}
+
+// Get returns a Country entity by its id.
+func (c *CountryClient) Get(ctx context.Context, id int) (*Country, error) {
+	return c.Query().Where(country.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CountryClient) GetX(ctx context.Context, id int) *Country {
+	co, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return co
+}
+
+// QueryCounProv queries the coun_prov edge of a Country.
+func (c *CountryClient) QueryCounProv(co *Country) *ProvinceQuery {
+	query := &ProvinceQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := co.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(country.Table, country.FieldID, id),
+			sqlgraph.To(province.Table, province.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, country.CounProvTable, country.CounProvColumn),
+		)
+		fromV = sqlgraph.Neighbors(co.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *CountryClient) Hooks() []Hook {
+	return c.hooks.Country
+}
+
 // CourseClient is a client for the Course schema.
 type CourseClient struct {
 	config
@@ -747,137 +938,6 @@ func (c *DegreeClient) QueryDegrCour(d *Degree) *CourseQuery {
 // Hooks returns the client hooks.
 func (c *DegreeClient) Hooks() []Hook {
 	return c.hooks.Degree
-}
-
-// DistrictClient is a client for the District schema.
-type DistrictClient struct {
-	config
-}
-
-// NewDistrictClient returns a client for the District from the given config.
-func NewDistrictClient(c config) *DistrictClient {
-	return &DistrictClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `district.Hooks(f(g(h())))`.
-func (c *DistrictClient) Use(hooks ...Hook) {
-	c.hooks.District = append(c.hooks.District, hooks...)
-}
-
-// Create returns a create builder for District.
-func (c *DistrictClient) Create() *DistrictCreate {
-	mutation := newDistrictMutation(c.config, OpCreate)
-	return &DistrictCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Update returns an update builder for District.
-func (c *DistrictClient) Update() *DistrictUpdate {
-	mutation := newDistrictMutation(c.config, OpUpdate)
-	return &DistrictUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *DistrictClient) UpdateOne(d *District) *DistrictUpdateOne {
-	mutation := newDistrictMutation(c.config, OpUpdateOne, withDistrict(d))
-	return &DistrictUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *DistrictClient) UpdateOneID(id int) *DistrictUpdateOne {
-	mutation := newDistrictMutation(c.config, OpUpdateOne, withDistrictID(id))
-	return &DistrictUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for District.
-func (c *DistrictClient) Delete() *DistrictDelete {
-	mutation := newDistrictMutation(c.config, OpDelete)
-	return &DistrictDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a delete builder for the given entity.
-func (c *DistrictClient) DeleteOne(d *District) *DistrictDeleteOne {
-	return c.DeleteOneID(d.ID)
-}
-
-// DeleteOneID returns a delete builder for the given id.
-func (c *DistrictClient) DeleteOneID(id int) *DistrictDeleteOne {
-	builder := c.Delete().Where(district.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &DistrictDeleteOne{builder}
-}
-
-// Create returns a query builder for District.
-func (c *DistrictClient) Query() *DistrictQuery {
-	return &DistrictQuery{config: c.config}
-}
-
-// Get returns a District entity by its id.
-func (c *DistrictClient) Get(ctx context.Context, id int) (*District, error) {
-	return c.Query().Where(district.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *DistrictClient) GetX(ctx context.Context, id int) *District {
-	d, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return d
-}
-
-// QueryDistSubd queries the dist_subd edge of a District.
-func (c *DistrictClient) QueryDistSubd(d *District) *SubdistrictQuery {
-	query := &SubdistrictQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := d.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(district.Table, district.FieldID, id),
-			sqlgraph.To(subdistrict.Table, subdistrict.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, district.DistSubdTable, district.DistSubdColumn),
-		)
-		fromV = sqlgraph.Neighbors(d.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryDistPost queries the dist_post edge of a District.
-func (c *DistrictClient) QueryDistPost(d *District) *PostalQuery {
-	query := &PostalQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := d.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(district.Table, district.FieldID, id),
-			sqlgraph.To(postal.Table, postal.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, district.DistPostTable, district.DistPostColumn),
-		)
-		fromV = sqlgraph.Neighbors(d.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryDistProv queries the dist_prov edge of a District.
-func (c *DistrictClient) QueryDistProv(d *District) *ProvinceQuery {
-	query := &ProvinceQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := d.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(district.Table, district.FieldID, id),
-			sqlgraph.To(province.Table, province.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, district.DistProvTable, district.DistProvColumn),
-		)
-		fromV = sqlgraph.Neighbors(d.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *DistrictClient) Hooks() []Hook {
-	return c.hooks.District
 }
 
 // FacultyClient is a client for the Faculty schema.
@@ -1290,105 +1350,6 @@ func (c *PlaceClient) QueryPlaceActi(pl *Place) *ActivityQuery {
 // Hooks returns the client hooks.
 func (c *PlaceClient) Hooks() []Hook {
 	return c.hooks.Place
-}
-
-// PostalClient is a client for the Postal schema.
-type PostalClient struct {
-	config
-}
-
-// NewPostalClient returns a client for the Postal from the given config.
-func NewPostalClient(c config) *PostalClient {
-	return &PostalClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `postal.Hooks(f(g(h())))`.
-func (c *PostalClient) Use(hooks ...Hook) {
-	c.hooks.Postal = append(c.hooks.Postal, hooks...)
-}
-
-// Create returns a create builder for Postal.
-func (c *PostalClient) Create() *PostalCreate {
-	mutation := newPostalMutation(c.config, OpCreate)
-	return &PostalCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Update returns an update builder for Postal.
-func (c *PostalClient) Update() *PostalUpdate {
-	mutation := newPostalMutation(c.config, OpUpdate)
-	return &PostalUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *PostalClient) UpdateOne(po *Postal) *PostalUpdateOne {
-	mutation := newPostalMutation(c.config, OpUpdateOne, withPostal(po))
-	return &PostalUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *PostalClient) UpdateOneID(id int) *PostalUpdateOne {
-	mutation := newPostalMutation(c.config, OpUpdateOne, withPostalID(id))
-	return &PostalUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for Postal.
-func (c *PostalClient) Delete() *PostalDelete {
-	mutation := newPostalMutation(c.config, OpDelete)
-	return &PostalDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a delete builder for the given entity.
-func (c *PostalClient) DeleteOne(po *Postal) *PostalDeleteOne {
-	return c.DeleteOneID(po.ID)
-}
-
-// DeleteOneID returns a delete builder for the given id.
-func (c *PostalClient) DeleteOneID(id int) *PostalDeleteOne {
-	builder := c.Delete().Where(postal.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &PostalDeleteOne{builder}
-}
-
-// Create returns a query builder for Postal.
-func (c *PostalClient) Query() *PostalQuery {
-	return &PostalQuery{config: c.config}
-}
-
-// Get returns a Postal entity by its id.
-func (c *PostalClient) Get(ctx context.Context, id int) (*Postal, error) {
-	return c.Query().Where(postal.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *PostalClient) GetX(ctx context.Context, id int) *Postal {
-	po, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return po
-}
-
-// QueryPostDist queries the post_dist edge of a Postal.
-func (c *PostalClient) QueryPostDist(po *Postal) *DistrictQuery {
-	query := &DistrictQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := po.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(postal.Table, postal.FieldID, id),
-			sqlgraph.To(district.Table, district.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, postal.PostDistTable, postal.PostDistColumn),
-		)
-		fromV = sqlgraph.Neighbors(po.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *PostalClient) Hooks() []Hook {
-	return c.hooks.Postal
 }
 
 // PrefixClient is a client for the Prefix schema.
@@ -1830,15 +1791,31 @@ func (c *ProvinceClient) QueryProvRegi(pr *Province) *RegionQuery {
 	return query
 }
 
-// QueryProvDist queries the prov_dist edge of a Province.
-func (c *ProvinceClient) QueryProvDist(pr *Province) *DistrictQuery {
-	query := &DistrictQuery{config: c.config}
+// QueryProvCoun queries the prov_coun edge of a Province.
+func (c *ProvinceClient) QueryProvCoun(pr *Province) *CountryQuery {
+	query := &CountryQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := pr.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(province.Table, province.FieldID, id),
-			sqlgraph.To(district.Table, district.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, province.ProvDistTable, province.ProvDistColumn),
+			sqlgraph.To(country.Table, country.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, province.ProvCounTable, province.ProvCounColumn),
+		)
+		fromV = sqlgraph.Neighbors(pr.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryProvCont queries the prov_cont edge of a Province.
+func (c *ProvinceClient) QueryProvCont(pr *Province) *ContinentQuery {
+	query := &ContinentQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := pr.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(province.Table, province.FieldID, id),
+			sqlgraph.To(continent.Table, continent.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, province.ProvContTable, province.ProvContColumn),
 		)
 		fromV = sqlgraph.Neighbors(pr.driver.Dialect(), step)
 		return fromV, nil
@@ -1855,6 +1832,54 @@ func (c *ProvinceClient) QueryProvStud(pr *Province) *StudentQuery {
 			sqlgraph.From(province.Table, province.FieldID, id),
 			sqlgraph.To(student.Table, student.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, province.ProvStudTable, province.ProvStudColumn),
+		)
+		fromV = sqlgraph.Neighbors(pr.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryDistStud queries the dist_stud edge of a Province.
+func (c *ProvinceClient) QueryDistStud(pr *Province) *StudentQuery {
+	query := &StudentQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := pr.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(province.Table, province.FieldID, id),
+			sqlgraph.To(student.Table, student.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, province.DistStudTable, province.DistStudColumn),
+		)
+		fromV = sqlgraph.Neighbors(pr.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QuerySubdStud queries the subd_stud edge of a Province.
+func (c *ProvinceClient) QuerySubdStud(pr *Province) *StudentQuery {
+	query := &StudentQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := pr.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(province.Table, province.FieldID, id),
+			sqlgraph.To(student.Table, student.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, province.SubdStudTable, province.SubdStudColumn),
+		)
+		fromV = sqlgraph.Neighbors(pr.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryPostStud queries the post_stud edge of a Province.
+func (c *ProvinceClient) QueryPostStud(pr *Province) *StudentQuery {
+	query := &StudentQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := pr.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(province.Table, province.FieldID, id),
+			sqlgraph.To(student.Table, student.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, province.PostStudTable, province.PostStudColumn),
 		)
 		fromV = sqlgraph.Neighbors(pr.driver.Dialect(), step)
 		return fromV, nil
@@ -2223,6 +2248,22 @@ func (c *StudentClient) QueryStudActi(s *Student) *ActivityQuery {
 	return query
 }
 
+// QueryStudResu queries the stud_resu edge of a Student.
+func (c *StudentClient) QueryStudResu(s *Student) *ResultsQuery {
+	query := &ResultsQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := s.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(student.Table, student.FieldID, id),
+			sqlgraph.To(results.Table, results.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, student.StudResuTable, student.StudResuColumn),
+		)
+		fromV = sqlgraph.Neighbors(s.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryStudProv queries the stud_prov edge of a Student.
 func (c *StudentClient) QueryStudProv(s *Student) *ProvinceQuery {
 	query := &ProvinceQuery{config: c.config}
@@ -2239,15 +2280,47 @@ func (c *StudentClient) QueryStudProv(s *Student) *ProvinceQuery {
 	return query
 }
 
-// QueryStudResu queries the stud_resu edge of a Student.
-func (c *StudentClient) QueryStudResu(s *Student) *ResultsQuery {
-	query := &ResultsQuery{config: c.config}
+// QueryStudDist queries the stud_dist edge of a Student.
+func (c *StudentClient) QueryStudDist(s *Student) *ProvinceQuery {
+	query := &ProvinceQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := s.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(student.Table, student.FieldID, id),
-			sqlgraph.To(results.Table, results.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, student.StudResuTable, student.StudResuColumn),
+			sqlgraph.To(province.Table, province.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, student.StudDistTable, student.StudDistColumn),
+		)
+		fromV = sqlgraph.Neighbors(s.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryStudSubd queries the stud_subd edge of a Student.
+func (c *StudentClient) QueryStudSubd(s *Student) *ProvinceQuery {
+	query := &ProvinceQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := s.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(student.Table, student.FieldID, id),
+			sqlgraph.To(province.Table, province.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, student.StudSubdTable, student.StudSubdColumn),
+		)
+		fromV = sqlgraph.Neighbors(s.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryStudPost queries the stud_post edge of a Student.
+func (c *StudentClient) QueryStudPost(s *Student) *ProvinceQuery {
+	query := &ProvinceQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := s.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(student.Table, student.FieldID, id),
+			sqlgraph.To(province.Table, province.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, student.StudPostTable, student.StudPostColumn),
 		)
 		fromV = sqlgraph.Neighbors(s.driver.Dialect(), step)
 		return fromV, nil
@@ -2290,105 +2363,6 @@ func (c *StudentClient) QueryStudDegr(s *Student) *DegreeQuery {
 // Hooks returns the client hooks.
 func (c *StudentClient) Hooks() []Hook {
 	return c.hooks.Student
-}
-
-// SubdistrictClient is a client for the Subdistrict schema.
-type SubdistrictClient struct {
-	config
-}
-
-// NewSubdistrictClient returns a client for the Subdistrict from the given config.
-func NewSubdistrictClient(c config) *SubdistrictClient {
-	return &SubdistrictClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `subdistrict.Hooks(f(g(h())))`.
-func (c *SubdistrictClient) Use(hooks ...Hook) {
-	c.hooks.Subdistrict = append(c.hooks.Subdistrict, hooks...)
-}
-
-// Create returns a create builder for Subdistrict.
-func (c *SubdistrictClient) Create() *SubdistrictCreate {
-	mutation := newSubdistrictMutation(c.config, OpCreate)
-	return &SubdistrictCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Update returns an update builder for Subdistrict.
-func (c *SubdistrictClient) Update() *SubdistrictUpdate {
-	mutation := newSubdistrictMutation(c.config, OpUpdate)
-	return &SubdistrictUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *SubdistrictClient) UpdateOne(s *Subdistrict) *SubdistrictUpdateOne {
-	mutation := newSubdistrictMutation(c.config, OpUpdateOne, withSubdistrict(s))
-	return &SubdistrictUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *SubdistrictClient) UpdateOneID(id int) *SubdistrictUpdateOne {
-	mutation := newSubdistrictMutation(c.config, OpUpdateOne, withSubdistrictID(id))
-	return &SubdistrictUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for Subdistrict.
-func (c *SubdistrictClient) Delete() *SubdistrictDelete {
-	mutation := newSubdistrictMutation(c.config, OpDelete)
-	return &SubdistrictDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a delete builder for the given entity.
-func (c *SubdistrictClient) DeleteOne(s *Subdistrict) *SubdistrictDeleteOne {
-	return c.DeleteOneID(s.ID)
-}
-
-// DeleteOneID returns a delete builder for the given id.
-func (c *SubdistrictClient) DeleteOneID(id int) *SubdistrictDeleteOne {
-	builder := c.Delete().Where(subdistrict.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &SubdistrictDeleteOne{builder}
-}
-
-// Create returns a query builder for Subdistrict.
-func (c *SubdistrictClient) Query() *SubdistrictQuery {
-	return &SubdistrictQuery{config: c.config}
-}
-
-// Get returns a Subdistrict entity by its id.
-func (c *SubdistrictClient) Get(ctx context.Context, id int) (*Subdistrict, error) {
-	return c.Query().Where(subdistrict.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *SubdistrictClient) GetX(ctx context.Context, id int) *Subdistrict {
-	s, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return s
-}
-
-// QuerySubdDist queries the subd_dist edge of a Subdistrict.
-func (c *SubdistrictClient) QuerySubdDist(s *Subdistrict) *DistrictQuery {
-	query := &DistrictQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := s.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(subdistrict.Table, subdistrict.FieldID, id),
-			sqlgraph.To(district.Table, district.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, subdistrict.SubdDistTable, subdistrict.SubdDistColumn),
-		)
-		fromV = sqlgraph.Neighbors(s.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *SubdistrictClient) Hooks() []Hook {
-	return c.hooks.Subdistrict
 }
 
 // SubjectClient is a client for the Subject schema.
@@ -2577,6 +2551,22 @@ func (c *TermClient) QueryTermResu(t *Term) *ResultsQuery {
 			sqlgraph.From(term.Table, term.FieldID, id),
 			sqlgraph.To(results.Table, results.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, term.TermResuTable, term.TermResuColumn),
+		)
+		fromV = sqlgraph.Neighbors(t.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryTermActi queries the term_acti edge of a Term.
+func (c *TermClient) QueryTermActi(t *Term) *ActivityQuery {
+	query := &ActivityQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := t.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(term.Table, term.FieldID, id),
+			sqlgraph.To(activity.Table, activity.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, term.TermActiTable, term.TermActiColumn),
 		)
 		fromV = sqlgraph.Neighbors(t.driver.Dialect(), step)
 		return fromV, nil

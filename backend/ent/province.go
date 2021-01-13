@@ -7,7 +7,8 @@ import (
 	"strings"
 
 	"github.com/facebookincubator/ent/dialect/sql"
-	"github.com/sut63/team17/app/ent/district"
+	"github.com/sut63/team17/app/ent/continent"
+	"github.com/sut63/team17/app/ent/country"
 	"github.com/sut63/team17/app/ent/province"
 	"github.com/sut63/team17/app/ent/region"
 )
@@ -17,26 +18,41 @@ type Province struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// Name holds the value of the "name" field.
-	Name string `json:"name,omitempty"`
+	// Province holds the value of the "province" field.
+	Province string `json:"province,omitempty"`
+	// District holds the value of the "district" field.
+	District string `json:"district,omitempty"`
+	// Subdistrict holds the value of the "subdistrict" field.
+	Subdistrict string `json:"subdistrict,omitempty"`
+	// Postal holds the value of the "postal" field.
+	Postal int `json:"postal,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ProvinceQuery when eager-loading is set.
-	Edges              ProvinceEdges `json:"edges"`
-	district_dist_prov *int
-	region_regi_prov   *int
+	Edges               ProvinceEdges `json:"edges"`
+	continent_cont_prov *int
+	country_coun_prov   *int
+	region_regi_prov    *int
 }
 
 // ProvinceEdges holds the relations/edges for other nodes in the graph.
 type ProvinceEdges struct {
 	// ProvRegi holds the value of the prov_regi edge.
 	ProvRegi *Region
-	// ProvDist holds the value of the prov_dist edge.
-	ProvDist *District
+	// ProvCoun holds the value of the prov_coun edge.
+	ProvCoun *Country
+	// ProvCont holds the value of the prov_cont edge.
+	ProvCont *Continent
 	// ProvStud holds the value of the prov_stud edge.
 	ProvStud []*Student
+	// DistStud holds the value of the dist_stud edge.
+	DistStud []*Student
+	// SubdStud holds the value of the subd_stud edge.
+	SubdStud []*Student
+	// PostStud holds the value of the post_stud edge.
+	PostStud []*Student
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [7]bool
 }
 
 // ProvRegiOrErr returns the ProvRegi value or an error if the edge
@@ -53,41 +69,86 @@ func (e ProvinceEdges) ProvRegiOrErr() (*Region, error) {
 	return nil, &NotLoadedError{edge: "prov_regi"}
 }
 
-// ProvDistOrErr returns the ProvDist value or an error if the edge
+// ProvCounOrErr returns the ProvCoun value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e ProvinceEdges) ProvDistOrErr() (*District, error) {
+func (e ProvinceEdges) ProvCounOrErr() (*Country, error) {
 	if e.loadedTypes[1] {
-		if e.ProvDist == nil {
-			// The edge prov_dist was loaded in eager-loading,
+		if e.ProvCoun == nil {
+			// The edge prov_coun was loaded in eager-loading,
 			// but was not found.
-			return nil, &NotFoundError{label: district.Label}
+			return nil, &NotFoundError{label: country.Label}
 		}
-		return e.ProvDist, nil
+		return e.ProvCoun, nil
 	}
-	return nil, &NotLoadedError{edge: "prov_dist"}
+	return nil, &NotLoadedError{edge: "prov_coun"}
+}
+
+// ProvContOrErr returns the ProvCont value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ProvinceEdges) ProvContOrErr() (*Continent, error) {
+	if e.loadedTypes[2] {
+		if e.ProvCont == nil {
+			// The edge prov_cont was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: continent.Label}
+		}
+		return e.ProvCont, nil
+	}
+	return nil, &NotLoadedError{edge: "prov_cont"}
 }
 
 // ProvStudOrErr returns the ProvStud value or an error if the edge
 // was not loaded in eager-loading.
 func (e ProvinceEdges) ProvStudOrErr() ([]*Student, error) {
-	if e.loadedTypes[2] {
+	if e.loadedTypes[3] {
 		return e.ProvStud, nil
 	}
 	return nil, &NotLoadedError{edge: "prov_stud"}
+}
+
+// DistStudOrErr returns the DistStud value or an error if the edge
+// was not loaded in eager-loading.
+func (e ProvinceEdges) DistStudOrErr() ([]*Student, error) {
+	if e.loadedTypes[4] {
+		return e.DistStud, nil
+	}
+	return nil, &NotLoadedError{edge: "dist_stud"}
+}
+
+// SubdStudOrErr returns the SubdStud value or an error if the edge
+// was not loaded in eager-loading.
+func (e ProvinceEdges) SubdStudOrErr() ([]*Student, error) {
+	if e.loadedTypes[5] {
+		return e.SubdStud, nil
+	}
+	return nil, &NotLoadedError{edge: "subd_stud"}
+}
+
+// PostStudOrErr returns the PostStud value or an error if the edge
+// was not loaded in eager-loading.
+func (e ProvinceEdges) PostStudOrErr() ([]*Student, error) {
+	if e.loadedTypes[6] {
+		return e.PostStud, nil
+	}
+	return nil, &NotLoadedError{edge: "post_stud"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Province) scanValues() []interface{} {
 	return []interface{}{
 		&sql.NullInt64{},  // id
-		&sql.NullString{}, // name
+		&sql.NullString{}, // province
+		&sql.NullString{}, // district
+		&sql.NullString{}, // subdistrict
+		&sql.NullInt64{},  // postal
 	}
 }
 
 // fkValues returns the types for scanning foreign-keys values from sql.Rows.
 func (*Province) fkValues() []interface{} {
 	return []interface{}{
-		&sql.NullInt64{}, // district_dist_prov
+		&sql.NullInt64{}, // continent_cont_prov
+		&sql.NullInt64{}, // country_coun_prov
 		&sql.NullInt64{}, // region_regi_prov
 	}
 }
@@ -105,19 +166,40 @@ func (pr *Province) assignValues(values ...interface{}) error {
 	pr.ID = int(value.Int64)
 	values = values[1:]
 	if value, ok := values[0].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field name", values[0])
+		return fmt.Errorf("unexpected type %T for field province", values[0])
 	} else if value.Valid {
-		pr.Name = value.String
+		pr.Province = value.String
 	}
-	values = values[1:]
+	if value, ok := values[1].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field district", values[1])
+	} else if value.Valid {
+		pr.District = value.String
+	}
+	if value, ok := values[2].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field subdistrict", values[2])
+	} else if value.Valid {
+		pr.Subdistrict = value.String
+	}
+	if value, ok := values[3].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field postal", values[3])
+	} else if value.Valid {
+		pr.Postal = int(value.Int64)
+	}
+	values = values[4:]
 	if len(values) == len(province.ForeignKeys) {
 		if value, ok := values[0].(*sql.NullInt64); !ok {
-			return fmt.Errorf("unexpected type %T for edge-field district_dist_prov", value)
+			return fmt.Errorf("unexpected type %T for edge-field continent_cont_prov", value)
 		} else if value.Valid {
-			pr.district_dist_prov = new(int)
-			*pr.district_dist_prov = int(value.Int64)
+			pr.continent_cont_prov = new(int)
+			*pr.continent_cont_prov = int(value.Int64)
 		}
 		if value, ok := values[1].(*sql.NullInt64); !ok {
+			return fmt.Errorf("unexpected type %T for edge-field country_coun_prov", value)
+		} else if value.Valid {
+			pr.country_coun_prov = new(int)
+			*pr.country_coun_prov = int(value.Int64)
+		}
+		if value, ok := values[2].(*sql.NullInt64); !ok {
 			return fmt.Errorf("unexpected type %T for edge-field region_regi_prov", value)
 		} else if value.Valid {
 			pr.region_regi_prov = new(int)
@@ -132,14 +214,34 @@ func (pr *Province) QueryProvRegi() *RegionQuery {
 	return (&ProvinceClient{config: pr.config}).QueryProvRegi(pr)
 }
 
-// QueryProvDist queries the prov_dist edge of the Province.
-func (pr *Province) QueryProvDist() *DistrictQuery {
-	return (&ProvinceClient{config: pr.config}).QueryProvDist(pr)
+// QueryProvCoun queries the prov_coun edge of the Province.
+func (pr *Province) QueryProvCoun() *CountryQuery {
+	return (&ProvinceClient{config: pr.config}).QueryProvCoun(pr)
+}
+
+// QueryProvCont queries the prov_cont edge of the Province.
+func (pr *Province) QueryProvCont() *ContinentQuery {
+	return (&ProvinceClient{config: pr.config}).QueryProvCont(pr)
 }
 
 // QueryProvStud queries the prov_stud edge of the Province.
 func (pr *Province) QueryProvStud() *StudentQuery {
 	return (&ProvinceClient{config: pr.config}).QueryProvStud(pr)
+}
+
+// QueryDistStud queries the dist_stud edge of the Province.
+func (pr *Province) QueryDistStud() *StudentQuery {
+	return (&ProvinceClient{config: pr.config}).QueryDistStud(pr)
+}
+
+// QuerySubdStud queries the subd_stud edge of the Province.
+func (pr *Province) QuerySubdStud() *StudentQuery {
+	return (&ProvinceClient{config: pr.config}).QuerySubdStud(pr)
+}
+
+// QueryPostStud queries the post_stud edge of the Province.
+func (pr *Province) QueryPostStud() *StudentQuery {
+	return (&ProvinceClient{config: pr.config}).QueryPostStud(pr)
 }
 
 // Update returns a builder for updating this Province.
@@ -165,8 +267,14 @@ func (pr *Province) String() string {
 	var builder strings.Builder
 	builder.WriteString("Province(")
 	builder.WriteString(fmt.Sprintf("id=%v", pr.ID))
-	builder.WriteString(", name=")
-	builder.WriteString(pr.Name)
+	builder.WriteString(", province=")
+	builder.WriteString(pr.Province)
+	builder.WriteString(", district=")
+	builder.WriteString(pr.District)
+	builder.WriteString(", subdistrict=")
+	builder.WriteString(pr.Subdistrict)
+	builder.WriteString(", postal=")
+	builder.WriteString(fmt.Sprintf("%v", pr.Postal))
 	builder.WriteByte(')')
 	return builder.String()
 }

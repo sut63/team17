@@ -33,8 +33,11 @@ type StudentQuery struct {
 	// eager-loading edges.
 	withStudGend *GenderQuery
 	withStudActi *ActivityQuery
-	withStudProv *ProvinceQuery
 	withStudResu *ResultsQuery
+	withStudProv *ProvinceQuery
+	withStudDist *ProvinceQuery
+	withStudSubd *ProvinceQuery
+	withStudPost *ProvinceQuery
 	withStudPref *PrefixQuery
 	withStudDegr *DegreeQuery
 	withFKs      bool
@@ -103,6 +106,24 @@ func (sq *StudentQuery) QueryStudActi() *ActivityQuery {
 	return query
 }
 
+// QueryStudResu chains the current query on the stud_resu edge.
+func (sq *StudentQuery) QueryStudResu() *ResultsQuery {
+	query := &ResultsQuery{config: sq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := sq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(student.Table, student.FieldID, sq.sqlQuery()),
+			sqlgraph.To(results.Table, results.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, student.StudResuTable, student.StudResuColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(sq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // QueryStudProv chains the current query on the stud_prov edge.
 func (sq *StudentQuery) QueryStudProv() *ProvinceQuery {
 	query := &ProvinceQuery{config: sq.config}
@@ -121,17 +142,53 @@ func (sq *StudentQuery) QueryStudProv() *ProvinceQuery {
 	return query
 }
 
-// QueryStudResu chains the current query on the stud_resu edge.
-func (sq *StudentQuery) QueryStudResu() *ResultsQuery {
-	query := &ResultsQuery{config: sq.config}
+// QueryStudDist chains the current query on the stud_dist edge.
+func (sq *StudentQuery) QueryStudDist() *ProvinceQuery {
+	query := &ProvinceQuery{config: sq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := sq.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(student.Table, student.FieldID, sq.sqlQuery()),
-			sqlgraph.To(results.Table, results.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, student.StudResuTable, student.StudResuColumn),
+			sqlgraph.To(province.Table, province.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, student.StudDistTable, student.StudDistColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(sq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryStudSubd chains the current query on the stud_subd edge.
+func (sq *StudentQuery) QueryStudSubd() *ProvinceQuery {
+	query := &ProvinceQuery{config: sq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := sq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(student.Table, student.FieldID, sq.sqlQuery()),
+			sqlgraph.To(province.Table, province.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, student.StudSubdTable, student.StudSubdColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(sq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryStudPost chains the current query on the stud_post edge.
+func (sq *StudentQuery) QueryStudPost() *ProvinceQuery {
+	query := &ProvinceQuery{config: sq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := sq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(student.Table, student.FieldID, sq.sqlQuery()),
+			sqlgraph.To(province.Table, province.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, student.StudPostTable, student.StudPostColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(sq.driver.Dialect(), step)
 		return fromU, nil
@@ -376,6 +433,17 @@ func (sq *StudentQuery) WithStudActi(opts ...func(*ActivityQuery)) *StudentQuery
 	return sq
 }
 
+//  WithStudResu tells the query-builder to eager-loads the nodes that are connected to
+// the "stud_resu" edge. The optional arguments used to configure the query builder of the edge.
+func (sq *StudentQuery) WithStudResu(opts ...func(*ResultsQuery)) *StudentQuery {
+	query := &ResultsQuery{config: sq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	sq.withStudResu = query
+	return sq
+}
+
 //  WithStudProv tells the query-builder to eager-loads the nodes that are connected to
 // the "stud_prov" edge. The optional arguments used to configure the query builder of the edge.
 func (sq *StudentQuery) WithStudProv(opts ...func(*ProvinceQuery)) *StudentQuery {
@@ -387,14 +455,36 @@ func (sq *StudentQuery) WithStudProv(opts ...func(*ProvinceQuery)) *StudentQuery
 	return sq
 }
 
-//  WithStudResu tells the query-builder to eager-loads the nodes that are connected to
-// the "stud_resu" edge. The optional arguments used to configure the query builder of the edge.
-func (sq *StudentQuery) WithStudResu(opts ...func(*ResultsQuery)) *StudentQuery {
-	query := &ResultsQuery{config: sq.config}
+//  WithStudDist tells the query-builder to eager-loads the nodes that are connected to
+// the "stud_dist" edge. The optional arguments used to configure the query builder of the edge.
+func (sq *StudentQuery) WithStudDist(opts ...func(*ProvinceQuery)) *StudentQuery {
+	query := &ProvinceQuery{config: sq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
-	sq.withStudResu = query
+	sq.withStudDist = query
+	return sq
+}
+
+//  WithStudSubd tells the query-builder to eager-loads the nodes that are connected to
+// the "stud_subd" edge. The optional arguments used to configure the query builder of the edge.
+func (sq *StudentQuery) WithStudSubd(opts ...func(*ProvinceQuery)) *StudentQuery {
+	query := &ProvinceQuery{config: sq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	sq.withStudSubd = query
+	return sq
+}
+
+//  WithStudPost tells the query-builder to eager-loads the nodes that are connected to
+// the "stud_post" edge. The optional arguments used to configure the query builder of the edge.
+func (sq *StudentQuery) WithStudPost(opts ...func(*ProvinceQuery)) *StudentQuery {
+	query := &ProvinceQuery{config: sq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	sq.withStudPost = query
 	return sq
 }
 
@@ -487,16 +577,19 @@ func (sq *StudentQuery) sqlAll(ctx context.Context) ([]*Student, error) {
 		nodes       = []*Student{}
 		withFKs     = sq.withFKs
 		_spec       = sq.querySpec()
-		loadedTypes = [6]bool{
+		loadedTypes = [9]bool{
 			sq.withStudGend != nil,
 			sq.withStudActi != nil,
-			sq.withStudProv != nil,
 			sq.withStudResu != nil,
+			sq.withStudProv != nil,
+			sq.withStudDist != nil,
+			sq.withStudSubd != nil,
+			sq.withStudPost != nil,
 			sq.withStudPref != nil,
 			sq.withStudDegr != nil,
 		}
 	)
-	if sq.withStudGend != nil || sq.withStudProv != nil || sq.withStudPref != nil || sq.withStudDegr != nil {
+	if sq.withStudGend != nil || sq.withStudProv != nil || sq.withStudDist != nil || sq.withStudSubd != nil || sq.withStudPost != nil || sq.withStudPref != nil || sq.withStudDegr != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -579,31 +672,6 @@ func (sq *StudentQuery) sqlAll(ctx context.Context) ([]*Student, error) {
 		}
 	}
 
-	if query := sq.withStudProv; query != nil {
-		ids := make([]int, 0, len(nodes))
-		nodeids := make(map[int][]*Student)
-		for i := range nodes {
-			if fk := nodes[i].province_prov_stud; fk != nil {
-				ids = append(ids, *fk)
-				nodeids[*fk] = append(nodeids[*fk], nodes[i])
-			}
-		}
-		query.Where(province.IDIn(ids...))
-		neighbors, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, n := range neighbors {
-			nodes, ok := nodeids[n.ID]
-			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "province_prov_stud" returned %v`, n.ID)
-			}
-			for i := range nodes {
-				nodes[i].Edges.StudProv = n
-			}
-		}
-	}
-
 	if query := sq.withStudResu; query != nil {
 		fks := make([]driver.Value, 0, len(nodes))
 		nodeids := make(map[int]*Student)
@@ -629,6 +697,106 @@ func (sq *StudentQuery) sqlAll(ctx context.Context) ([]*Student, error) {
 				return nil, fmt.Errorf(`unexpected foreign-key "student_stud_resu" returned %v for node %v`, *fk, n.ID)
 			}
 			node.Edges.StudResu = append(node.Edges.StudResu, n)
+		}
+	}
+
+	if query := sq.withStudProv; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*Student)
+		for i := range nodes {
+			if fk := nodes[i].province_prov_stud; fk != nil {
+				ids = append(ids, *fk)
+				nodeids[*fk] = append(nodeids[*fk], nodes[i])
+			}
+		}
+		query.Where(province.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "province_prov_stud" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.StudProv = n
+			}
+		}
+	}
+
+	if query := sq.withStudDist; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*Student)
+		for i := range nodes {
+			if fk := nodes[i].province_dist_stud; fk != nil {
+				ids = append(ids, *fk)
+				nodeids[*fk] = append(nodeids[*fk], nodes[i])
+			}
+		}
+		query.Where(province.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "province_dist_stud" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.StudDist = n
+			}
+		}
+	}
+
+	if query := sq.withStudSubd; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*Student)
+		for i := range nodes {
+			if fk := nodes[i].province_subd_stud; fk != nil {
+				ids = append(ids, *fk)
+				nodeids[*fk] = append(nodeids[*fk], nodes[i])
+			}
+		}
+		query.Where(province.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "province_subd_stud" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.StudSubd = n
+			}
+		}
+	}
+
+	if query := sq.withStudPost; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*Student)
+		for i := range nodes {
+			if fk := nodes[i].province_post_stud; fk != nil {
+				ids = append(ids, *fk)
+				nodeids[*fk] = append(nodeids[*fk], nodes[i])
+			}
+		}
+		query.Where(province.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "province_post_stud" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.StudPost = n
+			}
 		}
 	}
 

@@ -38,6 +38,9 @@ type Student struct {
 	gender_gend_stud   *int
 	prefix_pref_stud   *int
 	province_prov_stud *int
+	province_dist_stud *int
+	province_subd_stud *int
+	province_post_stud *int
 }
 
 // StudentEdges holds the relations/edges for other nodes in the graph.
@@ -46,17 +49,23 @@ type StudentEdges struct {
 	StudGend *Gender
 	// StudActi holds the value of the stud_acti edge.
 	StudActi []*Activity
-	// StudProv holds the value of the stud_prov edge.
-	StudProv *Province
 	// StudResu holds the value of the stud_resu edge.
 	StudResu []*Results
+	// StudProv holds the value of the stud_prov edge.
+	StudProv *Province
+	// StudDist holds the value of the stud_dist edge.
+	StudDist *Province
+	// StudSubd holds the value of the stud_subd edge.
+	StudSubd *Province
+	// StudPost holds the value of the stud_post edge.
+	StudPost *Province
 	// StudPref holds the value of the stud_pref edge.
 	StudPref *Prefix
 	// StudDegr holds the value of the stud_degr edge.
 	StudDegr *Degree
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [6]bool
+	loadedTypes [9]bool
 }
 
 // StudGendOrErr returns the StudGend value or an error if the edge
@@ -82,10 +91,19 @@ func (e StudentEdges) StudActiOrErr() ([]*Activity, error) {
 	return nil, &NotLoadedError{edge: "stud_acti"}
 }
 
+// StudResuOrErr returns the StudResu value or an error if the edge
+// was not loaded in eager-loading.
+func (e StudentEdges) StudResuOrErr() ([]*Results, error) {
+	if e.loadedTypes[2] {
+		return e.StudResu, nil
+	}
+	return nil, &NotLoadedError{edge: "stud_resu"}
+}
+
 // StudProvOrErr returns the StudProv value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e StudentEdges) StudProvOrErr() (*Province, error) {
-	if e.loadedTypes[2] {
+	if e.loadedTypes[3] {
 		if e.StudProv == nil {
 			// The edge stud_prov was loaded in eager-loading,
 			// but was not found.
@@ -96,19 +114,52 @@ func (e StudentEdges) StudProvOrErr() (*Province, error) {
 	return nil, &NotLoadedError{edge: "stud_prov"}
 }
 
-// StudResuOrErr returns the StudResu value or an error if the edge
-// was not loaded in eager-loading.
-func (e StudentEdges) StudResuOrErr() ([]*Results, error) {
-	if e.loadedTypes[3] {
-		return e.StudResu, nil
+// StudDistOrErr returns the StudDist value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e StudentEdges) StudDistOrErr() (*Province, error) {
+	if e.loadedTypes[4] {
+		if e.StudDist == nil {
+			// The edge stud_dist was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: province.Label}
+		}
+		return e.StudDist, nil
 	}
-	return nil, &NotLoadedError{edge: "stud_resu"}
+	return nil, &NotLoadedError{edge: "stud_dist"}
+}
+
+// StudSubdOrErr returns the StudSubd value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e StudentEdges) StudSubdOrErr() (*Province, error) {
+	if e.loadedTypes[5] {
+		if e.StudSubd == nil {
+			// The edge stud_subd was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: province.Label}
+		}
+		return e.StudSubd, nil
+	}
+	return nil, &NotLoadedError{edge: "stud_subd"}
+}
+
+// StudPostOrErr returns the StudPost value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e StudentEdges) StudPostOrErr() (*Province, error) {
+	if e.loadedTypes[6] {
+		if e.StudPost == nil {
+			// The edge stud_post was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: province.Label}
+		}
+		return e.StudPost, nil
+	}
+	return nil, &NotLoadedError{edge: "stud_post"}
 }
 
 // StudPrefOrErr returns the StudPref value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e StudentEdges) StudPrefOrErr() (*Prefix, error) {
-	if e.loadedTypes[4] {
+	if e.loadedTypes[7] {
 		if e.StudPref == nil {
 			// The edge stud_pref was loaded in eager-loading,
 			// but was not found.
@@ -122,7 +173,7 @@ func (e StudentEdges) StudPrefOrErr() (*Prefix, error) {
 // StudDegrOrErr returns the StudDegr value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e StudentEdges) StudDegrOrErr() (*Degree, error) {
-	if e.loadedTypes[5] {
+	if e.loadedTypes[8] {
 		if e.StudDegr == nil {
 			// The edge stud_degr was loaded in eager-loading,
 			// but was not found.
@@ -153,6 +204,9 @@ func (*Student) fkValues() []interface{} {
 		&sql.NullInt64{}, // gender_gend_stud
 		&sql.NullInt64{}, // prefix_pref_stud
 		&sql.NullInt64{}, // province_prov_stud
+		&sql.NullInt64{}, // province_dist_stud
+		&sql.NullInt64{}, // province_subd_stud
+		&sql.NullInt64{}, // province_post_stud
 	}
 }
 
@@ -224,6 +278,24 @@ func (s *Student) assignValues(values ...interface{}) error {
 			s.province_prov_stud = new(int)
 			*s.province_prov_stud = int(value.Int64)
 		}
+		if value, ok := values[4].(*sql.NullInt64); !ok {
+			return fmt.Errorf("unexpected type %T for edge-field province_dist_stud", value)
+		} else if value.Valid {
+			s.province_dist_stud = new(int)
+			*s.province_dist_stud = int(value.Int64)
+		}
+		if value, ok := values[5].(*sql.NullInt64); !ok {
+			return fmt.Errorf("unexpected type %T for edge-field province_subd_stud", value)
+		} else if value.Valid {
+			s.province_subd_stud = new(int)
+			*s.province_subd_stud = int(value.Int64)
+		}
+		if value, ok := values[6].(*sql.NullInt64); !ok {
+			return fmt.Errorf("unexpected type %T for edge-field province_post_stud", value)
+		} else if value.Valid {
+			s.province_post_stud = new(int)
+			*s.province_post_stud = int(value.Int64)
+		}
 	}
 	return nil
 }
@@ -238,14 +310,29 @@ func (s *Student) QueryStudActi() *ActivityQuery {
 	return (&StudentClient{config: s.config}).QueryStudActi(s)
 }
 
+// QueryStudResu queries the stud_resu edge of the Student.
+func (s *Student) QueryStudResu() *ResultsQuery {
+	return (&StudentClient{config: s.config}).QueryStudResu(s)
+}
+
 // QueryStudProv queries the stud_prov edge of the Student.
 func (s *Student) QueryStudProv() *ProvinceQuery {
 	return (&StudentClient{config: s.config}).QueryStudProv(s)
 }
 
-// QueryStudResu queries the stud_resu edge of the Student.
-func (s *Student) QueryStudResu() *ResultsQuery {
-	return (&StudentClient{config: s.config}).QueryStudResu(s)
+// QueryStudDist queries the stud_dist edge of the Student.
+func (s *Student) QueryStudDist() *ProvinceQuery {
+	return (&StudentClient{config: s.config}).QueryStudDist(s)
+}
+
+// QueryStudSubd queries the stud_subd edge of the Student.
+func (s *Student) QueryStudSubd() *ProvinceQuery {
+	return (&StudentClient{config: s.config}).QueryStudSubd(s)
+}
+
+// QueryStudPost queries the stud_post edge of the Student.
+func (s *Student) QueryStudPost() *ProvinceQuery {
+	return (&StudentClient{config: s.config}).QueryStudPost(s)
 }
 
 // QueryStudPref queries the stud_pref edge of the Student.

@@ -35,6 +35,32 @@ func (f AgencyFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, erro
 	return f(ctx, mv)
 }
 
+// The ContinentFunc type is an adapter to allow the use of ordinary
+// function as Continent mutator.
+type ContinentFunc func(context.Context, *ent.ContinentMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ContinentFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.ContinentMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ContinentMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The CountryFunc type is an adapter to allow the use of ordinary
+// function as Country mutator.
+type CountryFunc func(context.Context, *ent.CountryMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f CountryFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.CountryMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CountryMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The CourseFunc type is an adapter to allow the use of ordinary
 // function as Course mutator.
 type CourseFunc func(context.Context, *ent.CourseMutation) (ent.Value, error)
@@ -57,19 +83,6 @@ func (f DegreeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, erro
 	mv, ok := m.(*ent.DegreeMutation)
 	if !ok {
 		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DegreeMutation", m)
-	}
-	return f(ctx, mv)
-}
-
-// The DistrictFunc type is an adapter to allow the use of ordinary
-// function as District mutator.
-type DistrictFunc func(context.Context, *ent.DistrictMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f DistrictFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.DistrictMutation)
-	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DistrictMutation", m)
 	}
 	return f(ctx, mv)
 }
@@ -122,19 +135,6 @@ func (f PlaceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error
 	mv, ok := m.(*ent.PlaceMutation)
 	if !ok {
 		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PlaceMutation", m)
-	}
-	return f(ctx, mv)
-}
-
-// The PostalFunc type is an adapter to allow the use of ordinary
-// function as Postal mutator.
-type PostalFunc func(context.Context, *ent.PostalMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f PostalFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.PostalMutation)
-	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PostalMutation", m)
 	}
 	return f(ctx, mv)
 }
@@ -226,19 +226,6 @@ func (f StudentFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, err
 	mv, ok := m.(*ent.StudentMutation)
 	if !ok {
 		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.StudentMutation", m)
-	}
-	return f(ctx, mv)
-}
-
-// The SubdistrictFunc type is an adapter to allow the use of ordinary
-// function as Subdistrict mutator.
-type SubdistrictFunc func(context.Context, *ent.SubdistrictMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f SubdistrictFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.SubdistrictMutation)
-	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SubdistrictMutation", m)
 	}
 	return f(ctx, mv)
 }

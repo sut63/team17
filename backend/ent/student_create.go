@@ -95,6 +95,21 @@ func (sc *StudentCreate) AddStudActi(a ...*Activity) *StudentCreate {
 	return sc.AddStudActiIDs(ids...)
 }
 
+// AddStudResuIDs adds the stud_resu edge to Results by ids.
+func (sc *StudentCreate) AddStudResuIDs(ids ...int) *StudentCreate {
+	sc.mutation.AddStudResuIDs(ids...)
+	return sc
+}
+
+// AddStudResu adds the stud_resu edges to Results.
+func (sc *StudentCreate) AddStudResu(r ...*Results) *StudentCreate {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return sc.AddStudResuIDs(ids...)
+}
+
 // SetStudProvID sets the stud_prov edge to Province by id.
 func (sc *StudentCreate) SetStudProvID(id int) *StudentCreate {
 	sc.mutation.SetStudProvID(id)
@@ -114,19 +129,61 @@ func (sc *StudentCreate) SetStudProv(p *Province) *StudentCreate {
 	return sc.SetStudProvID(p.ID)
 }
 
-// AddStudResuIDs adds the stud_resu edge to Results by ids.
-func (sc *StudentCreate) AddStudResuIDs(ids ...int) *StudentCreate {
-	sc.mutation.AddStudResuIDs(ids...)
+// SetStudDistID sets the stud_dist edge to Province by id.
+func (sc *StudentCreate) SetStudDistID(id int) *StudentCreate {
+	sc.mutation.SetStudDistID(id)
 	return sc
 }
 
-// AddStudResu adds the stud_resu edges to Results.
-func (sc *StudentCreate) AddStudResu(r ...*Results) *StudentCreate {
-	ids := make([]int, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+// SetNillableStudDistID sets the stud_dist edge to Province by id if the given value is not nil.
+func (sc *StudentCreate) SetNillableStudDistID(id *int) *StudentCreate {
+	if id != nil {
+		sc = sc.SetStudDistID(*id)
 	}
-	return sc.AddStudResuIDs(ids...)
+	return sc
+}
+
+// SetStudDist sets the stud_dist edge to Province.
+func (sc *StudentCreate) SetStudDist(p *Province) *StudentCreate {
+	return sc.SetStudDistID(p.ID)
+}
+
+// SetStudSubdID sets the stud_subd edge to Province by id.
+func (sc *StudentCreate) SetStudSubdID(id int) *StudentCreate {
+	sc.mutation.SetStudSubdID(id)
+	return sc
+}
+
+// SetNillableStudSubdID sets the stud_subd edge to Province by id if the given value is not nil.
+func (sc *StudentCreate) SetNillableStudSubdID(id *int) *StudentCreate {
+	if id != nil {
+		sc = sc.SetStudSubdID(*id)
+	}
+	return sc
+}
+
+// SetStudSubd sets the stud_subd edge to Province.
+func (sc *StudentCreate) SetStudSubd(p *Province) *StudentCreate {
+	return sc.SetStudSubdID(p.ID)
+}
+
+// SetStudPostID sets the stud_post edge to Province by id.
+func (sc *StudentCreate) SetStudPostID(id int) *StudentCreate {
+	sc.mutation.SetStudPostID(id)
+	return sc
+}
+
+// SetNillableStudPostID sets the stud_post edge to Province by id if the given value is not nil.
+func (sc *StudentCreate) SetNillableStudPostID(id *int) *StudentCreate {
+	if id != nil {
+		sc = sc.SetStudPostID(*id)
+	}
+	return sc
+}
+
+// SetStudPost sets the stud_post edge to Province.
+func (sc *StudentCreate) SetStudPost(p *Province) *StudentCreate {
+	return sc.SetStudPostID(p.ID)
 }
 
 // SetStudPrefID sets the stud_pref edge to Prefix by id.
@@ -358,6 +415,25 @@ func (sc *StudentCreate) createSpec() (*Student, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
+	if nodes := sc.mutation.StudResuIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   student.StudResuTable,
+			Columns: []string{student.StudResuColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: results.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	if nodes := sc.mutation.StudProvIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -377,17 +453,55 @@ func (sc *StudentCreate) createSpec() (*Student, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := sc.mutation.StudResuIDs(); len(nodes) > 0 {
+	if nodes := sc.mutation.StudDistIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   student.StudResuTable,
-			Columns: []string{student.StudResuColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   student.StudDistTable,
+			Columns: []string{student.StudDistColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: results.FieldID,
+					Column: province.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := sc.mutation.StudSubdIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   student.StudSubdTable,
+			Columns: []string{student.StudSubdColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: province.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := sc.mutation.StudPostIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   student.StudPostTable,
+			Columns: []string{student.StudPostColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: province.FieldID,
 				},
 			},
 		}

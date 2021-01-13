@@ -24,10 +24,16 @@ const (
 	EdgeStudGend = "stud_gend"
 	// EdgeStudActi holds the string denoting the stud_acti edge name in mutations.
 	EdgeStudActi = "stud_acti"
-	// EdgeStudProv holds the string denoting the stud_prov edge name in mutations.
-	EdgeStudProv = "stud_prov"
 	// EdgeStudResu holds the string denoting the stud_resu edge name in mutations.
 	EdgeStudResu = "stud_resu"
+	// EdgeStudProv holds the string denoting the stud_prov edge name in mutations.
+	EdgeStudProv = "stud_prov"
+	// EdgeStudDist holds the string denoting the stud_dist edge name in mutations.
+	EdgeStudDist = "stud_dist"
+	// EdgeStudSubd holds the string denoting the stud_subd edge name in mutations.
+	EdgeStudSubd = "stud_subd"
+	// EdgeStudPost holds the string denoting the stud_post edge name in mutations.
+	EdgeStudPost = "stud_post"
 	// EdgeStudPref holds the string denoting the stud_pref edge name in mutations.
 	EdgeStudPref = "stud_pref"
 	// EdgeStudDegr holds the string denoting the stud_degr edge name in mutations.
@@ -49,13 +55,6 @@ const (
 	StudActiInverseTable = "activities"
 	// StudActiColumn is the table column denoting the stud_acti relation/edge.
 	StudActiColumn = "student_stud_acti"
-	// StudProvTable is the table the holds the stud_prov relation/edge.
-	StudProvTable = "students"
-	// StudProvInverseTable is the table name for the Province entity.
-	// It exists in this package in order to avoid circular dependency with the "province" package.
-	StudProvInverseTable = "provinces"
-	// StudProvColumn is the table column denoting the stud_prov relation/edge.
-	StudProvColumn = "province_prov_stud"
 	// StudResuTable is the table the holds the stud_resu relation/edge.
 	StudResuTable = "results"
 	// StudResuInverseTable is the table name for the Results entity.
@@ -63,6 +62,34 @@ const (
 	StudResuInverseTable = "results"
 	// StudResuColumn is the table column denoting the stud_resu relation/edge.
 	StudResuColumn = "student_stud_resu"
+	// StudProvTable is the table the holds the stud_prov relation/edge.
+	StudProvTable = "students"
+	// StudProvInverseTable is the table name for the Province entity.
+	// It exists in this package in order to avoid circular dependency with the "province" package.
+	StudProvInverseTable = "provinces"
+	// StudProvColumn is the table column denoting the stud_prov relation/edge.
+	StudProvColumn = "province_prov_stud"
+	// StudDistTable is the table the holds the stud_dist relation/edge.
+	StudDistTable = "students"
+	// StudDistInverseTable is the table name for the Province entity.
+	// It exists in this package in order to avoid circular dependency with the "province" package.
+	StudDistInverseTable = "provinces"
+	// StudDistColumn is the table column denoting the stud_dist relation/edge.
+	StudDistColumn = "province_dist_stud"
+	// StudSubdTable is the table the holds the stud_subd relation/edge.
+	StudSubdTable = "students"
+	// StudSubdInverseTable is the table name for the Province entity.
+	// It exists in this package in order to avoid circular dependency with the "province" package.
+	StudSubdInverseTable = "provinces"
+	// StudSubdColumn is the table column denoting the stud_subd relation/edge.
+	StudSubdColumn = "province_subd_stud"
+	// StudPostTable is the table the holds the stud_post relation/edge.
+	StudPostTable = "students"
+	// StudPostInverseTable is the table name for the Province entity.
+	// It exists in this package in order to avoid circular dependency with the "province" package.
+	StudPostInverseTable = "provinces"
+	// StudPostColumn is the table column denoting the stud_post relation/edge.
+	StudPostColumn = "province_post_stud"
 	// StudPrefTable is the table the holds the stud_pref relation/edge.
 	StudPrefTable = "students"
 	// StudPrefInverseTable is the table name for the Prefix entity.
@@ -96,6 +123,9 @@ var ForeignKeys = []string{
 	"gender_gend_stud",
 	"prefix_pref_stud",
 	"province_prov_stud",
+	"province_dist_stud",
+	"province_subd_stud",
+	"province_post_stud",
 }
 
 var (
