@@ -8,6 +8,7 @@ import (
 	"github.com/sut63/team17/app/ent/country"
 	"github.com/sut63/team17/app/ent/course"
 	"github.com/sut63/team17/app/ent/degree"
+	"github.com/sut63/team17/app/ent/emp"
 	"github.com/sut63/team17/app/ent/faculty"
 	"github.com/sut63/team17/app/ent/institution"
 	"github.com/sut63/team17/app/ent/place"
@@ -57,6 +58,16 @@ func init() {
 	degreeDescDegree := degreeFields[0].Descriptor()
 	// degree.DegreeValidator is a validator for the "degree" field. It is called by the builders before save.
 	degree.DegreeValidator = degreeDescDegree.Validators[0].(func(string) error)
+	empFields := schema.Emp{}.Fields()
+	_ = empFields
+	// empDescUser is the schema descriptor for user field.
+	empDescUser := empFields[0].Descriptor()
+	// emp.UserValidator is a validator for the "user" field. It is called by the builders before save.
+	emp.UserValidator = empDescUser.Validators[0].(func(string) error)
+	// empDescPass is the schema descriptor for pass field.
+	empDescPass := empFields[1].Descriptor()
+	// emp.PassValidator is a validator for the "pass" field. It is called by the builders before save.
+	emp.PassValidator = empDescPass.Validators[0].(func(string) error)
 	facultyFields := schema.Faculty{}.Fields()
 	_ = facultyFields
 	// facultyDescFaculty is the schema descriptor for faculty field.
@@ -135,14 +146,6 @@ func init() {
 	studentDescRecentAddress := studentFields[3].Descriptor()
 	// student.RecentAddressValidator is a validator for the "recent_address" field. It is called by the builders before save.
 	student.RecentAddressValidator = studentDescRecentAddress.Validators[0].(func(string) error)
-	// studentDescTelephone is the schema descriptor for telephone field.
-	studentDescTelephone := studentFields[4].Descriptor()
-	// student.TelephoneValidator is a validator for the "telephone" field. It is called by the builders before save.
-	student.TelephoneValidator = studentDescTelephone.Validators[0].(func(int) error)
-	// studentDescEmail is the schema descriptor for email field.
-	studentDescEmail := studentFields[5].Descriptor()
-	// student.EmailValidator is a validator for the "email" field. It is called by the builders before save.
-	student.EmailValidator = studentDescEmail.Validators[0].(func(string) error)
 	subjectFields := schema.Subject{}.Fields()
 	_ = subjectFields
 	// subjectDescCode is the schema descriptor for code field.

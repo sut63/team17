@@ -16,7 +16,6 @@ import (
 	"github.com/sut63/team17/app/ent/place"
 	"github.com/sut63/team17/app/ent/predicate"
 	"github.com/sut63/team17/app/ent/student"
-	"github.com/sut63/team17/app/ent/term"
 	"github.com/sut63/team17/app/ent/year"
 )
 
@@ -33,7 +32,6 @@ type ActivityQuery struct {
 	withActiPlace *PlaceQuery
 	withActiAgen  *AgencyQuery
 	withActiYear  *YearQuery
-	withActiTerm  *TermQuery
 	withFKs       bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -129,24 +127,6 @@ func (aq *ActivityQuery) QueryActiYear() *YearQuery {
 			sqlgraph.From(activity.Table, activity.FieldID, aq.sqlQuery()),
 			sqlgraph.To(year.Table, year.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, activity.ActiYearTable, activity.ActiYearColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryActiTerm chains the current query on the acti_term edge.
-func (aq *ActivityQuery) QueryActiTerm() *TermQuery {
-	query := &TermQuery{config: aq.config}
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(activity.Table, activity.FieldID, aq.sqlQuery()),
-			sqlgraph.To(term.Table, term.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, activity.ActiTermTable, activity.ActiTermColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
 		return fromU, nil
@@ -377,17 +357,6 @@ func (aq *ActivityQuery) WithActiYear(opts ...func(*YearQuery)) *ActivityQuery {
 	return aq
 }
 
-//  WithActiTerm tells the query-builder to eager-loads the nodes that are connected to
-// the "acti_term" edge. The optional arguments used to configure the query builder of the edge.
-func (aq *ActivityQuery) WithActiTerm(opts ...func(*TermQuery)) *ActivityQuery {
-	query := &TermQuery{config: aq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	aq.withActiTerm = query
-	return aq
-}
-
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
@@ -455,15 +424,14 @@ func (aq *ActivityQuery) sqlAll(ctx context.Context) ([]*Activity, error) {
 		nodes       = []*Activity{}
 		withFKs     = aq.withFKs
 		_spec       = aq.querySpec()
-		loadedTypes = [5]bool{
+		loadedTypes = [4]bool{
 			aq.withActiStud != nil,
 			aq.withActiPlace != nil,
 			aq.withActiAgen != nil,
 			aq.withActiYear != nil,
-			aq.withActiTerm != nil,
 		}
 	)
-	if aq.withActiStud != nil || aq.withActiPlace != nil || aq.withActiAgen != nil || aq.withActiYear != nil || aq.withActiTerm != nil {
+	if aq.withActiStud != nil || aq.withActiPlace != nil || aq.withActiAgen != nil || aq.withActiYear != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -589,31 +557,6 @@ func (aq *ActivityQuery) sqlAll(ctx context.Context) ([]*Activity, error) {
 			}
 			for i := range nodes {
 				nodes[i].Edges.ActiYear = n
-			}
-		}
-	}
-
-	if query := aq.withActiTerm; query != nil {
-		ids := make([]int, 0, len(nodes))
-		nodeids := make(map[int][]*Activity)
-		for i := range nodes {
-			if fk := nodes[i].term_term_acti; fk != nil {
-				ids = append(ids, *fk)
-				nodeids[*fk] = append(nodeids[*fk], nodes[i])
-			}
-		}
-		query.Where(term.IDIn(ids...))
-		neighbors, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, n := range neighbors {
-			nodes, ok := nodeids[n.ID]
-			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "term_term_acti" returned %v`, n.ID)
-			}
-			for i := range nodes {
-				nodes[i].Edges.ActiTerm = n
 			}
 		}
 	}

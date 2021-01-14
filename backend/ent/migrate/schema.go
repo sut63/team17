@@ -13,7 +13,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "activityname", Type: field.TypeString},
 		{Name: "added", Type: field.TypeTime},
-		{Name: "hours", Type: field.TypeString},
+		{Name: "hours", Type: field.TypeInt},
 		{Name: "agency_agen_acti", Type: field.TypeInt, Nullable: true},
 		{Name: "place_place_acti", Type: field.TypeInt, Nullable: true},
 		{Name: "student_stud_acti", Type: field.TypeInt, Nullable: true},
@@ -146,6 +146,20 @@ var (
 		Name:        "degrees",
 		Columns:     DegreesColumns,
 		PrimaryKey:  []*schema.Column{DegreesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{},
+	}
+	// EmpsColumns holds the columns for the "emps" table.
+	EmpsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "user", Type: field.TypeString},
+		{Name: "pass", Type: field.TypeString},
+		{Name: "role", Type: field.TypeString},
+	}
+	// EmpsTable holds the schema information for the "emps" table.
+	EmpsTable = &schema.Table{
+		Name:        "emps",
+		Columns:     EmpsColumns,
+		PrimaryKey:  []*schema.Column{EmpsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{},
 	}
 	// FacultiesColumns holds the columns for the "faculties" table.
@@ -485,6 +499,7 @@ var (
 		CountriesTable,
 		CoursesTable,
 		DegreesTable,
+		EmpsTable,
 		FacultiesTable,
 		GendersTable,
 		InstitutionsTable,
