@@ -338,6 +338,16 @@ func (su *StudentUpdate) Save(ctx context.Context) (int, error) {
 			return 0, &ValidationError{Name: "recent_address", err: fmt.Errorf("ent: validator failed for field \"recent_address\": %w", err)}
 		}
 	}
+	if v, ok := su.mutation.Telephone(); ok {
+		if err := student.TelephoneValidator(v); err != nil {
+			return 0, &ValidationError{Name: "telephone", err: fmt.Errorf("ent: validator failed for field \"telephone\": %w", err)}
+		}
+	}
+	if v, ok := su.mutation.Email(); ok {
+		if err := student.EmailValidator(v); err != nil {
+			return 0, &ValidationError{Name: "email", err: fmt.Errorf("ent: validator failed for field \"email\": %w", err)}
+		}
+	}
 
 	var (
 		err      error
@@ -1097,6 +1107,16 @@ func (suo *StudentUpdateOne) Save(ctx context.Context) (*Student, error) {
 	if v, ok := suo.mutation.RecentAddress(); ok {
 		if err := student.RecentAddressValidator(v); err != nil {
 			return nil, &ValidationError{Name: "recent_address", err: fmt.Errorf("ent: validator failed for field \"recent_address\": %w", err)}
+		}
+	}
+	if v, ok := suo.mutation.Telephone(); ok {
+		if err := student.TelephoneValidator(v); err != nil {
+			return nil, &ValidationError{Name: "telephone", err: fmt.Errorf("ent: validator failed for field \"telephone\": %w", err)}
+		}
+	}
+	if v, ok := suo.mutation.Email(); ok {
+		if err := student.EmailValidator(v); err != nil {
+			return nil, &ValidationError{Name: "email", err: fmt.Errorf("ent: validator failed for field \"email\": %w", err)}
 		}
 	}
 
