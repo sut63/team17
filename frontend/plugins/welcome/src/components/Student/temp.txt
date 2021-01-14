@@ -1,0 +1,426 @@
+import React, { FC, useState, useEffect}  from 'react';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import Alert from '@material-ui/lab/Alert';
+import {
+    Container,
+    Grid,
+    FormControl,
+    Select,
+    InputLabel,
+    MenuItem,
+    TextField,
+    Button,
+    CardMedia,
+    Snackbar,
+  } from '@material-ui/core';
+import{
+  Content,
+    InfoCard,
+    Header,
+    Page,
+    pageTheme,
+    ContentHeader,
+} from '@backstage/core';
+import  { DefaultApi }  from '../../api/apis';
+import { EntGender, EntDegree, EntPrefix, EntProvince} from '../../api/models/';
+
+interface Students {
+  addr:string,
+  degree:number,
+  email:string,
+  fname:string,
+  lname:string,
+  province:number,
+  school:string,
+  sex:number,
+  tel:number,
+  title:number,
+  district:number,
+  postal:number,
+  zone:number,
+}
+
+  const StudentUI: FC<{}> = () => {
+
+    const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: string) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+      setSuccess(false);
+      setFail(false);
+    };
+
+  const [status, setStatus] = useState(false);
+  const [alert, setAlert] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const api = new DefaultApi();
+
+  const [success, setSuccess] =useState(false);
+  const [fail, setFail] =useState(false);
+
+  const [pref,Setpref] = useState<EntPrefix[]>([]);
+  const [prov,Setprov] = useState<EntProvince[]>([]);
+  const [dist,Setdist] = useState<EntProvince[]>([]);
+  const [subd,Setsubd] = useState<EntProvince[]>([]);
+  const [post,Setpost] = useState<EntProvince[]>([]);
+  const [gend,Setgend] = useState<EntGender[]>([]);
+  const [degr,Setdegr] = useState<EntDegree[]>([]);
+
+  const getPref = async () => {
+    const res = await api.listPrefix({ limit: 10, offset: 0 });
+    Setpref(res);
+  };
+  const getProv= async () => {
+    const res = await api.listProvince({ limit: 10, offset: 0 });
+    Setprov(res);
+  };
+  const getDist= async () => {
+    const res = await api.listProvince({ limit: 10, offset: 0 });
+    Setdist(res);
+  };
+  const getZone= async () => {
+    const res = await api.listProvince({ limit: 10, offset: 0 });
+    Setsubd(res);
+  };
+  const getPost= async () => {
+    const res = await api.listProvince({ limit: 10, offset: 0 });
+    Setpost(res);
+  };
+  const getGend = async () => {
+    const res = await api.listGender({ limit: 10, offset: 0 });
+    Setgend(res);
+  };
+  const getDegr = async () => {
+    const res = await api.listDegree({ limit: 10, offset: 0 });
+    Setdegr(res);
+  };
+
+  useEffect(() => {
+    getDegr();
+    getGend();
+    getPref();
+    getProv();
+    getDist();
+    getPost();
+    getZone();
+    }, []);
+  
+  const [Student, setStudent] = React.useState<Partial<Students>>({});
+
+  const handleChange = (
+    event: React.ChangeEvent<{ name?: string; value: unknown }>,
+  ) => {
+    const name = event.target.name as keyof typeof Student;
+    const { value } = event.target;
+    setStudent({ ...Student, [name]: value });
+  };console.log(Student)
+
+    function clear() {
+      setStudent({});
+    }
+
+ /*  
+const Create = async () => {
+  if(Student.addr!=''&&Student.email!=''
+  &&Student.fname!=''&&Student.lname!=''
+  &&Student.school!=''&&Student.district!=null
+  &&Student.degree!=null&&Student.postal!=null
+  &&Student.province!=null&&Student.sex!=null
+  &&Student.tel!=null&&Student.title!=null)
+    {const res1: any = await api.createStudent({ student:Student });
+    setStatus(true);
+    if (res1.id != '') {
+      setSuccess(true);
+      }
+    }
+  else{
+    setFail(false);
+  }
+  
+  console.log(Student)
+};*/
+  
+  function save() {
+    const apiUrl = 'http://localhost:8080/api/v1/students';
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(Student),
+    };
+
+    console.log(Student);
+
+    fetch(apiUrl, requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.status);
+        if (data.status === true) {
+          setSuccess(true);
+        } else {
+          setFail(true);
+        }
+      })
+  }
+   
+   return ( 
+      <Page theme={pageTheme.home}>
+      <Header
+        title={'Student Management'}
+        subtitle='Student Registration Department'
+      >
+      </Header>
+      <Content>
+        <ContentHeader title="Student Background"></ContentHeader>
+        <TableContainer component={Paper}>
+         <Table>
+           <TableBody>
+             <TableCell>
+
+                  <Grid container spacing={1}>
+                    <Grid item xs={2}>
+                      <b>Gender</b>
+                      <div>
+                  <FormControl variant="outlined" fullWidth>
+                  <Select name="sex" id='sex' value={Student.sex || ''}
+                      onChange={handleChange}>
+                  {gend.map((item) => {
+                    return (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.gender}
+                      </MenuItem>
+                    );
+                  })}
+                  </Select>
+                  </FormControl>
+                  </div>
+                    </Grid>
+                    <Grid item xs={2}>
+                    <b>Title</b>
+                  <div>
+                  <FormControl variant="outlined" fullWidth>
+                  <Select name="title" id='title' value={Student.title || ''}
+                      onChange={handleChange}>
+                  {pref.map((item) => {
+                    return (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.prefix}
+                      </MenuItem>
+                    );
+                  })}
+                  </Select>
+                  </FormControl>
+                  </div>
+                    </Grid>
+                  </Grid>
+
+                <Grid container spacing={1}>
+                  <Grid item xs={4}>
+                    <b>School</b>
+                    <div>
+                    <TextField variant='outlined' type='string' name="school" value={Student.school || ''}
+                      onChange={handleChange}/>
+                    </div>
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={1}>
+                  <Grid item xs={4}>
+                    <b>Province</b>
+                    <div>
+                    <FormControl variant="outlined" fullWidth>
+                    <Select name="province" value={Student.province || ''}
+                      onChange={handleChange}>
+                    {prov.map((item) => {
+                    return (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.province}
+                      </MenuItem>
+                    );
+                  })}
+                  </Select>
+                  </FormControl>
+                    </div>
+                  </Grid>
+                </Grid>
+                <Grid container spacing={1}>
+                  <Grid item xs={4}>
+                    <b>Postal Code</b>
+                    <div>
+                    <FormControl variant="outlined" fullWidth>
+                    <Select name="postal" value={Student.postal ||''}
+                      onChange={handleChange}>
+                    {post.map((item) => {
+                    return (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.postal}
+                      </MenuItem>
+                      );
+                    })}
+                    </Select>
+                    </FormControl>
+                    </div>
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+
+                  </Grid>
+                </Grid>
+
+             </TableCell>
+             
+             <TableCell>
+
+                <Grid container spacing={1}>
+                  <Grid item xs={4}>
+                    <b>First Name</b>
+                    <div>
+                    <TextField variant='outlined' type='string' name="fname" value={Student.fname || ''}
+                      onChange={handleChange}/>
+                    </div>  
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={1}>
+                  <Grid item xs={4}>
+                    <b>Degree</b>
+                    <div>
+                    <FormControl variant="outlined" fullWidth>
+                    <Select name="degree" value={Student.degree || ''}
+                      onChange={handleChange}>
+                    {degr.map((item) => {
+                    return (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.degree}
+                      </MenuItem>
+                      );
+                    })}
+                    </Select>
+                    </FormControl>
+                    </div>
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={1}>
+                  <Grid item xs={4}>
+                    <b>District</b>
+                    <div>
+                    <FormControl variant="outlined" fullWidth>
+                    <Select name="district" value={Student.district || ''}
+                      onChange={handleChange}>
+                    {dist.map((item) => {
+                    return (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.district}
+                      </MenuItem>
+                    );
+                  })}
+                  </Select>
+                  </FormControl>
+                    </div>
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={1}>
+                  <Grid item xs={4}>
+                    <b>Telephone Number</b>
+                    <div>
+                    <TextField variant='outlined' type='number' name="tel" value={Student.tel || ''}
+                      onChange={handleChange}/>
+                    </div>
+                  </Grid>
+                </Grid>
+
+             </TableCell>
+             
+             <TableCell>
+
+              <Grid container spacing={1}>
+                <Grid item xs={4}>
+                  <b>Last Name</b>
+                  <div>
+                  <TextField variant='outlined' type='string' name="lname" value={Student.lname || ''}
+                      onChange={handleChange}/>
+                  </div>
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={1}>
+                <Grid item xs={4}>
+                    <b>Recent Address</b>
+                    <div>
+                    <TextField variant='outlined' type='string' name="addr" value={Student.addr || ''}
+                      onChange={handleChange}/>
+                    </div>
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={1}>
+                <Grid item xs={4}>
+                    <b>Subdistrict</b>
+                    <div>
+                    <FormControl variant="outlined" fullWidth>
+                    <Select name="zone" value={Student.zone || ''}
+                      onChange={handleChange}>
+                    {subd.map((item) => {
+                    return (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.subdistrict}
+                      </MenuItem>
+                    );
+                  })}
+                  </Select>
+                  </FormControl>
+                    </div>
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={1}>
+                <Grid item xs={4}>
+                  <b>Email</b>
+                  <div>
+                  <TextField variant='outlined' type='email' name="email" value={Student.email || ''}
+                      onChange={handleChange}/>
+                  </div>
+                </Grid>
+              </Grid>
+
+             </TableCell>
+           </TableBody>
+              <Grid container spacing={1}>
+                <Grid item xs={4}>
+
+                  </Grid>
+                </Grid>
+           <TableBody>
+             <TableCell></TableCell>
+             <TableCell>
+              <Button variant='contained' color='primary'  onClick={() => {
+                    save(); 
+                }}>Save</Button>
+              <Snackbar open={fail} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+                <Alert onClose={handleClose} severity="error">
+                  Save Error Check Your Infomation
+                </Alert>
+              </Snackbar>
+              <Snackbar open={success} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+                <Alert onClose={handleClose} severity="success">
+                  Successful
+                </Alert>
+              </Snackbar>
+             </TableCell>
+             <TableCell></TableCell>
+           </TableBody>
+           </Table>
+       </TableContainer>
+       </Content>
+    </Page>
+  );
+};export default StudentUI;
