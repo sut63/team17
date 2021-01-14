@@ -25,7 +25,7 @@ type Student struct {
 	School string
 	Addr   string
 	Email  string
-	Tel    int
+	Tel    string
 	Sex    int
 	Province   int
 	District   int
@@ -132,6 +132,9 @@ func (ctl *StudentController) CreateStudent(c *gin.Context) {
 		return
 	}
 
+	str1 := obj.Tel
+	i1, err := strconv.Atoi(str1)
+
 	save, err := ctl.client.Student.
 		Create().
 		SetFname(obj.Fname).
@@ -139,7 +142,7 @@ func (ctl *StudentController) CreateStudent(c *gin.Context) {
 		SetRecentAddress(obj.Addr).
 		SetSchoolname(obj.School).
 		SetEmail(obj.Email).
-		SetTelephone(obj.Tel).
+		SetTelephone(i1).
 		SetStudDegr(d).
 		SetStudGend(s).
 		SetStudPref(pre).
@@ -228,6 +231,9 @@ func (ctl *StudentController) ListStudent(c *gin.Context) {
 		WithStudGend().
 		WithStudPref().
 		WithStudProv().
+		WithStudDist().
+		WithStudPost().
+		WithStudSubd().
 		Limit(limit).
 		Offset(offset).
 		All(context.Background())
@@ -257,9 +263,9 @@ func NewStudentController(router gin.IRouter, client *ent.Client) *StudentContro
 
 func (ctl *StudentController) register() {
 	student := ctl.router.Group("/students")
-
-	student.POST("", ctl.CreateStudent)
 	student.GET("", ctl.ListStudent)
+	// CRUD
+	student.POST("", ctl.CreateStudent)
 	student.GET(":id", ctl.GetStudent)
 
 }
