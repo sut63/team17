@@ -669,6 +669,98 @@ var doc = `{
                 }
             }
         },
+        "/emps": {
+            "get": {
+                "description": "list emp entities",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "List emp entities",
+                "operationId": "list-emp",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ent.Emp"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/emps/{id}": {
+            "get": {
+                "description": "get emp by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a emp entity by ID",
+                "operationId": "get-emp",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Emp ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.Emp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
         "/facultys": {
             "get": {
                 "description": "list faculty entities",
@@ -2187,15 +2279,12 @@ var doc = `{
                     "type": "integer"
                 },
                 "hours": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "place": {
                     "type": "integer"
                 },
                 "student": {
-                    "type": "integer"
-                },
-                "term": {
                     "type": "integer"
                 },
                 "year": {
@@ -2340,18 +2429,18 @@ var doc = `{
                     "description": "ACTIVITYNAME holds the value of the \"ACTIVITYNAME\" field.",
                     "type": "string"
                 },
-                "added": {
-                    "description": "Added holds the value of the \"added\" field.",
+                "ADDED": {
+                    "description": "ADDED holds the value of the \"ADDED\" field.",
                     "type": "string"
+                },
+                "HOURS": {
+                    "description": "HOURS holds the value of the \"HOURS\" field.",
+                    "type": "integer"
                 },
                 "edges": {
                     "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the ActivityQuery when eager-loading is set.",
                     "type": "object",
                     "$ref": "#/definitions/ent.ActivityEdges"
-                },
-                "hours": {
-                    "description": "Hours holds the value of the \"hours\" field.",
-                    "type": "string"
                 },
                 "id": {
                     "description": "ID of the ent.",
@@ -2376,11 +2465,6 @@ var doc = `{
                     "description": "ActiStud holds the value of the acti_stud edge.",
                     "type": "object",
                     "$ref": "#/definitions/ent.Student"
-                },
-                "actiTerm": {
-                    "description": "ActiTerm holds the value of the acti_term edge.",
-                    "type": "object",
-                    "$ref": "#/definitions/ent.Term"
                 },
                 "actiYear": {
                     "description": "ActiYear holds the value of the acti_year edge.",
@@ -2551,6 +2635,27 @@ var doc = `{
                     "items": {
                         "$ref": "#/definitions/ent.Student"
                     }
+                }
+            }
+        },
+        "ent.Emp": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "ID of the ent.",
+                    "type": "integer"
+                },
+                "pass": {
+                    "description": "Pass holds the value of the \"pass\" field.",
+                    "type": "string"
+                },
+                "role": {
+                    "description": "Role holds the value of the \"role\" field.",
+                    "type": "string"
+                },
+                "user": {
+                    "description": "User holds the value of the \"user\" field.",
+                    "type": "string"
                 }
             }
         },

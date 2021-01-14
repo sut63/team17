@@ -24,6 +24,9 @@ type Course func(*sql.Selector)
 // Degree is the predicate function for degree builders.
 type Degree func(*sql.Selector)
 
+// Emp is the predicate function for emp builders.
+type Emp func(*sql.Selector)
+
 // Faculty is the predicate function for faculty builders.
 type Faculty func(*sql.Selector)
 

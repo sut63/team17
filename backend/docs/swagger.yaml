@@ -9,12 +9,10 @@ definitions:
       agency:
         type: integer
       hours:
-        type: string
+        type: integer
       place:
         type: integer
       student:
-        type: integer
-      term:
         type: integer
       year:
         type: integer
@@ -109,18 +107,18 @@ definitions:
       ACTIVITYNAME:
         description: ACTIVITYNAME holds the value of the "ACTIVITYNAME" field.
         type: string
-      added:
-        description: Added holds the value of the "added" field.
+      ADDED:
+        description: ADDED holds the value of the "ADDED" field.
         type: string
+      HOURS:
+        description: HOURS holds the value of the "HOURS" field.
+        type: integer
       edges:
         $ref: '#/definitions/ent.ActivityEdges'
         description: |-
           Edges holds the relations/edges for other nodes in the graph.
           The values are being populated by the ActivityQuery when eager-loading is set.
         type: object
-      hours:
-        description: Hours holds the value of the "hours" field.
-        type: string
       id:
         description: ID of the ent.
         type: integer
@@ -138,10 +136,6 @@ definitions:
       actiStud:
         $ref: '#/definitions/ent.Student'
         description: ActiStud holds the value of the acti_stud edge.
-        type: object
-      actiTerm:
-        $ref: '#/definitions/ent.Term'
-        description: ActiTerm holds the value of the acti_term edge.
         type: object
       actiYear:
         $ref: '#/definitions/ent.Year'
@@ -274,6 +268,21 @@ definitions:
         items:
           $ref: '#/definitions/ent.Student'
         type: array
+    type: object
+  ent.Emp:
+    properties:
+      id:
+        description: ID of the ent.
+        type: integer
+      pass:
+        description: Pass holds the value of the "pass" field.
+        type: string
+      role:
+        description: Role holds the value of the "role" field.
+        type: string
+      user:
+        description: User holds the value of the "user" field.
+        type: string
     type: object
   ent.Faculty:
     properties:
@@ -1175,6 +1184,67 @@ paths:
           schema:
             $ref: '#/definitions/gin.H'
       summary: Get a degree entity by ID
+  /emps:
+    get:
+      description: list emp entities
+      operationId: list-emp
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Emp'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List emp entities
+  /emps/{id}:
+    get:
+      description: get emp by ID
+      operationId: get-emp
+      parameters:
+      - description: Emp ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Emp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a emp entity by ID
   /facultys:
     get:
       description: list faculty entities

@@ -354,6 +354,30 @@ func (f DegreeMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.DegreeMutation", m)
 }
 
+// The EmpQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type EmpQueryRuleFunc func(context.Context, *ent.EmpQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f EmpQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.EmpQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.EmpQuery", q)
+}
+
+// The EmpMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type EmpMutationRuleFunc func(context.Context, *ent.EmpMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f EmpMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.EmpMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.EmpMutation", m)
+}
+
 // The FacultyQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type FacultyQueryRuleFunc func(context.Context, *ent.FacultyQuery) error

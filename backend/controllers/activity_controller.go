@@ -11,7 +11,6 @@ import (
 	"github.com/sut63/team17/app/ent/agency"
 	"github.com/sut63/team17/app/ent/place"
 	"github.com/sut63/team17/app/ent/student"
-	"github.com/sut63/team17/app/ent/term"
 	"github.com/sut63/team17/app/ent/year"
 )
 
@@ -26,11 +25,10 @@ type Activity struct {
 	Agency       int
 	Place        int
 	Added        string
-	Hours        string
+	Hours        int
 	Activityname string
 	Year         int
 	Student      int
-	Term         int
 }
 
 // CreateActivity handles POST requests for adding activity entities
@@ -98,30 +96,18 @@ func (ctl *ActivityController) CreateActivity(c *gin.Context) {
 		})
 		return
 	}
-	t, err := ctl.client.Term.
-		Query().
-		Where(term.IDEQ(int(obj.Term))).
-		Only(context.Background())
-
-	if err != nil {
-		c.JSON(400, gin.H{
-			"error": "term not found",
-		})
-		return
-	}
 
 	time, err := time.Parse(time.RFC3339, obj.Added)
 
 	save, err := ctl.client.Activity.
 		Create().
 		SetACTIVITYNAME(obj.Activityname).
-		SetAdded(time).
+		SetADDED(time).
 		SetActiAgen(ag).
 		SetActiPlace(p).
-		SetHours(obj.Hours).
+		SetHOURS(obj.Hours).
 		SetActiYear(y).
 		SetActiStud(st).
-		SetActiTerm(t).
 		Save(context.Background())
 
 	if err != nil {
@@ -203,7 +189,6 @@ func (ctl *ActivityController) ListActivity(c *gin.Context) {
 		WithActiPlace().
 		WithActiYear().
 		WithActiStud().
-		WithActiTerm().
 		Limit(limit).
 		Offset(offset).
 		All(context.Background())

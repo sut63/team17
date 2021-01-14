@@ -30,6 +30,7 @@ type hooks struct {
 	Country       []ent.Hook
 	Course        []ent.Hook
 	Degree        []ent.Hook
+	Emp           []ent.Hook
 	Faculty       []ent.Hook
 	Gender        []ent.Hook
 	Institution   []ent.Hook

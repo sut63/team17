@@ -15,6 +15,7 @@ import (
 	"github.com/sut63/team17/app/ent/country"
 	"github.com/sut63/team17/app/ent/course"
 	"github.com/sut63/team17/app/ent/degree"
+	"github.com/sut63/team17/app/ent/emp"
 	"github.com/sut63/team17/app/ent/faculty"
 	"github.com/sut63/team17/app/ent/gender"
 	"github.com/sut63/team17/app/ent/institution"
@@ -52,6 +53,8 @@ type Client struct {
 	Course *CourseClient
 	// Degree is the client for interacting with the Degree builders.
 	Degree *DegreeClient
+	// Emp is the client for interacting with the Emp builders.
+	Emp *EmpClient
 	// Faculty is the client for interacting with the Faculty builders.
 	Faculty *FacultyClient
 	// Gender is the client for interacting with the Gender builders.
@@ -99,6 +102,7 @@ func (c *Client) init() {
 	c.Country = NewCountryClient(c.config)
 	c.Course = NewCourseClient(c.config)
 	c.Degree = NewDegreeClient(c.config)
+	c.Emp = NewEmpClient(c.config)
 	c.Faculty = NewFacultyClient(c.config)
 	c.Gender = NewGenderClient(c.config)
 	c.Institution = NewInstitutionClient(c.config)
@@ -151,6 +155,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Country:       NewCountryClient(cfg),
 		Course:        NewCourseClient(cfg),
 		Degree:        NewDegreeClient(cfg),
+		Emp:           NewEmpClient(cfg),
 		Faculty:       NewFacultyClient(cfg),
 		Gender:        NewGenderClient(cfg),
 		Institution:   NewInstitutionClient(cfg),
@@ -186,6 +191,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Country:       NewCountryClient(cfg),
 		Course:        NewCourseClient(cfg),
 		Degree:        NewDegreeClient(cfg),
+		Emp:           NewEmpClient(cfg),
 		Faculty:       NewFacultyClient(cfg),
 		Gender:        NewGenderClient(cfg),
 		Institution:   NewInstitutionClient(cfg),
@@ -234,6 +240,7 @@ func (c *Client) Use(hooks ...Hook) {
 	c.Country.Use(hooks...)
 	c.Course.Use(hooks...)
 	c.Degree.Use(hooks...)
+	c.Emp.Use(hooks...)
 	c.Faculty.Use(hooks...)
 	c.Gender.Use(hooks...)
 	c.Institution.Use(hooks...)
@@ -385,22 +392,6 @@ func (c *ActivityClient) QueryActiYear(a *Activity) *YearQuery {
 			sqlgraph.From(activity.Table, activity.FieldID, id),
 			sqlgraph.To(year.Table, year.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, activity.ActiYearTable, activity.ActiYearColumn),
-		)
-		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryActiTerm queries the acti_term edge of a Activity.
-func (c *ActivityClient) QueryActiTerm(a *Activity) *TermQuery {
-	query := &TermQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := a.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(activity.Table, activity.FieldID, id),
-			sqlgraph.To(term.Table, term.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, activity.ActiTermTable, activity.ActiTermColumn),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
 		return fromV, nil
@@ -954,6 +945,89 @@ func (c *DegreeClient) QueryDegrCour(d *Degree) *CourseQuery {
 // Hooks returns the client hooks.
 func (c *DegreeClient) Hooks() []Hook {
 	return c.hooks.Degree
+}
+
+// EmpClient is a client for the Emp schema.
+type EmpClient struct {
+	config
+}
+
+// NewEmpClient returns a client for the Emp from the given config.
+func NewEmpClient(c config) *EmpClient {
+	return &EmpClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `emp.Hooks(f(g(h())))`.
+func (c *EmpClient) Use(hooks ...Hook) {
+	c.hooks.Emp = append(c.hooks.Emp, hooks...)
+}
+
+// Create returns a create builder for Emp.
+func (c *EmpClient) Create() *EmpCreate {
+	mutation := newEmpMutation(c.config, OpCreate)
+	return &EmpCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Update returns an update builder for Emp.
+func (c *EmpClient) Update() *EmpUpdate {
+	mutation := newEmpMutation(c.config, OpUpdate)
+	return &EmpUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *EmpClient) UpdateOne(e *Emp) *EmpUpdateOne {
+	mutation := newEmpMutation(c.config, OpUpdateOne, withEmp(e))
+	return &EmpUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *EmpClient) UpdateOneID(id int) *EmpUpdateOne {
+	mutation := newEmpMutation(c.config, OpUpdateOne, withEmpID(id))
+	return &EmpUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Emp.
+func (c *EmpClient) Delete() *EmpDelete {
+	mutation := newEmpMutation(c.config, OpDelete)
+	return &EmpDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *EmpClient) DeleteOne(e *Emp) *EmpDeleteOne {
+	return c.DeleteOneID(e.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *EmpClient) DeleteOneID(id int) *EmpDeleteOne {
+	builder := c.Delete().Where(emp.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &EmpDeleteOne{builder}
+}
+
+// Create returns a query builder for Emp.
+func (c *EmpClient) Query() *EmpQuery {
+	return &EmpQuery{config: c.config}
+}
+
+// Get returns a Emp entity by its id.
+func (c *EmpClient) Get(ctx context.Context, id int) (*Emp, error) {
+	return c.Query().Where(emp.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *EmpClient) GetX(ctx context.Context, id int) *Emp {
+	e, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return e
+}
+
+// Hooks returns the client hooks.
+func (c *EmpClient) Hooks() []Hook {
+	return c.hooks.Emp
 }
 
 // FacultyClient is a client for the Faculty schema.

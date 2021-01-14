@@ -24,6 +24,8 @@ type Tx struct {
 	Course *CourseClient
 	// Degree is the client for interacting with the Degree builders.
 	Degree *DegreeClient
+	// Emp is the client for interacting with the Emp builders.
+	Emp *EmpClient
 	// Faculty is the client for interacting with the Faculty builders.
 	Faculty *FacultyClient
 	// Gender is the client for interacting with the Gender builders.
@@ -193,6 +195,7 @@ func (tx *Tx) init() {
 	tx.Country = NewCountryClient(tx.config)
 	tx.Course = NewCourseClient(tx.config)
 	tx.Degree = NewDegreeClient(tx.config)
+	tx.Emp = NewEmpClient(tx.config)
 	tx.Faculty = NewFacultyClient(tx.config)
 	tx.Gender = NewGenderClient(tx.config)
 	tx.Institution = NewInstitutionClient(tx.config)
