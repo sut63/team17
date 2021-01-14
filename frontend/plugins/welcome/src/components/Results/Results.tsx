@@ -19,20 +19,7 @@ import {
   import { EntSubject } from '../../api/models/EntSubject';
   import { EntStudent } from '../../api/models/EntStudent';
   import { DefaultApi } from '../../api/apis/DefaultApi'; // Api Gennerate From Command
-  import Swal from 'sweetalert2'; // alert
-  
-// alert setting
-const Toast = Swal.mixin({
-  toast: true,
-  position: 'top',
-  showConfirmButton: false,
-  timer: 3000,
-  timerProgressBar: true,
-  didOpen: toast => {
-    toast.addEventListener('mouseenter', Swal.stopTimer);
-    toast.addEventListener('mouseleave', Swal.resumeTimer);
-  },
-});
+
 // header css
 const HeaderCustom = {
   minHeight: '50px',
@@ -126,24 +113,24 @@ const Results: FC<{}> = () => {
    
   //Get Data By Textfile and ComboBox ************************************************
   const [yearx, setYearx] = React.useState();
-  const [gradex, setGradex] = React.useState(String);
+  const [gradex, setGradex] = React.useState();
   const [studentx, setStudentx] = React.useState();
   const [subx, setSubx] = React.useState();
   const [termx, setTermx] = React.useState();
   
 
-  let yearID = Number(yearx)
-  let grade = Number(gradex)
-  let studentID = Number(studentx)
-  let subjectID = Number(subx)
-  let termID = Number(termx)
+  let YearID = Number(yearx)
+  let Grade = Number(gradex)
+  let StudentID = Number(studentx)
+  let SubjectID = Number(subx)
+  let TermID = Number(termx)
 
-  let results = {
-	grade,    
-	studentID,
-	yearID,
-  subjectID,
-  termID,
+  let Results = {
+	Grade,    
+	StudentID,
+	YearID,
+  SubjectID,
+  TermID,
     };
 
   //Handle chang********************************************************************
@@ -167,38 +154,13 @@ const Results: FC<{}> = () => {
     setTermx(event.target.value);
     
   };
-  console.log(results)
   
+
   //seve**********************************************************
-   // function save data
-   function save() {
-    const apiUrl = 'http://localhost:8080/api/v1/resultss';
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(results),
-    };
-
-    console.log(results); // log ดูข้อมูล สามารถ Inspect ดูข้อมูลได้ F12 เลือก Tab Console
-
-    fetch(apiUrl, requestOptions)
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        if (data.id != null ) {
-          
-          Toast.fire({
-            icon: 'success',
-            title: 'บันทึกข้อมูลสำเร็จ',
-          });
-        } else {
-          Toast.fire({
-            icon: 'error',
-            title: 'บันทึกข้อมูลไม่สำเร็จ',
-          });
-        }
-      });
-  }
+  //const save = async () => {
+  //  const res = await api.createResults({ Results });
+  //  console.log(res);
+  //};
   
 
   //console log****************************************************************
@@ -231,7 +193,7 @@ const Results: FC<{}> = () => {
                 <InputLabel>เลือกรหัสนักศึกษา</InputLabel>
                 <Select
                   name="StudentID"
-                  value={results.studentID || ''} // (undefined || '') = ''
+                  value={Results.StudentID || ''} // (undefined || '') = ''
                   onChange={handleInputStudent}
                 >
                   {students.map(item => {
@@ -257,7 +219,7 @@ const Results: FC<{}> = () => {
                 <InputLabel>เลือกปีการศึกษา</InputLabel>
                 <Select
                   name="YearID"
-                  value={results.yearID || ''} // (undefined || '') = ''
+                  value={Results.YearID || ''} // (undefined || '') = ''
                   onChange={handleInputYear}
                 >
                   {years.map(item => {
@@ -280,7 +242,7 @@ const Results: FC<{}> = () => {
                 <InputLabel>เลือกภาคการศึกษา</InputLabel>
                 <Select
                   name="TermID"
-                  value={results.termID || ''} // (undefined || '') = ''
+                  value={Results.TermID || ''} // (undefined || '') = ''
                   onChange={handleInputTerm}
                 >
                   {terms.map(item => {
@@ -305,7 +267,7 @@ const Results: FC<{}> = () => {
                 <InputLabel>เลือกวิชา</InputLabel>
                 <Select
                   name="SubjectID"
-                  value={results.subjectID || ''} // (undefined || '') = ''
+                  value={Results.SubjectID || ''} // (undefined || '') = ''
                   onChange={handleInputSubject}
                 >
                   {subjects.map(item => {
@@ -325,11 +287,13 @@ const Results: FC<{}> = () => {
                   <div className={classes.paper}>เกรด</div>
                 </Grid>
                 <Grid item xs={9}>
-                  <TextField variant="outlined" className={classes.textField}  
-                      name="grade"
-                      value={results.grade || ''} // (undefined || '') = ''
-                      onChange={handleInputGrade}>
-                                                                            
+                  <TextField variant="outlined" className={classes.textField}>
+                    <InputLabel></InputLabel>
+                    
+                      name="Grade"
+                      value={Results.Grade || ''} // (undefined || '') = ''
+                      onChange={handleInputGrade}
+                    
                   </TextField>
                 </Grid>
 
@@ -343,7 +307,7 @@ const Results: FC<{}> = () => {
                 color="primary"
                 size="large"
                 startIcon={<SaveIcon />}
-                onClick={save}
+                //onClick={save}
               >
                 บันทึก
               </Button>

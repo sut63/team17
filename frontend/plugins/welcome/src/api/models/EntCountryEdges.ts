@@ -19,6 +19,7 @@ import {
     EntProvinceFromJSONTyped,
     EntProvinceToJSON,
 } from './';
+import { EntDegreeEdgesFromJSON } from './EntDegreeEdges';
 
 /**
  * 
@@ -44,7 +45,9 @@ export function EntCountryEdgesFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'counProv': !exists(json, 'counProv') ? undefined : ((json['counProv'] as Array<any>).map(EntProvinceFromJSON)),
+        'CourDegr': !exists(json, 'CourDegr') ? undefined : EntDegreeEdgesFromJSON(json['CourDegr']),
+        'CourFacu': !exists(json, 'CourFacu') ? undefined : Ent(json['CourDegr']),
+        'CourDegr': !exists(json, 'CourDegr') ? undefined : EntDegreeEdgesFromJSON(json['CourDegr']),
     };
 }
 

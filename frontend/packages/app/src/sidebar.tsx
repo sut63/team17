@@ -1,10 +1,8 @@
 import React from 'react';
 import HomeIcon from '@material-ui/icons/Home';
 import CreateComponentIcon from '@material-ui/icons/AddCircleOutline';
-import YouTube from '@material-ui/icons/YouTube';
-import SignOut from '@material-ui/icons/Settings';
-
-
+import SearchOutlined from '@material-ui/icons/SearchOutlined';
+import BookOutlined from '@material-ui/icons/BookOutlined';
 import {
   Sidebar,
   SidebarItem,
@@ -19,30 +17,16 @@ export const AppSidebar = () => (
   <Sidebar>
     <SidebarDivider />
     {/* Global nav, not org-specific */}
-    <SidebarItem icon={HomeIcon} to="" text="Home" />
-    {/* <SidebarItem icon={CreateComponentIcon} to="create" text="Create..." />
-    <SidebarItem icon={CreateComponentIcon} to="welcome" text="Welcome" /> */}
-    <SidebarItem
-      icon={YouTube}
-      to="playlist_video"
-      text="Playlist Video"
-    />
-    <SidebarItem
-      icon={CreateComponentIcon}
-      to="watch_video"
-      text="Watch Video"
-    />
-
+    <SidebarItem icon={HomeIcon} to="./" text="Home" />
+    <SidebarItem icon={BookOutlined} to="./create-course" text="บันทึกข้อมูลหลักสูตร" />
+    <SidebarItem icon={SearchOutlined} to="./search-course" text="ข้อมูลหลักสูตร" />
+    <SidebarItem icon={CreateComponentIcon} to="welcome" text="Welcome" />
     {/* End global nav */}
     <SidebarDivider />
     <SidebarSpace />
     <SidebarDivider />
-    <SidebarItem
-      icon={SignOut}
-      to="sign_out"
-      text="Sign Out"
-    />
-    {/* <SidebarUserSettings  /> */}
+    <SidebarThemeToggle />
+    <SidebarUserSettings />
     <SidebarPinButton />
   </Sidebar>
 );
