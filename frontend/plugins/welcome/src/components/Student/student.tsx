@@ -7,6 +7,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Alert from '@material-ui/lab/Alert';
+import Swal from 'sweetalert2'; // alert
 import {
     Container,
     Grid,
@@ -29,6 +30,87 @@ import{
 } from '@backstage/core';
 import  { DefaultApi }  from '../../api/apis';
 import { EntGender, EntDegree, EntPrefix, EntProvince} from '../../api/models/';
+
+interface Students {
+  /**
+   * 
+   * @type {string}
+   * @memberof ControllersStudent
+   */
+  addr?: string;
+  /**
+   * 
+   * @type {number}
+   * @memberof ControllersStudent
+   */
+  degree?: number;
+  /**
+   * 
+   * @type {number}
+   * @memberof ControllersStudent
+   */
+  district?: number;
+  /**
+   * 
+   * @type {string}
+   * @memberof ControllersStudent
+   */
+  email?: string;
+  /**
+   * 
+   * @type {string}
+   * @memberof ControllersStudent
+   */
+  fname?: string;
+  /**
+   * 
+   * @type {string}
+   * @memberof ControllersStudent
+   */
+  lname?: string;
+  /**
+   * 
+   * @type {number}
+   * @memberof ControllersStudent
+   */
+  postal?: number;
+  /**
+   * 
+   * @type {number}
+   * @memberof ControllersStudent
+   */
+  province?: number;
+  /**
+   * 
+   * @type {string}
+   * @memberof ControllersStudent
+   */
+  school?: string;
+  /**
+   * 
+   * @type {number}
+   * @memberof ControllersStudent
+   */
+  sex?: number;
+  /**
+   * 
+   * @type {number}
+   * @memberof ControllersStudent
+   */
+  tel?: number;
+  /**
+   * 
+   * @type {number}
+   * @memberof ControllersStudent
+   */
+  title?: number;
+  /**
+   * 
+   * @type {number}
+   * @memberof ControllersStudent
+   */
+  zone?: number;
+}
 
 const StudentUI: FC<{}> = () => {
 const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: string) => {
@@ -72,6 +154,29 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
     getProv();
     }, []);
 
+    const [Student, setStudent] = React.useState< Partial<Students>>({});
+
+    const h = (
+      event: React.ChangeEvent<{ name?: string; value: unknown }>,
+    ) => {
+      const name = event.target.name as keyof typeof Student;
+      const { value } = event.target;
+      setStudent({ ...Student, [name]: value });
+      console.log(Student);
+    };
+
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: toast => {
+        toast.addEventListener('mouseenter', Swal.stopTimer);
+        toast.addEventListener('mouseleave', Swal.resumeTimer);
+      },
+    });
+/*
     const [addr,Setaddr] = useState(String);
     const [email,Setemail] = useState(String);
     const [fname,Setfname] = useState(String);
@@ -142,7 +247,7 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
       zone:zone,
       district:district,
       postal:postal
-    };
+    };*/
     console.log(Student);
   function save() {
     const apiUrl = 'http://localhost:8080/api/v1/students';
@@ -158,13 +263,18 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
       .then(data => {
         console.log(data.status);
         if (data.status === true) {
-          setSuccess(true);
-          setFail(false);
+          //clear();
+          Toast.fire({
+            icon: 'success',
+            title: 'บันทึกข้อมูลสำเร็จ',
+          });
         } else {
-          setFail(true);
-          setSuccess(false);
+          Toast.fire({
+            icon: 'error',
+            title: 'บันทึกข้อมูลไม่สำเร็จ',
+          });
         }
-      })
+      });
   }
 
   return ( 
@@ -186,8 +296,8 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
                     <b>Gender</b>
                     <div>
                 <FormControl variant="outlined" fullWidth>
-                <Select name="sex" id='sex' value={sex}
-                    onChange={SexhandleChange}>
+                <Select name="sex" id='sex' value={Student.sex||''}
+                    onChange={h}>
                 {gend.map((item) => {
                   return (
                     <MenuItem key={item.id} value={item.id}>
@@ -203,8 +313,8 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
                   <b>Title</b>
                 <div>
                 <FormControl variant="outlined" fullWidth>
-                <Select name="title" id='title' value={title}
-                    onChange={TitlehandleChange}>
+                <Select name="title" id='title' value={Student.title||''}
+                    onChange={h}>
                 {pref.map((item) => {
                   return (
                     <MenuItem key={item.id} value={item.id}>
@@ -222,8 +332,8 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
                 <Grid item xs={4}>
                   <b>School</b>
                   <div>
-                  <TextField variant='outlined' type='string' name="school" value={school}
-                    onChange={SchoolhandleChange}/>
+                  <TextField variant='outlined' type='string' name="school" value={Student.school||''}
+                    onChange={h}/>
                   </div>
                 </Grid>
               </Grid>
@@ -233,8 +343,8 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
                   <b>Province</b>
                   <div>
                   <FormControl variant="outlined" fullWidth>
-                  <Select name="province" value={province}
-                    onChange={ProvincehandleChange}>
+                  <Select name="province" value={Student.province||''}
+                    onChange={h}>
                   {prov.map((item) => {
                   return (
                     <MenuItem key={item.id} value={item.id}>
@@ -252,8 +362,8 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
                   <b>Postal Code</b>
                   <div>
                   <FormControl variant="outlined" fullWidth>
-                  <Select name="postal" value={postal}
-                    onChange={PostalhandleChange}>
+                  <Select name="postal" value={Student.postal||''}
+                    onChange={h}>
                   {prov.map((item) => {
                   return (
                     <MenuItem key={item.id} value={item.id}>
@@ -281,8 +391,8 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
                 <Grid item xs={4}>
                   <b>First Name</b>
                   <div>
-                  <TextField variant='outlined' type='string' name="fname" value={fname}
-                    onChange={FnamehandleChange}/>
+                  <TextField variant='outlined' type='string' name="fname" value={Student.fname||''}
+                    onChange={h}/>
                   </div>  
                 </Grid>
               </Grid>
@@ -292,8 +402,8 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
                   <b>Degree</b>
                   <div>
                   <FormControl variant="outlined" fullWidth>
-                  <Select name="degree" value={degree}
-                    onChange={DegreehandleChange}>
+                  <Select name="degree" value={Student.degree||''}
+                    onChange={h}>
                   {degr.map((item) => {
                   return (
                     <MenuItem key={item.id} value={item.id}>
@@ -312,8 +422,8 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
                   <b>District</b>
                   <div>
                   <FormControl variant="outlined" fullWidth>
-                  <Select name="district" value={district}
-                    onChange={DistricthandleChange}>
+                  <Select name="district" value={Student.district||''}
+                    onChange={h}>
                   {prov.map((item) => {
                   return (
                     <MenuItem key={item.id} value={item.id}>
@@ -331,8 +441,8 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
                 <Grid item xs={4}>
                   <b>Telephone Number</b>
                   <div>
-                  <TextField variant='outlined' type='number' name="tel" value={tel}
-                    onChange={TelhandleChange}/>
+                  <TextField variant='outlined' type='number' name="tel" value={Student.tel||''}
+                    onChange={h}/>
                   </div>
                 </Grid>
               </Grid>
@@ -345,8 +455,8 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
               <Grid item xs={4}>
                 <b>Last Name</b>
                 <div>
-                <TextField variant='outlined' type='string' name="lname" value={lname}
-                    onChange={LnamehandleChange}/>
+                <TextField variant='outlined' type='string' name="lname" value={Student.lname||''}
+                    onChange={h}/>
                 </div>
               </Grid>
             </Grid>
@@ -355,8 +465,8 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
               <Grid item xs={4}>
                   <b>Recent Address</b>
                   <div>
-                  <TextField variant='outlined' type='string' name="addr" value={addr}
-                    onChange={AddrhandleChange}/>
+                  <TextField variant='outlined' type='string' name="addr" value={Student.addr||''}
+                    onChange={h}/>
                   </div>
               </Grid>
             </Grid>
@@ -366,8 +476,8 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
                   <b>Subdistrict</b>
                   <div>
                   <FormControl variant="outlined" fullWidth>
-                  <Select name="zone" value={zone}
-                    onChange={ZonehandleChange}>
+                  <Select name="zone" value={Student.zone||''}
+                    onChange={h}>
                   {prov.map((item) => {
                   return (
                     <MenuItem key={item.id} value={item.id}>
@@ -385,8 +495,8 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
               <Grid item xs={4}>
                 <b>Email</b>
                 <div>
-                <TextField variant='outlined' type='email' name="email" value={email}
-                    onChange={EmailhandleChange}/>
+                <TextField variant='outlined' type='email' name="email" value={Student.email||''}
+                    onChange={h}/>
                 </div>
               </Grid>
             </Grid>
