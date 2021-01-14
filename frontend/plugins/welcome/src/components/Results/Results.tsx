@@ -24,7 +24,7 @@ import {
 // alert setting
 const Toast = Swal.mixin({
   toast: true,
-  position: 'center',
+  position: 'top',
   showConfirmButton: false,
   timer: 3000,
   timerProgressBar: true,
@@ -126,7 +126,7 @@ const Results: FC<{}> = () => {
    
   //Get Data By Textfile and ComboBox ************************************************
   const [yearx, setYearx] = React.useState();
-  const [gradex, setGradex] = React.useState();
+  const [gradex, setGradex] = React.useState(String);
   const [studentx, setStudentx] = React.useState();
   const [subx, setSubx] = React.useState();
   const [termx, setTermx] = React.useState();
@@ -167,7 +167,7 @@ const Results: FC<{}> = () => {
     setTermx(event.target.value);
     
   };
-  
+  console.log(results)
   
   //seve**********************************************************
    // function save data
@@ -325,13 +325,11 @@ const Results: FC<{}> = () => {
                   <div className={classes.paper}>เกรด</div>
                 </Grid>
                 <Grid item xs={9}>
-                  <TextField variant="outlined" className={classes.textField}>
-                    <InputLabel></InputLabel>
-                    
-                      name="Grade"
+                  <TextField variant="outlined" className={classes.textField}  
+                      name="grade"
                       value={results.grade || ''} // (undefined || '') = ''
-                      onChange={handleInputGrade}
-                    
+                      onChange={handleInputGrade}>
+                                                                            
                   </TextField>
                 </Grid>
 
