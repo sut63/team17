@@ -15,8 +15,8 @@ type Activity struct {
 func (Activity) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("ACTIVITYNAME"),
-		field.Time("ADDED"),
-		field.Int("HOURS"),
+		field.Time("added"),
+		field.String("hours"),
 	}
 }
 
@@ -27,5 +27,6 @@ func (Activity) Edges() []ent.Edge {
 		edge.From("acti_place", Place.Type).Ref("place_acti").Unique(),
 		edge.From("acti_agen", Agency.Type).Ref("agen_acti").Unique(),
 		edge.From("acti_year", Year.Type).Ref("year_acti").Unique(),
+		edge.From("acti_term", Term.Type).Ref("term_acti").Unique(),
 	}
 }
