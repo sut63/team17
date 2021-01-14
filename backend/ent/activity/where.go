@@ -100,17 +100,17 @@ func ACTIVITYNAME(v string) predicate.Activity {
 	})
 }
 
-// ADDED applies equality check predicate on the "ADDED" field. It's identical to ADDEDEQ.
-func ADDED(v time.Time) predicate.Activity {
+// Added applies equality check predicate on the "added" field. It's identical to AddedEQ.
+func Added(v time.Time) predicate.Activity {
 	return predicate.Activity(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldADDED), v))
+		s.Where(sql.EQ(s.C(FieldAdded), v))
 	})
 }
 
-// HOURS applies equality check predicate on the "HOURS" field. It's identical to HOURSEQ.
-func HOURS(v int) predicate.Activity {
+// Hours applies equality check predicate on the "hours" field. It's identical to HoursEQ.
+func Hours(v string) predicate.Activity {
 	return predicate.Activity(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldHOURS), v))
+		s.Where(sql.EQ(s.C(FieldHours), v))
 	})
 }
 
@@ -225,22 +225,22 @@ func ACTIVITYNAMEContainsFold(v string) predicate.Activity {
 	})
 }
 
-// ADDEDEQ applies the EQ predicate on the "ADDED" field.
-func ADDEDEQ(v time.Time) predicate.Activity {
+// AddedEQ applies the EQ predicate on the "added" field.
+func AddedEQ(v time.Time) predicate.Activity {
 	return predicate.Activity(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldADDED), v))
+		s.Where(sql.EQ(s.C(FieldAdded), v))
 	})
 }
 
-// ADDEDNEQ applies the NEQ predicate on the "ADDED" field.
-func ADDEDNEQ(v time.Time) predicate.Activity {
+// AddedNEQ applies the NEQ predicate on the "added" field.
+func AddedNEQ(v time.Time) predicate.Activity {
 	return predicate.Activity(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldADDED), v))
+		s.Where(sql.NEQ(s.C(FieldAdded), v))
 	})
 }
 
-// ADDEDIn applies the In predicate on the "ADDED" field.
-func ADDEDIn(vs ...time.Time) predicate.Activity {
+// AddedIn applies the In predicate on the "added" field.
+func AddedIn(vs ...time.Time) predicate.Activity {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -252,12 +252,12 @@ func ADDEDIn(vs ...time.Time) predicate.Activity {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.In(s.C(FieldADDED), v...))
+		s.Where(sql.In(s.C(FieldAdded), v...))
 	})
 }
 
-// ADDEDNotIn applies the NotIn predicate on the "ADDED" field.
-func ADDEDNotIn(vs ...time.Time) predicate.Activity {
+// AddedNotIn applies the NotIn predicate on the "added" field.
+func AddedNotIn(vs ...time.Time) predicate.Activity {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -269,54 +269,54 @@ func ADDEDNotIn(vs ...time.Time) predicate.Activity {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.NotIn(s.C(FieldADDED), v...))
+		s.Where(sql.NotIn(s.C(FieldAdded), v...))
 	})
 }
 
-// ADDEDGT applies the GT predicate on the "ADDED" field.
-func ADDEDGT(v time.Time) predicate.Activity {
+// AddedGT applies the GT predicate on the "added" field.
+func AddedGT(v time.Time) predicate.Activity {
 	return predicate.Activity(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldADDED), v))
+		s.Where(sql.GT(s.C(FieldAdded), v))
 	})
 }
 
-// ADDEDGTE applies the GTE predicate on the "ADDED" field.
-func ADDEDGTE(v time.Time) predicate.Activity {
+// AddedGTE applies the GTE predicate on the "added" field.
+func AddedGTE(v time.Time) predicate.Activity {
 	return predicate.Activity(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldADDED), v))
+		s.Where(sql.GTE(s.C(FieldAdded), v))
 	})
 }
 
-// ADDEDLT applies the LT predicate on the "ADDED" field.
-func ADDEDLT(v time.Time) predicate.Activity {
+// AddedLT applies the LT predicate on the "added" field.
+func AddedLT(v time.Time) predicate.Activity {
 	return predicate.Activity(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldADDED), v))
+		s.Where(sql.LT(s.C(FieldAdded), v))
 	})
 }
 
-// ADDEDLTE applies the LTE predicate on the "ADDED" field.
-func ADDEDLTE(v time.Time) predicate.Activity {
+// AddedLTE applies the LTE predicate on the "added" field.
+func AddedLTE(v time.Time) predicate.Activity {
 	return predicate.Activity(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldADDED), v))
+		s.Where(sql.LTE(s.C(FieldAdded), v))
 	})
 }
 
-// HOURSEQ applies the EQ predicate on the "HOURS" field.
-func HOURSEQ(v int) predicate.Activity {
+// HoursEQ applies the EQ predicate on the "hours" field.
+func HoursEQ(v string) predicate.Activity {
 	return predicate.Activity(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldHOURS), v))
+		s.Where(sql.EQ(s.C(FieldHours), v))
 	})
 }
 
-// HOURSNEQ applies the NEQ predicate on the "HOURS" field.
-func HOURSNEQ(v int) predicate.Activity {
+// HoursNEQ applies the NEQ predicate on the "hours" field.
+func HoursNEQ(v string) predicate.Activity {
 	return predicate.Activity(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldHOURS), v))
+		s.Where(sql.NEQ(s.C(FieldHours), v))
 	})
 }
 
-// HOURSIn applies the In predicate on the "HOURS" field.
-func HOURSIn(vs ...int) predicate.Activity {
+// HoursIn applies the In predicate on the "hours" field.
+func HoursIn(vs ...string) predicate.Activity {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -328,12 +328,12 @@ func HOURSIn(vs ...int) predicate.Activity {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.In(s.C(FieldHOURS), v...))
+		s.Where(sql.In(s.C(FieldHours), v...))
 	})
 }
 
-// HOURSNotIn applies the NotIn predicate on the "HOURS" field.
-func HOURSNotIn(vs ...int) predicate.Activity {
+// HoursNotIn applies the NotIn predicate on the "hours" field.
+func HoursNotIn(vs ...string) predicate.Activity {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -345,35 +345,70 @@ func HOURSNotIn(vs ...int) predicate.Activity {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.NotIn(s.C(FieldHOURS), v...))
+		s.Where(sql.NotIn(s.C(FieldHours), v...))
 	})
 }
 
-// HOURSGT applies the GT predicate on the "HOURS" field.
-func HOURSGT(v int) predicate.Activity {
+// HoursGT applies the GT predicate on the "hours" field.
+func HoursGT(v string) predicate.Activity {
 	return predicate.Activity(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldHOURS), v))
+		s.Where(sql.GT(s.C(FieldHours), v))
 	})
 }
 
-// HOURSGTE applies the GTE predicate on the "HOURS" field.
-func HOURSGTE(v int) predicate.Activity {
+// HoursGTE applies the GTE predicate on the "hours" field.
+func HoursGTE(v string) predicate.Activity {
 	return predicate.Activity(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldHOURS), v))
+		s.Where(sql.GTE(s.C(FieldHours), v))
 	})
 }
 
-// HOURSLT applies the LT predicate on the "HOURS" field.
-func HOURSLT(v int) predicate.Activity {
+// HoursLT applies the LT predicate on the "hours" field.
+func HoursLT(v string) predicate.Activity {
 	return predicate.Activity(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldHOURS), v))
+		s.Where(sql.LT(s.C(FieldHours), v))
 	})
 }
 
-// HOURSLTE applies the LTE predicate on the "HOURS" field.
-func HOURSLTE(v int) predicate.Activity {
+// HoursLTE applies the LTE predicate on the "hours" field.
+func HoursLTE(v string) predicate.Activity {
 	return predicate.Activity(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldHOURS), v))
+		s.Where(sql.LTE(s.C(FieldHours), v))
+	})
+}
+
+// HoursContains applies the Contains predicate on the "hours" field.
+func HoursContains(v string) predicate.Activity {
+	return predicate.Activity(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldHours), v))
+	})
+}
+
+// HoursHasPrefix applies the HasPrefix predicate on the "hours" field.
+func HoursHasPrefix(v string) predicate.Activity {
+	return predicate.Activity(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldHours), v))
+	})
+}
+
+// HoursHasSuffix applies the HasSuffix predicate on the "hours" field.
+func HoursHasSuffix(v string) predicate.Activity {
+	return predicate.Activity(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldHours), v))
+	})
+}
+
+// HoursEqualFold applies the EqualFold predicate on the "hours" field.
+func HoursEqualFold(v string) predicate.Activity {
+	return predicate.Activity(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldHours), v))
+	})
+}
+
+// HoursContainsFold applies the ContainsFold predicate on the "hours" field.
+func HoursContainsFold(v string) predicate.Activity {
+	return predicate.Activity(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldHours), v))
 	})
 }
 
@@ -480,6 +515,34 @@ func HasActiYearWith(preds ...predicate.Year) predicate.Activity {
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(ActiYearInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, ActiYearTable, ActiYearColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasActiTerm applies the HasEdge predicate on the "acti_term" edge.
+func HasActiTerm() predicate.Activity {
+	return predicate.Activity(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ActiTermTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ActiTermTable, ActiTermColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasActiTermWith applies the HasEdge predicate on the "acti_term" edge with a given conditions (other predicates).
+func HasActiTermWith(preds ...predicate.Term) predicate.Activity {
+	return predicate.Activity(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ActiTermInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ActiTermTable, ActiTermColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
