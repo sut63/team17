@@ -158,7 +158,10 @@ func (ctl *StudentController) CreateStudent(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, save)
+	c.JSON(200, gin.H{
+		"status": true,
+		"data":   save,
+	})
 }
 
 // GetStudent handles GET requests to retrieve a student entity
