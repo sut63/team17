@@ -18,6 +18,7 @@ func (Student) Fields() []ent.Field {
 		field.String("recent_address").NotEmpty(),
 		field.Int("telephone").Positive(),
 		field.String("email").NotEmpty(),
+		//field.String("name").NotEmpty(),
 	}
 }
 
