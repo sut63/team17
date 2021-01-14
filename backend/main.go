@@ -1,5 +1,5 @@
 package main
-//eiei
+
 import (
 	"github.com/sut63/team17/app/ent/year"
     "github.com/sut63/team17/app/ent/student"
