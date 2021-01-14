@@ -2320,7 +2320,7 @@ var doc = `{
                     "type": "integer"
                 },
                 "tel": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "title": {
                     "type": "integer"
