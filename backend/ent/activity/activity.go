@@ -9,10 +9,10 @@ const (
 	FieldID = "id"
 	// FieldACTIVITYNAME holds the string denoting the activityname field in the database.
 	FieldACTIVITYNAME = "activityname"
-	// FieldADDED holds the string denoting the added field in the database.
-	FieldADDED = "added"
-	// FieldHOURS holds the string denoting the hours field in the database.
-	FieldHOURS = "hours"
+	// FieldAdded holds the string denoting the added field in the database.
+	FieldAdded = "added"
+	// FieldHours holds the string denoting the hours field in the database.
+	FieldHours = "hours"
 
 	// EdgeActiStud holds the string denoting the acti_stud edge name in mutations.
 	EdgeActiStud = "acti_stud"
@@ -22,6 +22,8 @@ const (
 	EdgeActiAgen = "acti_agen"
 	// EdgeActiYear holds the string denoting the acti_year edge name in mutations.
 	EdgeActiYear = "acti_year"
+	// EdgeActiTerm holds the string denoting the acti_term edge name in mutations.
+	EdgeActiTerm = "acti_term"
 
 	// Table holds the table name of the activity in the database.
 	Table = "activities"
@@ -53,14 +55,21 @@ const (
 	ActiYearInverseTable = "years"
 	// ActiYearColumn is the table column denoting the acti_year relation/edge.
 	ActiYearColumn = "year_year_acti"
+	// ActiTermTable is the table the holds the acti_term relation/edge.
+	ActiTermTable = "activities"
+	// ActiTermInverseTable is the table name for the Term entity.
+	// It exists in this package in order to avoid circular dependency with the "term" package.
+	ActiTermInverseTable = "terms"
+	// ActiTermColumn is the table column denoting the acti_term relation/edge.
+	ActiTermColumn = "term_term_acti"
 )
 
 // Columns holds all SQL columns for activity fields.
 var Columns = []string{
 	FieldID,
 	FieldACTIVITYNAME,
-	FieldADDED,
-	FieldHOURS,
+	FieldAdded,
+	FieldHours,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the Activity type.

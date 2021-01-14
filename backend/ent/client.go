@@ -392,6 +392,22 @@ func (c *ActivityClient) QueryActiYear(a *Activity) *YearQuery {
 	return query
 }
 
+// QueryActiTerm queries the acti_term edge of a Activity.
+func (c *ActivityClient) QueryActiTerm(a *Activity) *TermQuery {
+	query := &TermQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(activity.Table, activity.FieldID, id),
+			sqlgraph.To(term.Table, term.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, activity.ActiTermTable, activity.ActiTermColumn),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *ActivityClient) Hooks() []Hook {
 	return c.hooks.Activity

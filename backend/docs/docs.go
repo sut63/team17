@@ -2187,12 +2187,15 @@ var doc = `{
                     "type": "integer"
                 },
                 "hours": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "place": {
                     "type": "integer"
                 },
                 "student": {
+                    "type": "integer"
+                },
+                "term": {
                     "type": "integer"
                 },
                 "year": {
@@ -2320,7 +2323,7 @@ var doc = `{
                     "type": "integer"
                 },
                 "tel": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "title": {
                     "type": "integer"
@@ -2337,18 +2340,18 @@ var doc = `{
                     "description": "ACTIVITYNAME holds the value of the \"ACTIVITYNAME\" field.",
                     "type": "string"
                 },
-                "ADDED": {
-                    "description": "ADDED holds the value of the \"ADDED\" field.",
+                "added": {
+                    "description": "Added holds the value of the \"added\" field.",
                     "type": "string"
-                },
-                "HOURS": {
-                    "description": "HOURS holds the value of the \"HOURS\" field.",
-                    "type": "integer"
                 },
                 "edges": {
                     "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the ActivityQuery when eager-loading is set.",
                     "type": "object",
                     "$ref": "#/definitions/ent.ActivityEdges"
+                },
+                "hours": {
+                    "description": "Hours holds the value of the \"hours\" field.",
+                    "type": "string"
                 },
                 "id": {
                     "description": "ID of the ent.",
@@ -2373,6 +2376,11 @@ var doc = `{
                     "description": "ActiStud holds the value of the acti_stud edge.",
                     "type": "object",
                     "$ref": "#/definitions/ent.Student"
+                },
+                "actiTerm": {
+                    "description": "ActiTerm holds the value of the acti_term edge.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.Term"
                 },
                 "actiYear": {
                     "description": "ActiYear holds the value of the acti_year edge.",
