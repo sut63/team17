@@ -11,7 +11,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 
 const HeaderCustom = {
   minHeight: '50px',
@@ -49,15 +48,17 @@ export function CardTeam({ name, id, system }: ProfileProps) {
   );
 }
 
-const WelcomePage: FC<{}> = () => {
+const Member: FC<{}> = () => {
   return (
     <Page theme={pageTheme.home}>
       <Header style={HeaderCustom} title={`ระบบประวัตินักศึกษา`}></Header>
       <Content>
-        <ContentHeader title=""></ContentHeader>
+        <ContentHeader title="สมาชิกในกลุ่ม"></ContentHeader>
         <Grid container>
 
+          <CardTeam name={"ทราย"} id={"B5901258"} system={"Province"}></CardTeam>
 
+          <CardTeam name={"ฮันเตอร์"} id={"B5917396"} system={"Student"}></CardTeam> 
           
         </Grid>
       </Content>
@@ -65,4 +66,4 @@ const WelcomePage: FC<{}> = () => {
   );
 };
 
-export default WelcomePage;
+export default Member;
