@@ -1,14 +1,15 @@
 package main
 
+//comment eiei
 import (
+	"github.com/sut63/team17/app/ent/student"
+	"github.com/sut63/team17/app/ent/subject"
+	"github.com/sut63/team17/app/ent/term"
 	"github.com/sut63/team17/app/ent/year"
-    "github.com/sut63/team17/app/ent/student"
-    "github.com/sut63/team17/app/ent/subject"
-    "github.com/sut63/team17/app/ent/term"
 
 	"context"
-	"log"
 	"fmt"
+	"log"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -94,54 +95,53 @@ type Gender struct {
 	Gender string
 }
 type Students struct {
-    Student []Student
+	Student []Student
 }
 type Student struct {
-	Fname string
-	Lname string
+	Fname  string
+	Lname  string
 	Addr   string
-	Email string
+	Email  string
 	School string
-	Tel   int
+	Tel    int
 }
 type Countrys struct {
-    Country []Country
+	Country []Country
 }
 type Country struct {
-    Country string
+	Country string
 }
 type Continents struct {
-    Continent []Continent
+	Continent []Continent
 }
 type Continent struct {
-    Continent string
+	Continent string
 }
 type Regions struct {
-    Region []Region
+	Region []Region
 }
 type Region struct {
-    Region string
+	Region string
 }
 type Provinces struct {
-    Province []Province
+	Province []Province
 }
 type Province struct {
-    Province    string
-    District    string
-    Subdistrict string
-    Postal      int
+	Province    string
+	District    string
+	Subdistrict string
+	Postal      int
 }
 type Results struct {
-    Result []Result
+	Result []Result
 }
 type Result struct {
-    Grade     float64
-    StudentID int
-    YearID    int
-    SubjectID int
-    TermID    int
+	Grade     float64
+	StudentID int
+	YearID    int
+	SubjectID int
+	TermID    int
 }
-
 
 // @title SUT SA Example API Playlist Vidoe
 // @version 1.0
@@ -238,8 +238,8 @@ func main() {
 	// Set Genders Data
 	Students := Students{
 		Student: []Student{
-			Student{"Max","Alask","west","A","De",1},
-			Student{"Tom","Ronwe","north","B","Ce",2},
+			Student{"Max", "Alask", "west", "A", "De", 1},
+			Student{"Tom", "Ronwe", "north", "B", "Ce", 2},
 		},
 	}
 
@@ -445,24 +445,23 @@ func main() {
 	}
 
 	// Set Province Data
-    provinces := Provinces{
-        Province: []Province{
-            Province{"d","เมืองนครราชสีมา","ในเมือง",30000},
-            Province{"a","เมืองนครราชสีมา","จอหอ",30310},
-            Province{"b","สีดา","โพนทอง",30430},
-            Province{"c","โนนสูง","โนนสูง",30280},
-        },
-    }
-    for _, pv := range provinces.Province {
-        client.Province.
-            Create().
-            SetProvince(pv.Province).
-            SetDistrict(pv.District).
-            SetSubdistrict(pv.Subdistrict).
-            SetPostal(pv.Postal).
-            Save(context.Background())
-    }
-
+	provinces := Provinces{
+		Province: []Province{
+			Province{"d", "เมืองนครราชสีมา", "ในเมือง", 30000},
+			Province{"a", "เมืองนครราชสีมา", "จอหอ", 30310},
+			Province{"b", "สีดา", "โพนทอง", 30430},
+			Province{"c", "โนนสูง", "โนนสูง", 30280},
+		},
+	}
+	for _, pv := range provinces.Province {
+		client.Province.
+			Create().
+			SetProvince(pv.Province).
+			SetDistrict(pv.District).
+			SetSubdistrict(pv.Subdistrict).
+			SetPostal(pv.Postal).
+			Save(context.Background())
+	}
 
 	// Set Institution Data
 	institutions := Institutions{
@@ -506,62 +505,61 @@ func main() {
 			Save(context.Background())
 	}
 	// Set Results Data
-    results := Results{
-        Result: []Result{
-            Result{3.00, 1, 1 , 1, 1},
-            Result{2.00, 1, 1 , 5, 1},
-            Result{3.50, 1, 1 , 8, 1},
-            Result{4.00, 1, 1 , 10, 1},
-        },
-    }
-    for _, rr := range results.Result {
-        rrstd, err := client.Student.
-            Query().
-            Where(student.IDEQ(int(rr.StudentID))).
-            Only(context.Background())
+	results := Results{
+		Result: []Result{
+			Result{3.00, 1, 1, 1, 1},
+			Result{2.00, 1, 1, 5, 1},
+			Result{3.50, 1, 1, 8, 1},
+			Result{4.00, 1, 1, 10, 1},
+		},
+	}
+	for _, rr := range results.Result {
+		rrstd, err := client.Student.
+			Query().
+			Where(student.IDEQ(int(rr.StudentID))).
+			Only(context.Background())
 
-        if err != nil {
-            fmt.Println(err.Error())
-            return
-        }
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
 
-        rryear, err := client.Year.
-        Query().
-        Where(year.IDEQ(int(rr.YearID))).
-        Only(context.Background())
-        if err != nil {
-            fmt.Println(err.Error())
-            return
-        }
-        rrsub, err := client.Subject.
-            Query().
-            Where(subject.IDEQ(int(rr.SubjectID))).
-            Only(context.Background())
+		rryear, err := client.Year.
+			Query().
+			Where(year.IDEQ(int(rr.YearID))).
+			Only(context.Background())
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		rrsub, err := client.Subject.
+			Query().
+			Where(subject.IDEQ(int(rr.SubjectID))).
+			Only(context.Background())
 
-        if err != nil {
-            fmt.Println(err.Error())
-            return
-        }
-        rrterm, err := client.Term.
-            Query().
-            Where(term.IDEQ(int(rr.TermID))).
-            Only(context.Background())
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		rrterm, err := client.Term.
+			Query().
+			Where(term.IDEQ(int(rr.TermID))).
+			Only(context.Background())
 
-        if err != nil {
-            fmt.Println(err.Error())
-            return
-        }
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
 
-        client.Results.
-            Create().
-            SetGrade(rr.Grade).
-            SetResuStud(rrstd).
-            SetResuYear(rryear).
-            SetResuSubj(rrsub).
-            SetResuTerm(rrterm).
-            Save(context.Background())
-    }
-
+		client.Results.
+			Create().
+			SetGrade(rr.Grade).
+			SetResuStud(rrstd).
+			SetResuYear(rryear).
+			SetResuSubj(rrsub).
+			SetResuTerm(rrterm).
+			Save(context.Background())
+	}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.Run()
