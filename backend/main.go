@@ -1,8 +1,14 @@
 package main
 
 import (
+	"github.com/sut63/team17/app/ent/year"
+    "github.com/sut63/team17/app/ent/student"
+    "github.com/sut63/team17/app/ent/subject"
+    "github.com/sut63/team17/app/ent/term"
+
 	"context"
 	"log"
+	"fmt"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -87,30 +93,55 @@ type Genders struct {
 type Gender struct {
 	Gender string
 }
-type Districts struct {
-	District []District
+type Students struct {
+    Student []Student
 }
-type District struct {
-	District string
+type Student struct {
+	Fname string
+	Lname string
+	Addr   string
+	Email string
+	School string
+	Tel   int
 }
-type Subdistricts struct {
-	Subdistrict []Subdistrict
+type Countrys struct {
+    Country []Country
 }
-type Subdistrict struct {
-	Subdistrict string
+type Country struct {
+    Country string
 }
-type Postals struct {
-	Postal []Postal
+type Continents struct {
+    Continent []Continent
 }
-type Postal struct {
-	Postal string
+type Continent struct {
+    Continent string
 }
 type Regions struct {
-	Region []Region
+    Region []Region
 }
 type Region struct {
-	Region string
+    Region string
 }
+type Provinces struct {
+    Province []Province
+}
+type Province struct {
+    Province    string
+    District    string
+    Subdistrict string
+    Postal      int
+}
+type Results struct {
+    Result []Result
+}
+type Result struct {
+    Grade     float64
+    StudentID int
+    YearID    int
+    SubjectID int
+    TermID    int
+}
+
 
 // @title SUT SA Example API Playlist Vidoe
 // @version 1.0
@@ -179,11 +210,10 @@ func main() {
 	controllers.NewCourseController(v1, client)
 	controllers.NewDegreeController(v1, client)
 	controllers.NewFacultyController(v1, client)
-	controllers.NewDistrictController(v1, client)
+	controllers.NewContinentController(v1, client)
 	controllers.NewProvinceController(v1, client)
 	controllers.NewRegionController(v1, client)
-	controllers.NewSubdistrictController(v1, client)
-	controllers.NewPostalController(v1, client)
+	controllers.NewCountryController(v1, client)
 	controllers.NewPrefixController(v1, client)
 	controllers.NewProfessorController(v1, client)
 	controllers.NewProfessorshipController(v1, client)
@@ -202,6 +232,26 @@ func main() {
 		client.Gender.
 			Create().
 			SetGender(u.Gender).
+			Save(context.Background())
+	}
+
+	// Set Genders Data
+	Students := Students{
+		Student: []Student{
+			Student{"Max","Alask","west","A","De",1},
+			Student{"Tom","Ronwe","north","B","Ce",2},
+		},
+	}
+
+	for _, u := range Students.Student {
+		client.Student.
+			Create().
+			SetFname(u.Fname).
+			SetLname(u.Lname).
+			SetEmail(u.Email).
+			SetRecentAddress(u.Addr).
+			SetSchoolname(u.School).
+			SetTelephone(u.Tel).
 			Save(context.Background())
 	}
 
@@ -394,6 +444,26 @@ func main() {
 			Save(context.Background())
 	}
 
+	// Set Province Data
+    provinces := Provinces{
+        Province: []Province{
+            Province{"d","เมืองนครราชสีมา","ในเมือง",30000},
+            Province{"a","เมืองนครราชสีมา","จอหอ",30310},
+            Province{"b","สีดา","โพนทอง",30430},
+            Province{"c","โนนสูง","โนนสูง",30280},
+        },
+    }
+    for _, pv := range provinces.Province {
+        client.Province.
+            Create().
+            SetProvince(pv.Province).
+            SetDistrict(pv.District).
+            SetSubdistrict(pv.Subdistrict).
+            SetPostal(pv.Postal).
+            Save(context.Background())
+    }
+
+
 	// Set Institution Data
 	institutions := Institutions{
 		Institution: []Institution{
@@ -435,6 +505,63 @@ func main() {
 			SetDegree(de.Degree).
 			Save(context.Background())
 	}
+	// Set Results Data
+    results := Results{
+        Result: []Result{
+            Result{3.00, 1, 1 , 1, 1},
+            Result{2.00, 1, 1 , 5, 1},
+            Result{3.50, 1, 1 , 8, 1},
+            Result{4.00, 1, 1 , 10, 1},
+        },
+    }
+    for _, rr := range results.Result {
+        rrstd, err := client.Student.
+            Query().
+            Where(student.IDEQ(int(rr.StudentID))).
+            Only(context.Background())
+
+        if err != nil {
+            fmt.Println(err.Error())
+            return
+        }
+
+        rryear, err := client.Year.
+        Query().
+        Where(year.IDEQ(int(rr.YearID))).
+        Only(context.Background())
+        if err != nil {
+            fmt.Println(err.Error())
+            return
+        }
+        rrsub, err := client.Subject.
+            Query().
+            Where(subject.IDEQ(int(rr.SubjectID))).
+            Only(context.Background())
+
+        if err != nil {
+            fmt.Println(err.Error())
+            return
+        }
+        rrterm, err := client.Term.
+            Query().
+            Where(term.IDEQ(int(rr.TermID))).
+            Only(context.Background())
+
+        if err != nil {
+            fmt.Println(err.Error())
+            return
+        }
+
+        client.Results.
+            Create().
+            SetGrade(rr.Grade).
+            SetResuStud(rrstd).
+            SetResuYear(rryear).
+            SetResuSubj(rrsub).
+            SetResuTerm(rrterm).
+            Save(context.Background())
+    }
+
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.Run()
