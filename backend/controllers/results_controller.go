@@ -56,7 +56,9 @@ func (ctl *ResultsController) CreateResults(c *gin.Context) {
 		Only(context.Background())
 
 	if err != nil {
-		fmt.Println(err.Error())
+		c.JSON(400, gin.H{
+			"error": "year binding failed",
+		})
 		return
 	}
 	subj, err := ctl.client.Subject.
@@ -65,7 +67,9 @@ func (ctl *ResultsController) CreateResults(c *gin.Context) {
 		Only(context.Background())
 
 	if err != nil {
-		fmt.Println(err.Error())
+		c.JSON(400, gin.H{
+			"error": "subject binding failed",
+		})
 		return
 	}
 	std, err := ctl.client.Student.
@@ -74,7 +78,9 @@ func (ctl *ResultsController) CreateResults(c *gin.Context) {
 		Only(context.Background())
 
 	if err != nil {
-		fmt.Println(err.Error())
+		c.JSON(400, gin.H{
+			"error": "student binding failed",
+		})
 		return
 	}
 	term, err := ctl.client.Term.
@@ -83,7 +89,9 @@ func (ctl *ResultsController) CreateResults(c *gin.Context) {
 		Only(context.Background())
 
 	if err != nil {
-		fmt.Println(err.Error())
+		c.JSON(400, gin.H{
+			"error": "term binding failed",
+		})
 		return
 	}
 	t, err := ctl.client.Results.
