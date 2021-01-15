@@ -4,8 +4,8 @@ import Student from './components/Student'
 import Logins from './components/Login'
 import Member from './components/Member'
 import Activity from './components/Activity'
-//import Result from './components/'
-//import Course from './components/'
+import Result from './components/Results'
+import Course from './components/Course'
 import Province from './components/Province'
 import Professor from './components/Professor'
 import { Cookies } from './Cookie'
@@ -24,8 +24,8 @@ export const plugin = createPlugin({
       router.registerRoute('/professor', Logins);
       router.registerRoute('/login', Logins);
       router.registerRoute('/province', Logins);
-      //router.registerRoute('/', Logins);
-      //router.registerRoute('/', Logins);
+      router.registerRoute('/result', Result);
+      router.registerRoute('/course', Course);
     }else{
       router.registerRoute('/', WelcomePage);
       router.registerRoute('/student', Student);
@@ -34,6 +34,8 @@ export const plugin = createPlugin({
       router.registerRoute('/professor', Professor);
       router.registerRoute('/login', Logins);
       router.registerRoute('/province', Province);
+      router.registerRoute('/result', Result);
+      router.registerRoute('/course', Course);
     }
   },
 });
