@@ -96,8 +96,10 @@ func (ctl *CourseController) CreateCourse(c *gin.Context) {
 		})
 		return
 	}
-
-	c.JSON(200, save)
+	c.JSON(200, gin.H{
+		"status": true,
+		"data":   save,
+	})
 }
 
 // GetCourse handles GET requests to retrieve a course entity
