@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+	<title>Course Test Case</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Success Test Case</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>http://localhost:3000/create-course<datalist><option>http://localhost:3000/create-course</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=coursename<datalist><option>id=coursename</option><option>//input[@id='coursename']</option><option>//div[@id='root']/div/div[2]/article/div/form/div/div/div/input</option><option>//input</option><option>css=#coursename</option></datalist></td><td>ปริญญาตรี</td>
+</tr>
+<tr><td>click</td><td>id=mui-component-select-degree<datalist><option>//div[@id='root']/div/div[2]/article/div/form/div[2]</option><option>//form/div[2]</option><option>css=div.MuiFormControl-root.makeStyles-margin-27.makeStyles-select-26</option><option>id=mui-component-select-degree</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='menu-degree']/div[3]/ul/li<datalist><option>//div[@id='menu-degree']/div[3]/ul/li</option><option>//li</option><option>css=li.MuiButtonBase-root.MuiListItem-root.MuiMenuItem-root.MuiMenuItem-gutters.MuiListItem-gutters.MuiListItem-button.Mui-focusVisible.Mui-focusVisible</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=mui-component-select-faculty<datalist><option>id=mui-component-select-faculty</option><option>//div[@id='mui-component-select-faculty']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[3]/div/div</option><option>//div[3]/div/div</option><option>css=#mui-component-select-faculty</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='menu-faculty']/div[3]/ul/li<datalist><option>//div[@id='menu-']/div[3]/ul/li</option><option>//li</option><option>css=li.MuiButtonBase-root.MuiListItem-root.MuiMenuItem-root.MuiMenuItem-gutters.MuiListItem-gutters.MuiListItem-button.Mui-focusVisible.Mui-focusVisible</option><option>//div[@id='menu-faculty']/div[3]/ul/li</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=mui-component-select-institution<datalist><option>id=mui-component-select-institution</option><option>//div[@id='mui-component-select-institution']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[4]/div/div</option><option>//form/div[4]/div/div</option><option>css=#mui-component-select-institution</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='menu-institution']/div[3]/ul/li[2]<datalist><option>//div[@id='menu-']/div[3]/ul/li[2]</option><option>//li[2]</option><option>//div[@id='menu-institution']/div[3]/ul/li[2]</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='root']/div/div[2]/article/div/form/div[5]/button[2]/span<datalist><option>//div[@id='root']/div/div[2]/article/div/form/div[5]/button[2]/span</option><option>//button[2]/span</option><option>css=button.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary &gt; span.MuiButton-label</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div[@id='root']/div/div[2]/article/div/div<datalist><option>//div[@id='root']/div/div[2]/article/div/div</option><option>//article/div/div</option><option>css=div.MuiPaper-root.MuiAlert-root.MuiAlert-standardSuccess.MuiPaper-elevation0</option></datalist></td><td>บันทึกข้อมูลหลักสูตรสำเร็จ</td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Failler Test Case</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>http://localhost:3000/create-course<datalist><option>http://localhost:3000/create-course</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=mui-component-select-degree<datalist><option>//body</option><option>css=body</option><option>id=mui-component-select-degree</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='menu-degree']/div[3]/ul/li<datalist><option>//div[@id='menu-degree']/div[3]/ul/li</option><option>//li</option><option>css=li.MuiButtonBase-root.MuiListItem-root.MuiMenuItem-root.MuiMenuItem-gutters.MuiListItem-gutters.MuiListItem-button</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=mui-component-select-faculty<datalist><option>//body</option><option>css=body</option><option>id=mui-component-select-faculty</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='menu-faculty']/div[3]/ul/li[3]<datalist><option>//div[@id='menu-faculty']/div[3]/ul/li[3]</option><option>//li[3]</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=mui-component-select-institution<datalist><option>//body</option><option>css=body</option><option>id=mui-component-select-institution</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='menu-institution']/div[3]/ul/li[8]<datalist><option>//div[@id='menu-institution']/div[3]/ul/li[8]</option><option>//li[8]</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='root']/div/div[2]/article/div/form/div[5]/button[2]/span<datalist><option>//div[@id='root']/div/div[2]/article/div/form/div[5]/button[2]/span</option><option>//button[2]/span</option><option>css=button.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary &gt; span.MuiButton-label</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>id=coursename-helper-text<datalist><option>id=coursename-helper-text</option><option>//p[@id='coursename-helper-text']</option><option>//div[@id='root']/div/div[2]/article/div/form/div/div/p</option><option>//p</option><option>css=#coursename-helper-text</option></datalist></td><td>กรุณาระบุชื่อหลักสูตร</td>
+</tr>
+</tbody></table>
+</body>
+</html>
