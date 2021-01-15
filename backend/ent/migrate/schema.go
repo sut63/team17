@@ -13,7 +13,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "activityname", Type: field.TypeString},
 		{Name: "added", Type: field.TypeTime},
-		{Name: "hours", Type: field.TypeInt},
+		{Name: "hours", Type: field.TypeString},
 		{Name: "agency_agen_acti", Type: field.TypeInt, Nullable: true},
 		{Name: "place_place_acti", Type: field.TypeInt, Nullable: true},
 		{Name: "student_stud_acti", Type: field.TypeInt, Nullable: true},

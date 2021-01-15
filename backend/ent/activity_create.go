@@ -14,6 +14,7 @@ import (
 	"github.com/sut63/team17/app/ent/agency"
 	"github.com/sut63/team17/app/ent/place"
 	"github.com/sut63/team17/app/ent/student"
+	"github.com/sut63/team17/app/ent/term"
 	"github.com/sut63/team17/app/ent/year"
 )
 
@@ -30,15 +31,15 @@ func (ac *ActivityCreate) SetACTIVITYNAME(s string) *ActivityCreate {
 	return ac
 }
 
-// SetADDED sets the ADDED field.
-func (ac *ActivityCreate) SetADDED(t time.Time) *ActivityCreate {
-	ac.mutation.SetADDED(t)
+// SetAdded sets the added field.
+func (ac *ActivityCreate) SetAdded(t time.Time) *ActivityCreate {
+	ac.mutation.SetAdded(t)
 	return ac
 }
 
-// SetHOURS sets the HOURS field.
-func (ac *ActivityCreate) SetHOURS(i int) *ActivityCreate {
-	ac.mutation.SetHOURS(i)
+// SetHours sets the hours field.
+func (ac *ActivityCreate) SetHours(s string) *ActivityCreate {
+	ac.mutation.SetHours(s)
 	return ac
 }
 
@@ -118,6 +119,25 @@ func (ac *ActivityCreate) SetActiYear(y *Year) *ActivityCreate {
 	return ac.SetActiYearID(y.ID)
 }
 
+// SetActiTermID sets the acti_term edge to Term by id.
+func (ac *ActivityCreate) SetActiTermID(id int) *ActivityCreate {
+	ac.mutation.SetActiTermID(id)
+	return ac
+}
+
+// SetNillableActiTermID sets the acti_term edge to Term by id if the given value is not nil.
+func (ac *ActivityCreate) SetNillableActiTermID(id *int) *ActivityCreate {
+	if id != nil {
+		ac = ac.SetActiTermID(*id)
+	}
+	return ac
+}
+
+// SetActiTerm sets the acti_term edge to Term.
+func (ac *ActivityCreate) SetActiTerm(t *Term) *ActivityCreate {
+	return ac.SetActiTermID(t.ID)
+}
+
 // Mutation returns the ActivityMutation object of the builder.
 func (ac *ActivityCreate) Mutation() *ActivityMutation {
 	return ac.mutation
@@ -128,11 +148,11 @@ func (ac *ActivityCreate) Save(ctx context.Context) (*Activity, error) {
 	if _, ok := ac.mutation.ACTIVITYNAME(); !ok {
 		return nil, &ValidationError{Name: "ACTIVITYNAME", err: errors.New("ent: missing required field \"ACTIVITYNAME\"")}
 	}
-	if _, ok := ac.mutation.ADDED(); !ok {
-		return nil, &ValidationError{Name: "ADDED", err: errors.New("ent: missing required field \"ADDED\"")}
+	if _, ok := ac.mutation.Added(); !ok {
+		return nil, &ValidationError{Name: "added", err: errors.New("ent: missing required field \"added\"")}
 	}
-	if _, ok := ac.mutation.HOURS(); !ok {
-		return nil, &ValidationError{Name: "HOURS", err: errors.New("ent: missing required field \"HOURS\"")}
+	if _, ok := ac.mutation.Hours(); !ok {
+		return nil, &ValidationError{Name: "hours", err: errors.New("ent: missing required field \"hours\"")}
 	}
 	var (
 		err  error
@@ -202,21 +222,21 @@ func (ac *ActivityCreate) createSpec() (*Activity, *sqlgraph.CreateSpec) {
 		})
 		a.ACTIVITYNAME = value
 	}
-	if value, ok := ac.mutation.ADDED(); ok {
+	if value, ok := ac.mutation.Added(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  value,
-			Column: activity.FieldADDED,
+			Column: activity.FieldAdded,
 		})
-		a.ADDED = value
+		a.Added = value
 	}
-	if value, ok := ac.mutation.HOURS(); ok {
+	if value, ok := ac.mutation.Hours(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
+			Type:   field.TypeString,
 			Value:  value,
-			Column: activity.FieldHOURS,
+			Column: activity.FieldHours,
 		})
-		a.HOURS = value
+		a.Hours = value
 	}
 	if nodes := ac.mutation.ActiStudIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -286,6 +306,25 @@ func (ac *ActivityCreate) createSpec() (*Activity, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: year.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ac.mutation.ActiTermIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   activity.ActiTermTable,
+			Columns: []string{activity.ActiTermColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: term.FieldID,
 				},
 			},
 		}
