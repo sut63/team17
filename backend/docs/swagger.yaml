@@ -9,10 +9,12 @@ definitions:
       agency:
         type: integer
       hours:
-        type: integer
+        type: string
       place:
         type: integer
       student:
+        type: integer
+      term:
         type: integer
       year:
         type: integer
@@ -107,18 +109,18 @@ definitions:
       ACTIVITYNAME:
         description: ACTIVITYNAME holds the value of the "ACTIVITYNAME" field.
         type: string
-      ADDED:
-        description: ADDED holds the value of the "ADDED" field.
+      added:
+        description: Added holds the value of the "added" field.
         type: string
-      HOURS:
-        description: HOURS holds the value of the "HOURS" field.
-        type: integer
       edges:
         $ref: '#/definitions/ent.ActivityEdges'
         description: |-
           Edges holds the relations/edges for other nodes in the graph.
           The values are being populated by the ActivityQuery when eager-loading is set.
         type: object
+      hours:
+        description: Hours holds the value of the "hours" field.
+        type: string
       id:
         description: ID of the ent.
         type: integer
@@ -136,6 +138,10 @@ definitions:
       actiStud:
         $ref: '#/definitions/ent.Student'
         description: ActiStud holds the value of the acti_stud edge.
+        type: object
+      actiTerm:
+        $ref: '#/definitions/ent.Term'
+        description: ActiTerm holds the value of the acti_term edge.
         type: object
       actiYear:
         $ref: '#/definitions/ent.Year'

@@ -33,23 +33,23 @@ export interface EntActivity {
      */
     aCTIVITYNAME?: string;
     /**
-     * ADDED holds the value of the "ADDED" field.
+     * Added holds the value of the "added" field.
      * @type {string}
      * @memberof EntActivity
      */
-    aDDED?: string;
-    /**
-     * HOURS holds the value of the "HOURS" field.
-     * @type {number}
-     * @memberof EntActivity
-     */
-    hOURS?: number;
+    added?: string;
     /**
      * 
      * @type {EntActivityEdges}
      * @memberof EntActivity
      */
     edges?: EntActivityEdges;
+    /**
+     * Hours holds the value of the "hours" field.
+     * @type {string}
+     * @memberof EntActivity
+     */
+    hours?: string;
     /**
      * ID of the ent.
      * @type {number}
@@ -69,9 +69,9 @@ export function EntActivityFromJSONTyped(json: any, ignoreDiscriminator: boolean
     return {
         
         'aCTIVITYNAME': !exists(json, 'ACTIVITYNAME') ? undefined : json['ACTIVITYNAME'],
-        'aDDED': !exists(json, 'ADDED') ? undefined : json['ADDED'],
-        'hOURS': !exists(json, 'HOURS') ? undefined : json['HOURS'],
+        'added': !exists(json, 'added') ? undefined : json['added'],
         'edges': !exists(json, 'edges') ? undefined : EntActivityEdgesFromJSON(json['edges']),
+        'hours': !exists(json, 'hours') ? undefined : json['hours'],
         'id': !exists(json, 'id') ? undefined : json['id'],
     };
 }
@@ -86,9 +86,9 @@ export function EntActivityToJSON(value?: EntActivity | null): any {
     return {
         
         'ACTIVITYNAME': value.aCTIVITYNAME,
-        'ADDED': value.aDDED,
-        'HOURS': value.hOURS,
+        'added': value.added,
         'edges': EntActivityEdgesToJSON(value.edges),
+        'hours': value.hours,
         'id': value.id,
     };
 }

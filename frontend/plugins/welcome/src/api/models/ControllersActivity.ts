@@ -39,10 +39,10 @@ export interface ControllersActivity {
     agency?: number;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof ControllersActivity
      */
-    hours?: number;
+    hours?: string;
     /**
      * 
      * @type {number}
@@ -55,6 +55,12 @@ export interface ControllersActivity {
      * @memberof ControllersActivity
      */
     student?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ControllersActivity
+     */
+    term?: number;
     /**
      * 
      * @type {number}
@@ -79,6 +85,7 @@ export function ControllersActivityFromJSONTyped(json: any, ignoreDiscriminator:
         'hours': !exists(json, 'hours') ? undefined : json['hours'],
         'place': !exists(json, 'place') ? undefined : json['place'],
         'student': !exists(json, 'student') ? undefined : json['student'],
+        'term': !exists(json, 'term') ? undefined : json['term'],
         'year': !exists(json, 'year') ? undefined : json['year'],
     };
 }
@@ -98,6 +105,7 @@ export function ControllersActivityToJSON(value?: ControllersActivity | null): a
         'hours': value.hours,
         'place': value.place,
         'student': value.student,
+        'term': value.term,
         'year': value.year,
     };
 }
