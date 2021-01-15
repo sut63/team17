@@ -15,6 +15,7 @@ import (
 	"github.com/sut63/team17/app/ent/place"
 	"github.com/sut63/team17/app/ent/predicate"
 	"github.com/sut63/team17/app/ent/student"
+	"github.com/sut63/team17/app/ent/term"
 	"github.com/sut63/team17/app/ent/year"
 )
 
@@ -38,22 +39,15 @@ func (au *ActivityUpdate) SetACTIVITYNAME(s string) *ActivityUpdate {
 	return au
 }
 
-// SetADDED sets the ADDED field.
-func (au *ActivityUpdate) SetADDED(t time.Time) *ActivityUpdate {
-	au.mutation.SetADDED(t)
+// SetAdded sets the added field.
+func (au *ActivityUpdate) SetAdded(t time.Time) *ActivityUpdate {
+	au.mutation.SetAdded(t)
 	return au
 }
 
-// SetHOURS sets the HOURS field.
-func (au *ActivityUpdate) SetHOURS(i int) *ActivityUpdate {
-	au.mutation.ResetHOURS()
-	au.mutation.SetHOURS(i)
-	return au
-}
-
-// AddHOURS adds i to HOURS.
-func (au *ActivityUpdate) AddHOURS(i int) *ActivityUpdate {
-	au.mutation.AddHOURS(i)
+// SetHours sets the hours field.
+func (au *ActivityUpdate) SetHours(s string) *ActivityUpdate {
+	au.mutation.SetHours(s)
 	return au
 }
 
@@ -133,6 +127,25 @@ func (au *ActivityUpdate) SetActiYear(y *Year) *ActivityUpdate {
 	return au.SetActiYearID(y.ID)
 }
 
+// SetActiTermID sets the acti_term edge to Term by id.
+func (au *ActivityUpdate) SetActiTermID(id int) *ActivityUpdate {
+	au.mutation.SetActiTermID(id)
+	return au
+}
+
+// SetNillableActiTermID sets the acti_term edge to Term by id if the given value is not nil.
+func (au *ActivityUpdate) SetNillableActiTermID(id *int) *ActivityUpdate {
+	if id != nil {
+		au = au.SetActiTermID(*id)
+	}
+	return au
+}
+
+// SetActiTerm sets the acti_term edge to Term.
+func (au *ActivityUpdate) SetActiTerm(t *Term) *ActivityUpdate {
+	return au.SetActiTermID(t.ID)
+}
+
 // Mutation returns the ActivityMutation object of the builder.
 func (au *ActivityUpdate) Mutation() *ActivityMutation {
 	return au.mutation
@@ -159,6 +172,12 @@ func (au *ActivityUpdate) ClearActiAgen() *ActivityUpdate {
 // ClearActiYear clears the acti_year edge to Year.
 func (au *ActivityUpdate) ClearActiYear() *ActivityUpdate {
 	au.mutation.ClearActiYear()
+	return au
+}
+
+// ClearActiTerm clears the acti_term edge to Term.
+func (au *ActivityUpdate) ClearActiTerm() *ActivityUpdate {
+	au.mutation.ClearActiTerm()
 	return au
 }
 
@@ -239,25 +258,18 @@ func (au *ActivityUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: activity.FieldACTIVITYNAME,
 		})
 	}
-	if value, ok := au.mutation.ADDED(); ok {
+	if value, ok := au.mutation.Added(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  value,
-			Column: activity.FieldADDED,
+			Column: activity.FieldAdded,
 		})
 	}
-	if value, ok := au.mutation.HOURS(); ok {
+	if value, ok := au.mutation.Hours(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
+			Type:   field.TypeString,
 			Value:  value,
-			Column: activity.FieldHOURS,
-		})
-	}
-	if value, ok := au.mutation.AddedHOURS(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: activity.FieldHOURS,
+			Column: activity.FieldHours,
 		})
 	}
 	if au.mutation.ActiStudCleared() {
@@ -400,6 +412,41 @@ func (au *ActivityUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if au.mutation.ActiTermCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   activity.ActiTermTable,
+			Columns: []string{activity.ActiTermColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: term.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.ActiTermIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   activity.ActiTermTable,
+			Columns: []string{activity.ActiTermColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: term.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, au.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{activity.Label}
@@ -424,22 +471,15 @@ func (auo *ActivityUpdateOne) SetACTIVITYNAME(s string) *ActivityUpdateOne {
 	return auo
 }
 
-// SetADDED sets the ADDED field.
-func (auo *ActivityUpdateOne) SetADDED(t time.Time) *ActivityUpdateOne {
-	auo.mutation.SetADDED(t)
+// SetAdded sets the added field.
+func (auo *ActivityUpdateOne) SetAdded(t time.Time) *ActivityUpdateOne {
+	auo.mutation.SetAdded(t)
 	return auo
 }
 
-// SetHOURS sets the HOURS field.
-func (auo *ActivityUpdateOne) SetHOURS(i int) *ActivityUpdateOne {
-	auo.mutation.ResetHOURS()
-	auo.mutation.SetHOURS(i)
-	return auo
-}
-
-// AddHOURS adds i to HOURS.
-func (auo *ActivityUpdateOne) AddHOURS(i int) *ActivityUpdateOne {
-	auo.mutation.AddHOURS(i)
+// SetHours sets the hours field.
+func (auo *ActivityUpdateOne) SetHours(s string) *ActivityUpdateOne {
+	auo.mutation.SetHours(s)
 	return auo
 }
 
@@ -519,6 +559,25 @@ func (auo *ActivityUpdateOne) SetActiYear(y *Year) *ActivityUpdateOne {
 	return auo.SetActiYearID(y.ID)
 }
 
+// SetActiTermID sets the acti_term edge to Term by id.
+func (auo *ActivityUpdateOne) SetActiTermID(id int) *ActivityUpdateOne {
+	auo.mutation.SetActiTermID(id)
+	return auo
+}
+
+// SetNillableActiTermID sets the acti_term edge to Term by id if the given value is not nil.
+func (auo *ActivityUpdateOne) SetNillableActiTermID(id *int) *ActivityUpdateOne {
+	if id != nil {
+		auo = auo.SetActiTermID(*id)
+	}
+	return auo
+}
+
+// SetActiTerm sets the acti_term edge to Term.
+func (auo *ActivityUpdateOne) SetActiTerm(t *Term) *ActivityUpdateOne {
+	return auo.SetActiTermID(t.ID)
+}
+
 // Mutation returns the ActivityMutation object of the builder.
 func (auo *ActivityUpdateOne) Mutation() *ActivityMutation {
 	return auo.mutation
@@ -545,6 +604,12 @@ func (auo *ActivityUpdateOne) ClearActiAgen() *ActivityUpdateOne {
 // ClearActiYear clears the acti_year edge to Year.
 func (auo *ActivityUpdateOne) ClearActiYear() *ActivityUpdateOne {
 	auo.mutation.ClearActiYear()
+	return auo
+}
+
+// ClearActiTerm clears the acti_term edge to Term.
+func (auo *ActivityUpdateOne) ClearActiTerm() *ActivityUpdateOne {
+	auo.mutation.ClearActiTerm()
 	return auo
 }
 
@@ -623,25 +688,18 @@ func (auo *ActivityUpdateOne) sqlSave(ctx context.Context) (a *Activity, err err
 			Column: activity.FieldACTIVITYNAME,
 		})
 	}
-	if value, ok := auo.mutation.ADDED(); ok {
+	if value, ok := auo.mutation.Added(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  value,
-			Column: activity.FieldADDED,
+			Column: activity.FieldAdded,
 		})
 	}
-	if value, ok := auo.mutation.HOURS(); ok {
+	if value, ok := auo.mutation.Hours(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
+			Type:   field.TypeString,
 			Value:  value,
-			Column: activity.FieldHOURS,
-		})
-	}
-	if value, ok := auo.mutation.AddedHOURS(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: activity.FieldHOURS,
+			Column: activity.FieldHours,
 		})
 	}
 	if auo.mutation.ActiStudCleared() {
@@ -776,6 +834,41 @@ func (auo *ActivityUpdateOne) sqlSave(ctx context.Context) (a *Activity, err err
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: year.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if auo.mutation.ActiTermCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   activity.ActiTermTable,
+			Columns: []string{activity.ActiTermColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: term.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.ActiTermIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   activity.ActiTermTable,
+			Columns: []string{activity.ActiTermColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: term.FieldID,
 				},
 			},
 		}
