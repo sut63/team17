@@ -19,6 +19,7 @@ import {
     Button,
     CardMedia,
     Snackbar,
+    Avatar,
   } from '@material-ui/core';
 import{
   Content,
@@ -30,6 +31,7 @@ import{
 } from '@backstage/core';
 import  { DefaultApi }  from '../../api/apis';
 import { EntGender, EntDegree, EntPrefix, EntProvince} from '../../api/models/';
+import { Cookies } from '../../Cookie';
 
 interface Students {
   /**
@@ -113,6 +115,7 @@ interface Students {
 }
 
 const StudentUI: FC<{}> = () => {
+
 const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: string) => {
   if (reason === 'clickaway') {
     return;
@@ -176,105 +179,47 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
         toast.addEventListener('mouseleave', Swal.resumeTimer);
       },
     });
-/*
-    const [addr,Setaddr] = useState(String);
-    const [email,Setemail] = useState(String);
-    const [fname,Setfname] = useState(String);
-    const [lname,Setlname] = useState(String);
-    const [school,Setschool] = useState(String);
-    const [tel,Settel] = useState(String);
 
-    const [sex,Setsex] = useState(Number);
-    const [province,Setprovince] = useState(Number);
-    const [title,Settitle] = useState(Number);
-    const [degree,Setdegree] = useState(Number);
+    function clear() {
+      setStudent({});
+    }
 
-    const [district,Setdistrict] = useState(Number);
-    const [postal,Setpostal] = useState(Number);
-    const [zone,Setzone] = useState(Number);
+    console.log(Student);
+    function save() {
+      const apiUrl = 'http://localhost:8080/api/v1/students';
+      const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Student),
+      };
+      console.log(Student);
   
-    const AddrhandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-      Setaddr(event.target.value as string);
-    };
-    const EmailhandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-      Setemail(event.target.value as string);
-    };
-    const FnamehandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-      Setfname(event.target.value as string);
-    };
-    const LnamehandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-      Setlname(event.target.value as string);
-    };
-    const SchoolhandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-      Setschool(event.target.value as string);
-    };
-    const TelhandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-      Settel(event.target.value as string);
-    };
-    const SexhandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-      Setsex(event.target.value as number);
-    };
-    const ProvincehandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-      Setprovince(event.target.value as number);
-    };
-    const TitlehandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-      Settitle(event.target.value as number);
-    };
-    const DegreehandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-      Setdegree(event.target.value as number);
-    };
-    const DistricthandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-      Setdistrict(event.target.value as number);
-    };
-    const PostalhandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-      Setpostal(event.target.value as number);
-    };
-    const ZonehandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-      Setzone(event.target.value as number);
-    };
+      fetch(apiUrl, requestOptions)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data.status);
+          if (data.status === true) {
+            clear();
+            Toast.fire({
+              icon: 'success',
+              title: 'บันทึกข้อมูลสำเร็จ',
+            });
+          } else {
+            Toast.fire({
+              icon: 'error',
+              title: 'บันทึกข้อมูลไม่สำเร็จ',
+            });
+          }
+        });
+    }
 
-  const Student = {
-      addr:addr,
-      degree:degree,
-      email:email,
-      fname:fname,
-      lname:lname,
-      province:province,
-      school:school,
-      sex:sex,
-      tel:tel,
-      title:title,
-      zone:zone,
-      district:district,
-      postal:postal
-    };*/
-    console.log(Student);
-  function save() {
-    const apiUrl = 'http://localhost:8080/api/v1/students';
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(Student),
-    };
-    console.log(Student);
+  //cookie logout
+  var cook = new Cookies()
+  var cookieName = cook.GetCookie()
 
-    fetch(apiUrl, requestOptions)
-      .then(response => response.json())
-      .then(data => {
-        console.log(data.status);
-        if (data.status === true) {
-          //clear();
-          Toast.fire({
-            icon: 'success',
-            title: 'บันทึกข้อมูลสำเร็จ',
-          });
-        } else {
-          Toast.fire({
-            icon: 'error',
-            title: 'บันทึกข้อมูลไม่สำเร็จ',
-          });
-        }
-      });
+  function Clears() {
+    cook.ClearCookie()
+    window.location.reload(false)
   }
 
   return ( 
@@ -283,6 +228,10 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
       title={'Student Management'}
       subtitle='Student Registration Department'
     >
+        <Avatar alt="Remy Sharp"/>
+        <div style={{ marginLeft: 10, marginRight: 20 }}>{cookieName}</div>
+        <Button variant="text" color="secondary" size="large"
+          onClick={Clears} > Logout </Button>
     </Header>
     <Content>
       <ContentHeader title="Student Background"></ContentHeader>
