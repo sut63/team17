@@ -131,7 +131,10 @@ func (ctl *ActivityController) CreateActivity(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, save)
+	c.JSON(200, gin.H{
+		"status": true,
+		"data":   save,
+	})
 }
 
 // DeleteActivity handles DELETE requests to delete a activity entity
