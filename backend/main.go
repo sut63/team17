@@ -88,51 +88,51 @@ type Gender struct {
 	Gender string
 }
 type Students struct {
-    Student []Student
+	Student []Student
 }
 type Student struct {
-	Fname string
-	Lname string
+	Fname  string
+	Lname  string
 	Addr   string
-	Email string
+	Email  string
 	School string
-	Tel   int
+	Tel    int
 }
 type Countrys struct {
-    Country []Country
+	Country []Country
 }
 type Country struct {
-    Country string
+	Country string
 }
 type Continents struct {
-    Continent []Continent
+	Continent []Continent
 }
 type Continent struct {
-    Continent string
+	Continent string
 }
 type Regions struct {
-    Region []Region
+	Region []Region
 }
 type Region struct {
-    Region string
+	Region string
 }
 type Provinces struct {
-    Province []Province
+	Province []Province
 }
 type Province struct {
-    Province    string
-    District    string
-    Subdistrict string
-    Postal      int
+	Province    string
+	District    string
+	Subdistrict string
+	Postal      int
 }
 
 type Emps struct {
 	Emp []Emp
 }
 type Emp struct {
-	User    string
-	Pass    string
-	Role 	string
+	User string
+	Pass string
+	Role string
 }
 
 // @title SUT SA Example API Playlist Vidoe
@@ -231,8 +231,8 @@ func main() {
 	// Set Genders Data
 	Students := Students{
 		Student: []Student{
-			Student{"Max","Alask","west","A","De",1},
-			Student{"Tom","Ronwe","north","B","Ce",2},
+			Student{"Max", "Alask", "west", "A", "De", 1},
+			Student{"Tom", "Ronwe", "north", "B", "Ce", 2},
 		},
 	}
 
@@ -421,6 +421,43 @@ func main() {
 			Save(context.Background())
 	}
 
+	//Set Country Data
+	countrys := Countrys{
+		Country: []Country{
+			Country{"ไทย"},
+			Country{"จีน"},
+			Country{"กัมพูชา"},
+			Country{"อังกฤษ"},
+			Country{"อเมริกา"},
+			Country{"ออสเตรเลีย"},
+			Country{"สิงคโปร์"},
+		},
+	}
+	for _, cu := range countrys.Country {
+		client.Country.
+			Create().
+			SetCountry(cu.Country).
+			Save(context.Background())
+	}
+
+	//Set Continent Data
+	continents := Continents{
+		Continent: []Continent{
+			Continent{"อเมริกา"},
+			Continent{"เอเซีย"},
+			Continent{"ยุโรป"},
+			Continent{"แอฟริกา"},
+			Continent{"ออสเตรเลีย"},
+			Continent{"แอนตาร์กติกา"},
+		},
+	}
+	for _, cn := range continents.Continent {
+		client.Continent.
+			Create().
+			SetContinent(cn.Continent).
+			Save(context.Background())
+	}
+
 	//Set Region Data
 	regions := Regions{
 		Region: []Region{
@@ -438,24 +475,23 @@ func main() {
 	}
 
 	// Set Province Data
-    provinces := Provinces{
-        Province: []Province{
-            Province{"d","เมืองนครราชสีมา","ในเมือง",30000},
-            Province{"a","เมืองนครราชสีมา","จอหอ",30310},
-            Province{"b","สีดา","โพนทอง",30430},
-            Province{"c","โนนสูง","โนนสูง",30280},
-        },
-    }
-    for _, pv := range provinces.Province {
-        client.Province.
-            Create().
-            SetProvince(pv.Province).
-            SetDistrict(pv.District).
-            SetSubdistrict(pv.Subdistrict).
-            SetPostal(pv.Postal).
-            Save(context.Background())
-    }
-
+	provinces := Provinces{
+		Province: []Province{
+			Province{"d", "เมืองนครราชสีมา", "ในเมือง", 30000},
+			Province{"a", "เมืองนครราชสีมา", "จอหอ", 30310},
+			Province{"b", "สีดา", "โพนทอง", 30430},
+			Province{"c", "โนนสูง", "โนนสูง", 30280},
+		},
+	}
+	for _, pv := range provinces.Province {
+		client.Province.
+			Create().
+			SetProvince(pv.Province).
+			SetDistrict(pv.District).
+			SetSubdistrict(pv.Subdistrict).
+			SetPostal(pv.Postal).
+			Save(context.Background())
+	}
 
 	// Set Institution Data
 	institutions := Institutions{
@@ -501,10 +537,10 @@ func main() {
 	// Set Emp Data
 	Emps := Emps{
 		Emp: []Emp{
-			Emp{"Prayut","1234","ทะเบียน"},
-			Emp{"Prawit","1234","ทะเบียน"},
-			Emp{"Tummanas","1234","ทะเบียน"},
-			Emp{"Pareena","1234","ทะเบียน"},
+			Emp{"Prayut", "1234", "ทะเบียน"},
+			Emp{"Prawit", "1234", "ทะเบียน"},
+			Emp{"Tummanas", "1234", "ทะเบียน"},
+			Emp{"Pareena", "1234", "ทะเบียน"},
 		},
 	}
 	for _, de := range Emps.Emp {
