@@ -1,5 +1,6 @@
 import React from 'react';
 import HomeIcon from '@material-ui/icons/Home';
+import SignOut from '@material-ui/icons/Settings';
 import CreateComponentIcon from '@material-ui/icons/AddCircleOutline';
 import {
   Sidebar,
@@ -10,6 +11,14 @@ import {
   SidebarThemeToggle,
   SidebarPinButton,
 } from '@backstage/core';
+import { Cookies } from 'plugin-welcome/src/Cookie';
+
+var ck = new Cookies()
+
+ function Clears() {
+  ck.ClearCookie()
+  window.location.reload(false)
+}
 
 export const AppSidebar = () => (
   <Sidebar>
@@ -18,17 +27,23 @@ export const AppSidebar = () => (
     <SidebarItem icon={HomeIcon} to="./" text="Home" />
     <SidebarItem icon={CreateComponentIcon} to="/member" text="Member" />
     <SidebarItem icon={CreateComponentIcon} to="/student" text="Student Background" />
-    <SidebarItem icon={CreateComponentIcon} to="/" text="Student Result" />
+    <SidebarItem icon={CreateComponentIcon} to="/result" text="Student Result" />
     <SidebarItem icon={CreateComponentIcon} to="/" text="Province" />
     <SidebarItem icon={CreateComponentIcon} to="/" text="Professor Background" />
-    <SidebarItem icon={CreateComponentIcon} to="/" text="Student Activity" />
+    <SidebarItem icon={CreateComponentIcon} to="/activity" text="Student Activity" />
     <SidebarItem icon={CreateComponentIcon} to="/" text="Course" />
     {/* End global nav */}
     <SidebarDivider />
     <SidebarSpace />
     <SidebarDivider />
     <SidebarThemeToggle />
-    <SidebarUserSettings />
+    <SidebarItem
+      icon={SignOut}
+      to="sign_in"
+      text="Sign Out"
+      onClick={Clears}
+    />
+    {/*<SidebarUserSettings />*/}
     <SidebarPinButton />
   </Sidebar>
 );
