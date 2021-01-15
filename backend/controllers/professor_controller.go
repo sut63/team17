@@ -82,7 +82,7 @@ func (ctl *ProfessorController) CreateProfessor(c *gin.Context) {
 		return
 	}
 
-	p, err := ctl.client.Professor.
+	save, err := ctl.client.Professor.
 		Create().
 		SetName(obj.Name).
 		SetEmail(obj.Email).
@@ -98,8 +98,10 @@ func (ctl *ProfessorController) CreateProfessor(c *gin.Context) {
 		})
 		return
 	}
-
-	c.JSON(200, p)
+	c.JSON(200, gin.H{
+		"status": true,
+		"data":   save,
+	})
 
 }
 
