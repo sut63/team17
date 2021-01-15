@@ -28,8 +28,8 @@ export const AppSidebar = () => (
     <SidebarItem icon={CreateComponentIcon} to="/member" text="Member" />
     <SidebarItem icon={CreateComponentIcon} to="/student" text="Student Background" />
     <SidebarItem icon={CreateComponentIcon} to="/result" text="Student Result" />
-    <SidebarItem icon={CreateComponentIcon} to="/" text="Province" />
-    <SidebarItem icon={CreateComponentIcon} to="/" text="Professor Background" />
+    <SidebarItem icon={CreateComponentIcon} to="/province" text="Province" />
+    <SidebarItem icon={CreateComponentIcon} to="/professor" text="Professor Background" />
     <SidebarItem icon={CreateComponentIcon} to="/activity" text="Student Activity" />
     <SidebarItem icon={CreateComponentIcon} to="/" text="Course" />
     {/* End global nav */}
@@ -39,8 +39,8 @@ export const AppSidebar = () => (
     <SidebarThemeToggle />
     <SidebarItem
       icon={SignOut}
-      to="sign_in"
-      text="Sign Out"
+      to="login"
+      text="Logout"
       onClick={Clears}
     />
     {/*<SidebarUserSettings />*/}
