@@ -26,6 +26,10 @@ import {
     EntStudentFromJSON,
     EntStudentFromJSONTyped,
     EntStudentToJSON,
+    EntTerm,
+    EntTermFromJSON,
+    EntTermFromJSONTyped,
+    EntTermToJSON,
     EntYear,
     EntYearFromJSON,
     EntYearFromJSONTyped,
@@ -58,6 +62,12 @@ export interface EntActivityEdges {
     actiStud?: EntStudent;
     /**
      * 
+     * @type {EntTerm}
+     * @memberof EntActivityEdges
+     */
+    actiTerm?: EntTerm;
+    /**
+     * 
      * @type {EntYear}
      * @memberof EntActivityEdges
      */
@@ -77,6 +87,7 @@ export function EntActivityEdgesFromJSONTyped(json: any, ignoreDiscriminator: bo
         'actiAgen': !exists(json, 'actiAgen') ? undefined : EntAgencyFromJSON(json['actiAgen']),
         'actiPlace': !exists(json, 'actiPlace') ? undefined : EntPlaceFromJSON(json['actiPlace']),
         'actiStud': !exists(json, 'actiStud') ? undefined : EntStudentFromJSON(json['actiStud']),
+        'actiTerm': !exists(json, 'actiTerm') ? undefined : EntTermFromJSON(json['actiTerm']),
         'actiYear': !exists(json, 'actiYear') ? undefined : EntYearFromJSON(json['actiYear']),
     };
 }
@@ -93,6 +104,7 @@ export function EntActivityEdgesToJSON(value?: EntActivityEdges | null): any {
         'actiAgen': EntAgencyToJSON(value.actiAgen),
         'actiPlace': EntPlaceToJSON(value.actiPlace),
         'actiStud': EntStudentToJSON(value.actiStud),
+        'actiTerm': EntTermToJSON(value.actiTerm),
         'actiYear': EntYearToJSON(value.actiYear),
     };
 }
