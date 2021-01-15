@@ -82,7 +82,7 @@ func (ctl *ProvinceController) ProvinceCreate(c *gin.Context) {
 		return
 	}
 
-	pv, err := ctl.client.Province.
+	save, err := ctl.client.Province.
 		Create().
 		SetProvince(obj.Province).
 		SetDistrict(obj.District).
@@ -100,7 +100,10 @@ func (ctl *ProvinceController) ProvinceCreate(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, pv)
+	c.JSON(200, gin.H{
+		"status": true,
+		"data":   save,
+	})
 }
 
 // ListProvince handles request to get a list of province entities
