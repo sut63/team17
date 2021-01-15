@@ -31,7 +31,7 @@ export const AppSidebar = () => (
     <SidebarItem icon={CreateComponentIcon} to="/province" text="Province" />
     <SidebarItem icon={CreateComponentIcon} to="/professor" text="Professor Background" />
     <SidebarItem icon={CreateComponentIcon} to="/activity" text="Student Activity" />
-    <SidebarItem icon={CreateComponentIcon} to="/" text="Course" />
+    <SidebarItem icon={CreateComponentIcon} to="/course" text="Course" />
     {/* End global nav */}
     <SidebarDivider />
     <SidebarSpace />
