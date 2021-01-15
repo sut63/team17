@@ -4,6 +4,7 @@ import { Content, Header, Page, pageTheme } from '@backstage/core';
 import SaveIcon from '@material-ui/icons/Save'; // icon save
 import Swal from 'sweetalert2';
 
+
 import {
     Container,
     Grid,
@@ -22,6 +23,7 @@ import { EntAgency } from '../../api/models/EntAgency'; // import interface Agen
 import { EntYear } from '../../api/models/EntYear'; // import interface Year
 import { EntStudent } from '../../api/models/EntStudent'; // import interface Student
 import { EntTerm } from '../../api/models/EntTerm'; // import interface Term
+import { Cookies } from '../../Cookie';
 
 // header css
 const HeaderCustom = {
@@ -187,6 +189,18 @@ const Activity: FC<{}> = () => {
         })
     }
 
+
+    //cookie logout
+  var cook = new Cookies()
+  var cookieName = cook.GetCookie()
+
+  function Clears() {
+    cook.ClearCookie()
+    window.location.reload(false)
+  }
+
+  
+
     function redirecLogOut() {
       // redirect Page ... http://localhost:3000/
       window.location.href = "http://localhost:3000/";
@@ -194,9 +208,15 @@ const Activity: FC<{}> = () => {
 
     return (
         <Page theme={pageTheme.home}>
-          <Header style={HeaderCustom} title={`Activity`}>
-            <Avatar alt="Remy Sharp" src="../../image/account.jpg" />
-            <div style={{ marginLeft: 10 }}>B5902439</div>
+          <Header  
+          
+          title={'Student Management'}
+          subtitle='Student Registration Department'
+          >
+            <Avatar alt="Remy Sharp"/>
+            <div style={{ marginLeft: 10, marginRight: 20 }}>{cookieName}</div>
+            <Button variant="text" color="secondary" size="large"
+              onClick={Clears} > Logout </Button>
           </Header>
           <Content>
             <Container maxWidth="sm">
