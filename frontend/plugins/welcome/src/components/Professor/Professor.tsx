@@ -20,6 +20,8 @@ import { EntProfessorship } from '../../api/models/EntProfessorship';
 import { EntProfessor } from '../../api/models/EntProfessor';
 import { EntPrefix } from '../../api/models/EntPrefix';
 import { EntFaculty } from '../../api/models/EntFaculty';
+import { Cookies } from '../../Cookie';
+
 
 // header css
 const HeaderCustom = {
@@ -166,16 +168,27 @@ const Professors: FC<{}> = () => {
         })
     }
   
-    
+      //cookie logout
+  var cook = new Cookies()
+  var cookieName = cook.GetCookie()
 
-  
+  function Clears() {
+    cook.ClearCookie()
+    window.location.reload(false)
+  }
+
   
   return (
     <Page theme={pageTheme.home}>
-      <Header style={HeaderCustom} title={`Professor`}>
-        
-        <div style={{ marginLeft: 10 }}>Akkara Chaiyapong</div>
-      </Header>
+      <Header
+      title={'Professor '}
+      subtitle='Professor register system'
+    >
+        <Avatar alt="Remy Sharp"/>
+        <div style={{ marginLeft: 10, marginRight: 20 }}>{cookieName}</div>
+        <Button variant="text" color="secondary" size="large"
+          onClick={Clears} > Logout </Button>
+    </Header>
       <Content>
         <Container maxWidth="sm">
           <Grid container spacing={3}>
