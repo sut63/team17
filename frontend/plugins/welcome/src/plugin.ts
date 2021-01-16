@@ -24,8 +24,8 @@ export const plugin = createPlugin({
       router.registerRoute('/professor', Logins);
       router.registerRoute('/login', Logins);
       router.registerRoute('/province', Logins);
-      router.registerRoute('/result', Result);
-      router.registerRoute('/course', Course);
+      router.registerRoute('/result', Logins);
+      router.registerRoute('/course', Logins);
     }else{
       router.registerRoute('/', WelcomePage);
       router.registerRoute('/student', Student);
