@@ -212,6 +212,7 @@ func main() {
 	controllers.NewStudentController(v1, client)
 	controllers.NewGenderController(v1, client)
 	controllers.NewEmpController(v1, client)
+	controllers.NewInstitutionController(v1, client)
 
 	// Set Genders Data
 	Genders := Genders{
@@ -498,10 +499,25 @@ func main() {
 		Institution: []Institution{
 			Institution{"สาขาวิชาเคมี"},
 			Institution{"สาขาวิชาคณิตศาสตร์"},
+			Institution{"สาขาวิชาฟิสิกส์"},
+			Institution{"สาขาวิทยาศาสตร์การกีฬา"},
 			Institution{"สาขาวิชาวิศวกรรมคอมพิวเตอร์"},
 			Institution{"สาขาวิชาวิศวกรรมเครื่องกล"},
 			Institution{"สาขาวิชาวิศวกรรมโยธา"},
 			Institution{"สาขาวิชาวิศวกรรมไฟฟ้า"},
+			Institution{"สาขาวิชาวิศวกรรมขนส่งและโลจิสติกส์"},
+			Institution{"สาขาวิชาวิศวกรรมเซรามิก"},
+			Institution{"สาขาวิชาวิศวกรรมโทรคมนาคม"},
+			Institution{"สาขาวิชาวิศวกรรมปิโตรเลียมและเทคโนโลยีธรณี"},
+			Institution{"สาขาวิชาวิศวกรรมพอลิเมอร์"},
+			Institution{"สาขาวิชาวิศวกรรมอุตสาหการ"},
+			Institution{"สาขาวิชาวิศวกรรมยานยนต์"},
+			Institution{"สาขาวิชาวิศวกรรมอากาศยาน"},
+			Institution{"สาขาวิชาวิศวกรรมอิเล็กทรอนิกส์"},
+			Institution{"สาขาวิชาวิศวกรรมเกษตรและอาหาร"},
+			Institution{"สาขาวิชาวิศวกรรมนวัตกรรมและการออกแบบวัสดุ"},
+			Institution{"สาขาวิชาวิศวกรรมโยธาและโครงสร้างพื้นฐาน"},
+			Institution{"สาขาวิชาวิศวกรรมเมคคาทรอนิกส์"},
 			Institution{"สาขาวิชาเทคโนโลยีการจัดการ"},
 			Institution{"สาขาวิชาเทคโนโลยีอาหาร"},
 			Institution{"สาขาวิชาแพทยศาสตรบัณฑิต"},
@@ -521,11 +537,12 @@ func main() {
 	// Set degree Data
 	degrees := Degrees{
 		Degree: []Degree{
-			Degree{"ปริญญาตรี"},
-			Degree{"ปริญญาโท"},
-			Degree{"ปริญญาเอก"},
+			Degree{"ปริญญาบัณฑิต"},
+			Degree{"ปริญญามหาบัณฑิต"},
+			Degree{"ปริญญาดุษฎีบัณฑิต"},
 			Degree{"ปริญญากิตติมศักดิ์"},
 			Degree{"มัธยมศึกษาตอนปลาย"},
+			Degree{"ปวช.,ปวส."},
 		},
 	}
 	for _, de := range degrees.Degree {
