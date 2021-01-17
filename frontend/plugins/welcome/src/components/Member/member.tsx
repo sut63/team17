@@ -51,14 +51,17 @@ export function CardTeam({ name, id, system }: ProfileProps) {
 const Member: FC<{}> = () => {
   return (
     <Page theme={pageTheme.home}>
-      <Header style={HeaderCustom} title={`ระบบประวัตินักศึกษา`}></Header>
+      <Header style={HeaderCustom} title={`ระบบประวัตินักศึกษา`} subtitle={"G17 Member"}></Header>
       <Content>
         <ContentHeader title="สมาชิกในกลุ่ม"></ContentHeader>
         <Grid container>
 
-          <CardTeam name={"ทราย"} id={"B5901258"} system={"Province"}></CardTeam>
-
-          <CardTeam name={"ฮันเตอร์"} id={"B5917396"} system={"Student"}></CardTeam> 
+          <CardTeam name={"นางสาวจีนิณีย์  คุปตวุฒินันท์"} id={"B5901258"} system={"Province"}></CardTeam>
+          <CardTeam name={"นางสาวลักขณา  เสนเพ็ง"} id={"B5902439"} system={"Activity"}></CardTeam>
+          <CardTeam name={"นางสาวอัครา  ชัยพงษ์"} id={"B5914296"} system={"Professor"}></CardTeam>
+          <CardTeam name={"นางสาวณิยนาท  ทองปลิว"} id={"B5911516"} system={"Course"}></CardTeam>
+          <CardTeam name={"นายณรงค์  ศิริมา"} id={"B6114688"} system={"Result"}></CardTeam>
+          <CardTeam name={"นายชัยธวัช  มหาแก้ว"} id={"B5917396"} system={"Student"}></CardTeam> 
           
         </Grid>
       </Content>
