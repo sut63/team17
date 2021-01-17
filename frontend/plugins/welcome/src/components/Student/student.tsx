@@ -245,7 +245,7 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
                     <b>Gender</b>
                     <div>
                 <FormControl variant="outlined" fullWidth>
-                <Select name="sex" id='sex' value={Student.sex||''}
+                <Select name="sex" value={Student.sex||''}
                     onChange={h}>
                 {gend.map((item) => {
                   return (
@@ -262,7 +262,7 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
                   <b>Title</b>
                 <div>
                 <FormControl variant="outlined" fullWidth>
-                <Select name="title" id='title' value={Student.title||''}
+                <Select name="title" value={Student.title||''}
                     onChange={h}>
                 {pref.map((item) => {
                   return (
