@@ -175,11 +175,28 @@ const Results: FC<{}> = () => {
       title: title,
     });
   }
-  //Check Save Error Function
+  //Check Save Error Function text field
   const CheckSaveError = (field:string) =>{
     switch(field) {
       case 'grade':
       alertMessage("error","เกรดต้องมากกว่า0 และมากสุด=4")
+      return
+    }
+  }
+  //Check Save Error Function combobox
+  const CheckComboboxError = (field:string) =>{
+    switch(field){
+      case "Year not found":
+      alertMessage("error","กรุณาใส่ข้อมูลปี")
+      return
+      case "Term not found":
+      alertMessage("error","กรุณาใส่ข้อมูลเทอม")
+      return
+      case "Subject not found":
+      alertMessage("error","กรุณาใส่ข้อมูลวิชา")
+      return
+      case "Student not found":
+      alertMessage("error","กรุณาใส่ข้อมูลนักศึกษา")
       return
     }
   }
@@ -208,6 +225,7 @@ const Results: FC<{}> = () => {
           });
         } else {
           CheckSaveError(data.error.Name)
+          CheckComboboxError(data.error)
         }
       });
   }
