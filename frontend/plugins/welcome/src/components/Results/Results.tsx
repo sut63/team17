@@ -126,7 +126,7 @@ const Results: FC<{}> = () => {
    
   //Get Data By Textfile and ComboBox ************************************************
   const [yearx, setYearx] = React.useState();
-  const [gradex, setGradex] = React.useState(String);
+  const [gradex, setGradex] = React.useState();
   const [studentx, setStudentx] = React.useState();
   const [subx, setSubx] = React.useState();
   const [termx, setTermx] = React.useState();
@@ -167,8 +167,23 @@ const Results: FC<{}> = () => {
     setTermx(event.target.value);
     
   };
-  console.log(results)
   
+  ////--------------------------------------------
+  const alertMessage = (icon: any, title: any) => {
+    Toast.fire({
+      icon: icon,
+      title: title,
+    });
+  }
+  //Check Save Error Function
+  const CheckSaveError = (field:string) =>{
+    switch(field) {
+      case 'grade':
+      alertMessage("error","เกรดต้องมากกว่า0 และมากสุด=4")
+      return
+    }
+  }
+
   //seve**********************************************************
    // function save data
    function save() {
@@ -185,17 +200,14 @@ const Results: FC<{}> = () => {
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        if (data.id != null ) {
+        if (data.status === true ) {
           
           Toast.fire({
             icon: 'success',
             title: 'บันทึกข้อมูลสำเร็จ',
           });
         } else {
-          Toast.fire({
-            icon: 'error',
-            title: 'บันทึกข้อมูลไม่สำเร็จ',
-          });
+          CheckSaveError(data.error.Name)
         }
       });
   }
@@ -207,6 +219,7 @@ const Results: FC<{}> = () => {
   console.log(terms);
   console.log(subjects);
   console.log(students);
+  console.log(results)
 
   //cookie logout
   var cook = new Cookies()
@@ -338,7 +351,8 @@ const Results: FC<{}> = () => {
                   <div className={classes.paper}>เกรด</div>
                 </Grid>
                 <Grid item xs={9}>
-                  <TextField variant="outlined" className={classes.textField}  
+                  <TextField variant="outlined" className={classes.textField} 
+                      type="Number" 
                       name="grade"
                       value={results.grade || ''} // (undefined || '') = ''
                       onChange={handleInputGrade}>
