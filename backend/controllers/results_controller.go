@@ -49,32 +49,30 @@ func (ctl *ResultsController) CreateResults(c *gin.Context) {
 		})
 		return
 	}
-
-	yea, err := ctl.client.Year.
-		Query().
-		Where(year.IDEQ(int(obj.YearID))).
-		Only(context.Background())
-
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	subj, err := ctl.client.Subject.
-		Query().
-		Where(subject.IDEQ(int(obj.SubjectID))).
-		Only(context.Background())
-
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
 	std, err := ctl.client.Student.
 		Query().
 		Where(student.IDEQ(int(obj.StudentID))).
 		Only(context.Background())
 
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println(err)
+		c.JSON(400, gin.H{
+			"status": false,
+			"error":  "Student not found",
+		})
+		return
+	}
+	yea, err := ctl.client.Year.
+		Query().
+		Where(year.IDEQ(int(obj.YearID))).
+		Only(context.Background())
+
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(400, gin.H{
+			"status": false,
+			"error":  "Year not found",
+		})
 		return
 	}
 	term, err := ctl.client.Term.
@@ -83,7 +81,24 @@ func (ctl *ResultsController) CreateResults(c *gin.Context) {
 		Only(context.Background())
 
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println(err)
+		c.JSON(400, gin.H{
+			"status": false,
+			"error":  "Term not found",
+		})
+		return
+	}
+	subj, err := ctl.client.Subject.
+		Query().
+		Where(subject.IDEQ(int(obj.SubjectID))).
+		Only(context.Background())
+
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(400, gin.H{
+			"status": false,
+			"error":  "Subject not found",
+		})
 		return
 	}
 	t, err := ctl.client.Results.
@@ -99,15 +114,14 @@ func (ctl *ResultsController) CreateResults(c *gin.Context) {
 		fmt.Println(err)
 		c.JSON(400, gin.H{
 			"status": false,
-			"error": err,
+			"error":  err,
 		})
 		return
 	}
-	
 
 	c.JSON(200, gin.H{
 		"status": true,
-		"data": t,
+		"data":   t,
 	})
 }
 
