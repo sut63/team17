@@ -14,7 +14,7 @@ type Results struct {
 // Fields of the Results.
 func (Results) Fields() []ent.Field {
 	return []ent.Field{
-		field.Float("grade").Positive(),
+		field.Float("grade").Min(0).Max(4),
 	}
 }
 
