@@ -94,14 +94,21 @@ func (ctl *ResultsController) CreateResults(c *gin.Context) {
 		SetResuSubj(subj).
 		SetResuTerm(term).
 		Save(context.Background())
+
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(400, gin.H{
-			"error": "saving failed",
+			"status": false,
+			"error": err,
 		})
 		return
 	}
+	
 
-	c.JSON(200, t)
+	c.JSON(200, gin.H{
+		"status": true,
+		"data": t,
+	})
 }
 
 // GetResults handles GET requests to retrieve a results entity
