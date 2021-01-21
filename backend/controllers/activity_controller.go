@@ -26,7 +26,7 @@ type Activity struct {
 	Agency       int
 	Place        int
 	Added        string
-	Hours        string
+	Hours        int
 	Activityname string
 	Year         int
 	Student      int
@@ -110,7 +110,7 @@ func (ctl *ActivityController) CreateActivity(c *gin.Context) {
 		return
 	}
 
-	time, err := time.Parse(time.RFC3339, obj.Added)
+	time, err := time.Parse(time.RFC3339, obj.Added+ ":00+07:00")
 
 	save, err := ctl.client.Activity.
 		Create().
@@ -125,8 +125,10 @@ func (ctl *ActivityController) CreateActivity(c *gin.Context) {
 		Save(context.Background())
 
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(400, gin.H{
-			"error": "saving failed",
+			"status": false,
+			"error":  err,
 		})
 		return
 	}
