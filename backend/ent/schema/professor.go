@@ -4,6 +4,7 @@ import (
 	"github.com/facebookincubator/ent"
 	"github.com/facebookincubator/ent/schema/edge"
 	"github.com/facebookincubator/ent/schema/field"
+	"regexp"
 )
 
 // Professor holds the schema definition for the Professor entity.
@@ -15,8 +16,8 @@ type Professor struct {
 func (Professor) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name"),
-		field.String("tel"),
-		field.String("email"),
+		field.String("tel").MaxLen(10).MinLen(10),
+		field.String("email").Match(regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")),
 	}
 }
 
