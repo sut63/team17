@@ -82,7 +82,7 @@ func (ctl *ProfessorController) CreateProfessor(c *gin.Context) {
 		return
 	}
 
-	save, err := ctl.client.Professor.
+	p, err := ctl.client.Professor.
 		Create().
 		SetName(obj.Name).
 		SetEmail(obj.Email).
@@ -93,14 +93,17 @@ func (ctl *ProfessorController) CreateProfessor(c *gin.Context) {
 		Save(context.Background())
 
 	if err != nil {
-		c.JSON(400, gin.H{
-			"error": "saving failed",
-		})
-		return
+			fmt.Println(err)
+			c.JSON(400, gin.H{
+				"status": false,
+				"error":  err,
+			})
+			return
 	}
+
 	c.JSON(200, gin.H{
 		"status": true,
-		"data":   save,
+		"data":   p,
 	})
 
 }
