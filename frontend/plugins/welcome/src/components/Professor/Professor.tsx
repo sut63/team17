@@ -20,8 +20,8 @@ import { EntProfessorship } from '../../api/models/EntProfessorship';
 import { EntProfessor } from '../../api/models/EntProfessor';
 import { EntPrefix } from '../../api/models/EntPrefix';
 import { EntFaculty } from '../../api/models/EntFaculty';
-import { Cookies } from '../../Cookie';
 
+import { Cookies } from '../../Cookie';
 
 // header css
 const HeaderCustom = {
@@ -55,10 +55,11 @@ const useStyles = makeStyles(theme => ({
 interface Professors {
     tel: string;
     email: string;
-    name: String;
+    name: string;
     prefix: number;
     faculty: number;
     professorship: number;
+    
 }
 
 const Professors: FC<{}> = () => {
@@ -71,11 +72,11 @@ const Professors: FC<{}> = () => {
   const [facultys, setFacultys] = React.useState<EntFaculty[]>([]);
   const [professorships, setProfessorships] = React.useState<EntProfessorship[]>([]);
   const [showInputError, setShowInputError] = React.useState(false); // for error input show
-
-  const [tel, setTel] = useState(String);
-  const [email, setEmail] = useState(String);
-  const [name, setName] = useState(String);
+  const [emailError, setEmailError] = React.useState('');
+  const [telError, setTelError] = React.useState('');
   
+
+
 
   const getPrefix = async () => {
     const res = await http.listPrefix({ limit: 4, offset: 0 });
@@ -105,14 +106,66 @@ const Professors: FC<{}> = () => {
     
     // set data to object Professor
   const handleChange = (
-    event: React.ChangeEvent<{ name?: string; value: unknown }>,
+    event: React.ChangeEvent<{ name?: string; value: any }>,
   ) => {
     const name = event.target.name as keyof typeof Professors;
     const { value } = event.target;
+    const validateValue = value.toString()
+    checkPattern(name, validateValue)
     setProfessors({ ...professors, [name]: value });
     console.log(professors);
   };
+  // ฟังก์ชั่นสำหรับ validate อีเมล
+  const validateEmail = (email: string) => {
+    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+  }
 
+  // ฟังก์ชั่นสำหรับ validate เบอร์มือถือ
+  const validateTel = (val: string) => {
+    return val.length == 10 ? true : false;
+  }
+
+  
+  
+
+  // สำหรับตรวจสอบรูปแบบข้อมูลที่กรอก ว่าเป็นไปตามที่กำหนดหรือไม่
+  const checkPattern  = (id: string, value: string) => {
+    switch(id) {
+      case 'tel':
+        validateTel(value) ? setTelError('') : setTelError('เบอร์มือถือ 10 หลัก');
+        return;
+      case 'email':
+        validateEmail(value) ? setEmailError('') : setEmailError('รูปแบบอีเมลไม่ถูกต้อง')
+        return;
+      default:
+        return;
+    }
+  }
+
+  const alertMessage = (icon: any, title: any) => {
+    Toast.fire({
+      icon: icon,
+      title: title,
+    });
+  }
+
+  const checkCaseSaveError = (field: string) => {
+    switch(field) {
+      case 'tel':
+        alertMessage("error","เบอร์มือถือ 10 หลัก");
+        return;
+      case 'phone':
+          alertMessage("error","เบอร์โทรศัพท์ที่ทำงาน 9 หลัก");
+          return;
+      case 'email':
+        alertMessage("error","รูปแบบอีเมลไม่ถูกต้อง");
+        return;
+      default:
+        alertMessage("error","บันทึกข้อมูลไม่สำเร็จ");
+        return;
+    }
+  }
     function clear() {
       setProfessors({});
       setShowInputError(false);
@@ -133,7 +186,7 @@ const Professors: FC<{}> = () => {
 
     function save() {
       setShowInputError(true);
-      let {prefix, faculty, professorship, name, tel, email } = professors;
+      let {prefix, faculty, professorship, name, tel, email} = professors;
       if (!prefix || !faculty || !professorship || !professors || !name || !tel || !email) {
         Toast.fire({
           icon: 'error',
@@ -150,25 +203,22 @@ const Professors: FC<{}> = () => {
       console.log(professors);
   
       fetch(apiUrl, requestOptions)
-        .then(response => {
-          console.log(response)
-          response.json()
-          if (response.ok === true) {
-            clear();
-            Toast.fire({
-              icon: 'success',
-              title: 'บันทึกข้อมูลสำเร็จ',
-            });
-          } else {
-            Toast.fire({
-              icon: 'error',
-              title: 'บันทึกข้อมูลไม่สำเร็จ',
-            });
-          }
-        })
-    }
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        if (data.status === true) {
+          clear();
+          Toast.fire({
+            icon: 'success',
+            title: 'บันทึกข้อมูลสำเร็จ',
+          });
+        } else {
+          checkCaseSaveError(data.error.Name)
+        }
+      });
+  };
   
-      //cookie logout
+     //cookie logout
   var cook = new Cookies()
   var cookieName = cook.GetCookie()
 
@@ -177,6 +227,7 @@ const Professors: FC<{}> = () => {
     window.location.reload(false)
   }
 
+  
   
   return (
     <Page theme={pageTheme.home}>
@@ -203,6 +254,7 @@ const Professors: FC<{}> = () => {
                   required
                   error={!professors.prefix && showInputError}
                   name="prefix"
+                  //id="prefix"
                   value={professors.prefix || ''}
                   onChange={handleChange}
                 >
@@ -228,6 +280,7 @@ const Professors: FC<{}> = () => {
                   error={!professors.name && showInputError}
                   label="กรอกชื่อ - นามสกุล"
                   name="name"
+                  id="name"
                   value={professors.name || ''} // (undefined || '') = ''
                   className={classes.textField}
                   InputLabelProps={{
@@ -272,6 +325,7 @@ const Professors: FC<{}> = () => {
                   required
                   error={!professors.faculty && showInputError}
                   name="faculty"
+                  //id="faculty"
                   value={professors.faculty || ''}
                   onChange={handleChange}
          
@@ -287,15 +341,17 @@ const Professors: FC<{}> = () => {
             </Grid>
 
             <Grid item xs={3}>
-              <div className={classes.paper}>หมายเลขโทรศัพท์</div>
+              <div className={classes.paper}>เบอร์มือถือ</div>
             </Grid>
             <Grid item xs={9}>
               <form className={classes.container} noValidate>
                 <TextField
-                  required
-                  error={!professors.tel && showInputError}
-                  label="กรอกหมายเลขโทรศัพท์"
+                  error = {telError ? true : false}
+                  label="กรอกเบอร์มือถือ"
+                  inputProps={{ maxLength: 10 }}
+                  helperText= {telError}
                   name="tel"
+                  id="tel"
                   value={professors.tel || ''} // (undefined || '') = ''
                   className={classes.textField}
                   InputLabelProps={{
@@ -312,11 +368,11 @@ const Professors: FC<{}> = () => {
             <Grid item xs={9}>
               <form className={classes.container} noValidate>
                 <TextField
-                  required
-                  error={!professors.email && showInputError}
+                  error = {emailError ? true : false}
                   label="E - mail"
                   name="email"
-                  
+                  id="email"
+                  helperText= {emailError}
                   value={professors.email || ''} // (undefined || '') = ''
                   className={classes.textField}
                   InputLabelProps={{
