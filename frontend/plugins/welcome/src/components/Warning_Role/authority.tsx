@@ -74,62 +74,13 @@ const useStyles = makeStyles(theme => ({
 const SignIn: FC<{}> = () => {
 
   const classes = useStyles();
-  const api = new DefaultApi();
-  var ck = new Cookies();
-  var check : boolean
-  const [path, setPath] = React.useState("");
+  var cook = new Cookies()
+  var cookieName = cook.GetCookie()
 
- const [emp,setEmp] = React.useState<EntEmp[]>([])
-  const listEmp = async() => {
-        const res = await api.listEmp({})
-        setEmp(res)
-  }
-
-  useEffect(() => {
-    listEmp();
-},[])
-
-  
- // setUser
-  const [user, setUser] = React.useState("")
-  const handleUser = (event : any) => {
-      setUser(event.target.value)
-  }
-
-  // setPass
-  const [pass, setPass] = React.useState("")
-  const handlePass = (event : any) => {
-      setPass(event.target.value)
-  }
-
-  function checkrole(user:any){
-    var x = undefined
-    emp.forEach((item)=>{
-      if(item.user===user){
-        x = item.role
-      }
-    });
-    return x
-  }
-  
-  // handleCookies
-  function handleCookies() {
-    check = ck.CheckLogin(emp,user,pass)
-    console.log("check => "+check)
-    if(check === true){
-      setPath("/WelcomePage")
-      ck.SetCookie("user_email",user,30)
-      ck.SetCookie("user_id",ck.SetID(emp,user,pass),30)
-      ck.SetCookie("user_role",checkrole(user),30)
-      window.location.reload(false)
-    }else if(check === false){
-      alert("The wrong password or user was entered.!!!")
-      setPath("/")
-    }
-    console.log(user);
-    console.log(pass);
-  }
-
+function Clears() {
+    cook.ClearCookie()
+    window.location.reload(false)
+}
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -138,44 +89,21 @@ const SignIn: FC<{}> = () => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          You are not allow in this role...
+        </Typography>
+        <Typography component="h1" variant="h5">
+          Sign Out First
         </Typography>
         <form className={classes.form} noValidate>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="username"
-            label="Username"
-            name="username"
-            autoComplete="username"
-            autoFocus
-            onChange={handleUser}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            onChange={handlePass}
-          />
+         
           <Button
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={handleCookies}
-            component={RouterLink}
-            to={path}
-          >
-            Sign In
+            onClick={Clears} >
+            Log out
           </Button>
         </form>
       </div>
