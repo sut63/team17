@@ -1,5 +1,6 @@
 import { createPlugin } from '@backstage/core';
 import WelcomePage from './components/WelcomePage';
+import SearchGrade from './components/SearchGrade';
 import Student from './components/Student'
 import Logins from './components/Login'
 import Member from './components/Member'
@@ -20,7 +21,7 @@ export const plugin = createPlugin({
   register({ router }) {
     if(role == "เจ้าหน้าที่ฝ่ายพนักงานบริการนักศึกษา"){
       router.registerRoute('/', WelcomePage);
-      router.registerRoute('/student', Student);
+      router.registerRoute('/student', Warn);
       router.registerRoute('/member', Member);
       router.registerRoute('/activity', Warn);
       router.registerRoute('/professor', Warn);
@@ -29,11 +30,11 @@ export const plugin = createPlugin({
       router.registerRoute('/result', Result);
       router.registerRoute('/course', Warn);
       
-      router.registerRoute('/si', si);
+      //router.registerRoute('/si', si);
       router.registerRoute('/as', WelcomePage);
       router.registerRoute('/pf', WelcomePage);
       router.registerRoute('/pv', WelcomePage);
-      router.registerRoute('/sg', WelcomePage);
+      router.registerRoute('/sg', SearchGrade);
       router.registerRoute('/cs', WelcomePage);
     }else if(role=="เจ้าหน้าที่ฝ่ายทะเบียนมหาวิทยาลัย"){
       router.registerRoute('/', WelcomePage);
