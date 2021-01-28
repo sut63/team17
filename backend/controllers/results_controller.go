@@ -194,6 +194,7 @@ func (ctl *ResultsController) ListResults(c *gin.Context) {
 		WithResuStud().
 		WithResuYear().
 		WithResuSubj().
+		WithResuTerm().
 		Limit(limit).
 		Offset(offset).
 		All(context.Background())
