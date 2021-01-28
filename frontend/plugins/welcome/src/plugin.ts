@@ -9,7 +9,7 @@ import Course from './components/Course'
 import Province from './components/Province'
 import Professor from './components/Professor'
 import Warn from './components/Warning_Role'
-import si from './components/Search_Student'
+//import si from './components/Search_Student'
 import { Cookies } from './Cookie'
 
 var ck = new Cookies()
