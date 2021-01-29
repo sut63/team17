@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+	<title>SeaechProfessor </title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">ค้นแล้วเจอ</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>http://localhost:3000/searchProfessor<datalist><option>http://localhost:3000/searchProfessor</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='root']/div/div[2]/article/div/div/div[3]/form/div/div<datalist><option>//div[@id='root']/div/div[2]/article/div/div/div[3]/form/div/div</option><option>//form/div/div</option><option>css=div.MuiInputBase-root.MuiOutlinedInput-root.MuiInputBase-fullWidth.MuiInputBase-formControl.MuiInputBase-multiline.MuiOutlinedInput-multiline</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=name<datalist><option>id=name</option><option>//textarea[@id='name']</option><option>//div[@id='root']/div/div[2]/article/div/div/div[3]/form/div/div/textarea</option><option>//textarea</option><option>css=#name</option></datalist></td><td>อัครา</td>
+</tr>
+<tr><td>click</td><td>//button[@type='button']<datalist><option>//button[@type='button']</option><option>//div[@id='root']/div/div[2]/article/div/div/div[5]/button</option><option>//button</option><option>css=button.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary.MuiButton-containedSizeLarge.MuiButton-sizeLarge</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div[2]/div/div<datalist><option>//div[2]/div/div</option><option>css=div.swal2-header</option></datalist></td><td>ค้นหาสำเร็จ×</td>
+</tr>
+<tr><td>click</td><td>//div[@id='root']/div/div[2]/article/div/div/div[5]/button[2]/span<datalist><option>//div[@id='root']/div/div[2]/article/div/div/div[5]/button[2]/span</option><option>//button[2]/span</option><option>css=button.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedSecondary.MuiButton-containedSizeLarge.MuiButton-sizeLarge &gt; span.MuiButton-label</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">ค้นแล้วไม่เจอ</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>http://localhost:3000/searchProfessor<datalist><option>http://localhost:3000/searchProfessor</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=name<datalist><option>id=name</option><option>//textarea[@id='name']</option><option>//div[@id='root']/div/div[2]/article/div/div/div[3]/form/div/div/textarea</option><option>//textarea</option><option>css=#name</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=name<datalist><option>id=name</option><option>//textarea[@id='name']</option><option>//div[@id='root']/div/div[2]/article/div/div/div[3]/form/div/div/textarea</option><option>//textarea</option><option>css=#name</option></datalist></td><td>สุริยา</td>
+</tr>
+<tr><td>click</td><td>//div[@id='root']/div/div[2]/article/div/div/div[5]/button/span<datalist><option>//div[@id='root']/div/div[2]/article/div/div/div[5]/button/span</option><option>//button/span</option><option>css=span.MuiButton-label</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div[2]/div/div<datalist><option>//div[2]/div/div</option><option>css=div.swal2-header</option></datalist></td><td>ไม่พบข้อมูล×</td>
+</tr>
+</tbody></table>
+</body>
+</html>
