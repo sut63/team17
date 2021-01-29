@@ -26,7 +26,7 @@ type Activity struct {
 	Agency       int
 	Place        int
 	Added        string
-	Hours        string
+	Hours        int
 	Activityname string
 	Year         int
 	Student      int
@@ -61,6 +61,7 @@ func (ctl *ActivityController) CreateActivity(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(400, gin.H{
+			"status": false,
 			"error": "agency not found",
 		})
 		return
@@ -72,6 +73,7 @@ func (ctl *ActivityController) CreateActivity(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(400, gin.H{
+			"status": false,
 			"error": "place not found",
 		})
 		return
@@ -83,6 +85,7 @@ func (ctl *ActivityController) CreateActivity(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(400, gin.H{
+			"status": false,
 			"error": "year not found",
 		})
 		return
@@ -94,6 +97,7 @@ func (ctl *ActivityController) CreateActivity(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(400, gin.H{
+			"status": false,
 			"error": "student not found",
 		})
 		return
@@ -105,12 +109,13 @@ func (ctl *ActivityController) CreateActivity(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(400, gin.H{
+			"status": false,
 			"error": "term not found",
 		})
 		return
 	}
 
-	time, err := time.Parse(time.RFC3339, obj.Added)
+	time, err := time.Parse(time.RFC3339, obj.Added+ ":00+07:00")
 
 	save, err := ctl.client.Activity.
 		Create().
@@ -125,8 +130,10 @@ func (ctl *ActivityController) CreateActivity(c *gin.Context) {
 		Save(context.Background())
 
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(400, gin.H{
-			"error": "saving failed",
+			"status": false,
+			"error":  err,
 		})
 		return
 	}
@@ -219,6 +226,7 @@ func (ctl *ActivityController) ListActivity(c *gin.Context) {
 
 	c.JSON(200, activitys)
 }
+
 
 // NewActivityController creates and registers handles for the activity controller
 func NewActivityController(router gin.IRouter, client *ent.Client) *ActivityController {
