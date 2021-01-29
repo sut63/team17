@@ -3,7 +3,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Content, Header, Page, pageTheme } from '@backstage/core';
 import SaveIcon from '@material-ui/icons/Save'; // icon save
 import Swal from 'sweetalert2';
-
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
 
 import {
     Container,
@@ -55,12 +56,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface Activity{
-  activity: Date;
+  
   activityname: String;
     place: number;
     agency: number;
-    added:  String;
-    hours: String;
+    added:  Date;
+    hours: number;
     student: number;
     year: number;
     term: number;
@@ -70,21 +71,32 @@ interface Activity{
 const Activity: FC<{}> = () => {
     
 
-    const classes = useStyles();
-    const http = new DefaultApi();
+  const classes = useStyles();
+  const http = new DefaultApi();
+  const [activity, setActivitys] = React.useState<Partial<Activity>>({});
 
-    
+  const [place, setPlaces] = React.useState<EntPlace[]>([]);
+  const [agency, setAgencys] = React.useState<EntAgency[]>([]);
+  const [year, setYears] = React.useState<EntYear[]>([]);
+  const [student, setStudents] = React.useState<EntStudent[]>([]);
+  const [term, setTerms] = React.useState<EntTerm[]>([]);
+  const [showInputError, setShowInputError] = React.useState(false); // for error input show
+  activity.hours = Number(activity.hours);
+  
 
-    const [activity, setActivitys] = React.useState<Partial<Activity>>({});
-    const [place, setPlaces] = React.useState<EntPlace[]>([]);
-    const [agency, setAgencys] = React.useState<EntAgency[]>([]);
-    const [year, setYears] = React.useState<EntYear[]>([]);
-    const [student, setStudents] = React.useState<EntStudent[]>([]);
-    const [term, setTerms] = React.useState<EntTerm[]>([]);
-    const [showInputError, setShowInputError] = React.useState(false); // for error input show
+  
+    //cookie logout
+    var cook = new Cookies()
+    var cookieName = cook.GetCookie()
+  
+    function Clears() {
+      cook.ClearCookie()
+      window.location.reload(false)
+    }
+  
 
-    
- 
+  
+   
     const getPlace = async () => {
         const res = await http.listPlace({ limit: 10, offset: 0 });
         setPlaces(res);
@@ -108,7 +120,6 @@ const Activity: FC<{}> = () => {
         const res = await http.listTerm({ limit: 10, offset: 0 });
         setTerms(res);
     };
-    
 
     // Lifecycle Hooks
     useEffect(() => {
@@ -121,90 +132,136 @@ const Activity: FC<{}> = () => {
     }, []);
 
     // set data to object activitys
-    const handleChange = (
-        event: React.ChangeEvent<{ name?: string; value: unknown }>,
-    ) => {
+    const handleChange = (event: React.ChangeEvent<{ name?: string; value: any }>) => {
         const name = event.target.name as keyof typeof Activity;
         const { value } = event.target;
         setActivitys({ ...activity, [name]: value });
+        const validateValue = value.toString() 
+        checkPattern(name, validateValue)
         console.log(activity);
-        };
+    };
 
     // clear input form
     function clear() {
         setActivitys({});
         setShowInputError(false);
     }
+    
+  // alert setting
+  const [open, setOpen] = React.useState(false);
+  const [fail, setFail] = React.useState(false);
+    
 
-    const Toast = Swal.mixin({
-      toast: true,
-      position: 'top-end',
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true,
-      didOpen: toast => {
-        toast.addEventListener('mouseenter', Swal.stopTimer);
-        toast.addEventListener('mouseleave', Swal.resumeTimer);
-      },
-    });
+    
+
+   // สำหรับตรวจสอบความถูกต้อง
+   const [activitynameError, setActivityNameError] = React.useState('');
+   const [hoursError, setHoursError] = React.useState('');
+   const [addedError, setAddedError] = React.useState('');
+   const [errors, setError] = React.useState(String);
+
+
+    //validate ชื่อกิจกรรม
+    const validateActivityName = (val: string) => {
+      return val.length < 5 ? false : true;
+    }
+
+    //validate จำนวนชั่วโมงจิตอาสา
+    const validateHours = (val: string) => {
+      return val;
+    }
+  //validate จำนวนชั่วโมงจิตอาสา
+    const validateAdded = (val: string) => {
+      return val;
+    }
+
+    
+  
+
+    // checkPattern
+    const checkPattern  = (id: string, value: string) => {
+      switch(id) { 
+        case 'activityname':
+          validateActivityName(value) ? setActivityNameError('') : setActivityNameError('ใส่ตัวอักษรไม่น้อยกว่า 5 ตัวอักษร');
+          return;
+        case 'hours':
+          validateHours(value) ? setHoursError('') : setHoursError('จำนวนชั่วโมงจิตอาสาต้องมากกว่า 0');
+          return;
+        case 'added':
+          validateAdded(value) ? setAddedError('') : setAddedError('ใส่วันที่จัดกิจกรรม');
+          return;     
+        default:
+          return;
+  }
+}
+
+    const checkerror = (s: string) => {
+      switch(s) {
+        case 'activityname':
+          setError("ใส่ชื่อกิจกรรมใหม่");
+          return;
+        case 'hours':
+          setError("จำนวนชั่วโมงจิตอาสาต้องเป็นจำนวนเต็มบวก");
+        case 'added':
+          setError("กรุณาใส่วันที่จัดกิจกรรม");
+          return;
+      default:
+          setError("กรุณากรอกข้อมูลให้ครบถ้วน");
+          return;
+      }
+    }
+
+  //close alert 
+  const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setFail(false);
+    setOpen(false);
+  };
+    
 
     // function save data
     function save() {
-      setShowInputError(true);
-      let {hours, activityname, added} = activity;
-      if (!hours || !activityname || !added) {
-          Toast.fire({
-            icon: 'error',
-            title: 'กรุณากรอกข้อมูลให้ครบถ้วน',
-          });
-      return;
-      }
+     
+      const apiUrl = 'http://localhost:8080/api/v1/activitys';
+      const requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(activity),
+      };
 
-        const apiUrl = 'http://localhost:8080/api/v1/activitys';
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(activity),
-        };
+      console.log(activity); // log ดูข้อมูล สามารถ Inspect ดูข้อมูลได้ F12 เลือก Tab Console
 
-        console.log(activity); // log ดูข้อมูล สามารถ Inspect ดูข้อมูลได้ F12 เลือก Tab Console
+
+     // setShowInputError(true);
+     // let {hours, activityname, added} = activity;
+     // if (!hours || !activityname || !added) {
+     //     Toast.fire({
+     //       icon: 'error',
+     //       title: 'กรุณากรอกข้อมูลให้ครบถ้วน',
+     //     });
+     //       return;
+    //  }
+
+        
 
         fetch(apiUrl, requestOptions)
-        .then(response => {
-          console.log(response)
-          response.json()
-
-        if (response.ok === true) {
-          clear();
-          Toast.fire({
-            icon: 'success',
-            title: 'บันทึกข้อมูลสำเร็จ',
-          });
-        } else {
-          Toast.fire({
-            icon: 'error',
-            title: 'บันทึกข้อมูลไม่สำเร็จ',
-          });
-        }
-        })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          if (data.status === true) {
+            clear();
+            setOpen(true);
+          } else {
+            checkerror(data.error.Name)
+            setFail(true);
+          }
+        });
     }
 
-
-    //cookie logout
-  var cook = new Cookies()
-  var cookieName = cook.GetCookie()
-
-  function Clears() {
-    cook.ClearCookie()
-    window.location.reload(false)
-  }
 
   
-
-    function redirecLogOut() {
-      // redirect Page ... http://localhost:3000/
-      window.location.href = "http://localhost:3000/";
-    }
 
     return (
         <Page theme={pageTheme.home}>
@@ -227,7 +284,9 @@ const Activity: FC<{}> = () => {
                 </Grid>
                 <Grid item xs={9}>
             
-                  <FormControl variant="outlined" className={classes.formControl}>
+                  <FormControl 
+                    variant="outlined" 
+                    className={classes.formControl}>
                     <InputLabel>เลือกชื่อนักศึกษา</InputLabel>
                     <Select
                       name="student"
@@ -244,6 +303,7 @@ const Activity: FC<{}> = () => {
                     </Select>
                   </FormControl>
                 </Grid>
+
                 </Grid>
                 <Grid container spacing={3}>
                 <Grid item xs={12}></Grid>
@@ -252,9 +312,13 @@ const Activity: FC<{}> = () => {
                 </Grid>
                 <Grid item xs={9}>
                 <form className={classes.container} noValidate>
+
                 <TextField
                   label="ชื่อกิจกรรม"
+                  error = {activitynameError ? true : false}
+                  helperText={activitynameError}
                   name="activityname"
+                  type="string"
                   value={activity.activityname || ''} // (undefined || '') = ''
                   className={classes.textField}
                   InputLabelProps={{
@@ -363,13 +427,14 @@ const Activity: FC<{}> = () => {
                 <Grid item xs={9}>
                 <form className={classes.container} noValidate>
                 <TextField
+                  error = {hoursError ? true : false}
+                  helperText={hoursError}
                   label="ชั่วโมงจิตอาสา"
                   name="hours"
+                  type="number"
                   value={activity.hours || ''} // (undefined || '') = ''
                   className={classes.textField}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
+                  
                   onChange={handleChange}
                   
                 />
@@ -384,13 +449,15 @@ const Activity: FC<{}> = () => {
                 <Grid item xs={9}>
                   <form className={classes.container} noValidate>
                     <TextField 
+                     error = {addedError ? true : false}
+                     helperText={addedError}
                       label="เลือกเวลา"
                       name="added"
                       type="datetime-local"
                       value={activity.added || ''}
                       className={classes.textField}
                       InputLabelProps={{
-                          shrink: true,
+                        shrink: true,
                       }}
                       onChange={handleChange}
                     ></TextField>
@@ -400,6 +467,7 @@ const Activity: FC<{}> = () => {
     
                 <Grid item xs={4}></Grid>
                 <Grid item xs={7}>
+                  
                   <Button
                     variant="contained"
                     color="primary"
@@ -407,10 +475,25 @@ const Activity: FC<{}> = () => {
                     startIcon={<SaveIcon />}
                     onClick={save}
                   >
-                    บันทึกรายการ
+                    บันทึก
                   </Button>
                 </Grid>
               </Grid>
+
+
+              <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="success">
+              บันทึกข้อมูลสำเร็จ!
+        </Alert>
+          </Snackbar>
+
+          <Snackbar open={fail} autoHideDuration={6000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="error">
+              {errors}
+        </Alert>
+          </Snackbar>
+
+
             </Container>
           </Content>
         </Page>
