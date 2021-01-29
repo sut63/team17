@@ -60,3 +60,10 @@ var ForeignKeys = []string{
 	"prefix_ID",
 	"professorship_ID",
 }
+
+var (
+	// TelValidator is a validator for the "tel" field. It is called by the builders before save.
+	TelValidator func(string) error
+	// EmailValidator is a validator for the "email" field. It is called by the builders before save.
+	EmailValidator func(string) error
+)

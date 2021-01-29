@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"github.com/sut63/team17/app/ent/activity"
 	"github.com/sut63/team17/app/ent/agency"
 	"github.com/sut63/team17/app/ent/continent"
 	"github.com/sut63/team17/app/ent/country"
@@ -13,6 +14,7 @@ import (
 	"github.com/sut63/team17/app/ent/institution"
 	"github.com/sut63/team17/app/ent/place"
 	"github.com/sut63/team17/app/ent/prefix"
+	"github.com/sut63/team17/app/ent/professor"
 	"github.com/sut63/team17/app/ent/professorship"
 	"github.com/sut63/team17/app/ent/province"
 	"github.com/sut63/team17/app/ent/region"
@@ -28,6 +30,30 @@ import (
 // code (default values, validators or hooks) and stitches it
 // to their package variables.
 func init() {
+	activityFields := schema.Activity{}.Fields()
+	_ = activityFields
+	// activityDescACTIVITYNAME is the schema descriptor for ACTIVITYNAME field.
+	activityDescACTIVITYNAME := activityFields[0].Descriptor()
+	// activity.ACTIVITYNAMEValidator is a validator for the "ACTIVITYNAME" field. It is called by the builders before save.
+	activity.ACTIVITYNAMEValidator = activityDescACTIVITYNAME.Validators[0].(func(string) error)
+	// activityDescHours is the schema descriptor for hours field.
+	activityDescHours := activityFields[2].Descriptor()
+	// activity.HoursValidator is a validator for the "hours" field. It is called by the builders before save.
+	activity.HoursValidator = func() func(int) error {
+		validators := activityDescHours.Validators
+		fns := [...]func(int) error{
+			validators[0].(func(int) error),
+			validators[1].(func(int) error),
+		}
+		return func(hours int) error {
+			for _, fn := range fns {
+				if err := fn(hours); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	agencyFields := schema.Agency{}.Fields()
 	_ = agencyFields
 	// agencyDescAGENCY is the schema descriptor for AGENCY field.
@@ -92,6 +118,30 @@ func init() {
 	prefixDescPrefix := prefixFields[0].Descriptor()
 	// prefix.PrefixValidator is a validator for the "prefix" field. It is called by the builders before save.
 	prefix.PrefixValidator = prefixDescPrefix.Validators[0].(func(string) error)
+	professorFields := schema.Professor{}.Fields()
+	_ = professorFields
+	// professorDescTel is the schema descriptor for tel field.
+	professorDescTel := professorFields[1].Descriptor()
+	// professor.TelValidator is a validator for the "tel" field. It is called by the builders before save.
+	professor.TelValidator = func() func(string) error {
+		validators := professorDescTel.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(tel string) error {
+			for _, fn := range fns {
+				if err := fn(tel); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// professorDescEmail is the schema descriptor for email field.
+	professorDescEmail := professorFields[2].Descriptor()
+	// professor.EmailValidator is a validator for the "email" field. It is called by the builders before save.
+	professor.EmailValidator = professorDescEmail.Validators[0].(func(string) error)
 	professorshipFields := schema.Professorship{}.Fields()
 	_ = professorshipFields
 	// professorshipDescProfessorship is the schema descriptor for professorship field.
@@ -127,7 +177,22 @@ func init() {
 	// resultsDescGrade is the schema descriptor for grade field.
 	resultsDescGrade := resultsFields[0].Descriptor()
 	// results.GradeValidator is a validator for the "grade" field. It is called by the builders before save.
-	results.GradeValidator = resultsDescGrade.Validators[0].(func(float64) error)
+	results.GradeValidator = func() func(float64) error {
+		validators := resultsDescGrade.Validators
+		fns := [...]func(float64) error{
+			validators[0].(func(float64) error),
+			validators[1].(func(float64) error),
+			validators[2].(func(float64) error),
+		}
+		return func(grade float64) error {
+			for _, fn := range fns {
+				if err := fn(grade); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	studentFields := schema.Student{}.Fields()
 	_ = studentFields
 	// studentDescFname is the schema descriptor for fname field.

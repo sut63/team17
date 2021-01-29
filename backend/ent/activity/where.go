@@ -108,7 +108,7 @@ func Added(v time.Time) predicate.Activity {
 }
 
 // Hours applies equality check predicate on the "hours" field. It's identical to HoursEQ.
-func Hours(v string) predicate.Activity {
+func Hours(v int) predicate.Activity {
 	return predicate.Activity(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldHours), v))
 	})
@@ -302,21 +302,21 @@ func AddedLTE(v time.Time) predicate.Activity {
 }
 
 // HoursEQ applies the EQ predicate on the "hours" field.
-func HoursEQ(v string) predicate.Activity {
+func HoursEQ(v int) predicate.Activity {
 	return predicate.Activity(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldHours), v))
 	})
 }
 
 // HoursNEQ applies the NEQ predicate on the "hours" field.
-func HoursNEQ(v string) predicate.Activity {
+func HoursNEQ(v int) predicate.Activity {
 	return predicate.Activity(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldHours), v))
 	})
 }
 
 // HoursIn applies the In predicate on the "hours" field.
-func HoursIn(vs ...string) predicate.Activity {
+func HoursIn(vs ...int) predicate.Activity {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -333,7 +333,7 @@ func HoursIn(vs ...string) predicate.Activity {
 }
 
 // HoursNotIn applies the NotIn predicate on the "hours" field.
-func HoursNotIn(vs ...string) predicate.Activity {
+func HoursNotIn(vs ...int) predicate.Activity {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -350,65 +350,30 @@ func HoursNotIn(vs ...string) predicate.Activity {
 }
 
 // HoursGT applies the GT predicate on the "hours" field.
-func HoursGT(v string) predicate.Activity {
+func HoursGT(v int) predicate.Activity {
 	return predicate.Activity(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldHours), v))
 	})
 }
 
 // HoursGTE applies the GTE predicate on the "hours" field.
-func HoursGTE(v string) predicate.Activity {
+func HoursGTE(v int) predicate.Activity {
 	return predicate.Activity(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldHours), v))
 	})
 }
 
 // HoursLT applies the LT predicate on the "hours" field.
-func HoursLT(v string) predicate.Activity {
+func HoursLT(v int) predicate.Activity {
 	return predicate.Activity(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldHours), v))
 	})
 }
 
 // HoursLTE applies the LTE predicate on the "hours" field.
-func HoursLTE(v string) predicate.Activity {
+func HoursLTE(v int) predicate.Activity {
 	return predicate.Activity(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldHours), v))
-	})
-}
-
-// HoursContains applies the Contains predicate on the "hours" field.
-func HoursContains(v string) predicate.Activity {
-	return predicate.Activity(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldHours), v))
-	})
-}
-
-// HoursHasPrefix applies the HasPrefix predicate on the "hours" field.
-func HoursHasPrefix(v string) predicate.Activity {
-	return predicate.Activity(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldHours), v))
-	})
-}
-
-// HoursHasSuffix applies the HasSuffix predicate on the "hours" field.
-func HoursHasSuffix(v string) predicate.Activity {
-	return predicate.Activity(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldHours), v))
-	})
-}
-
-// HoursEqualFold applies the EqualFold predicate on the "hours" field.
-func HoursEqualFold(v string) predicate.Activity {
-	return predicate.Activity(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldHours), v))
-	})
-}
-
-// HoursContainsFold applies the ContainsFold predicate on the "hours" field.
-func HoursContainsFold(v string) predicate.Activity {
-	return predicate.Activity(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldHours), v))
 	})
 }
 

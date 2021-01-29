@@ -110,8 +110,18 @@ func (pc *ProfessorCreate) Save(ctx context.Context) (*Professor, error) {
 	if _, ok := pc.mutation.Tel(); !ok {
 		return nil, &ValidationError{Name: "tel", err: errors.New("ent: missing required field \"tel\"")}
 	}
+	if v, ok := pc.mutation.Tel(); ok {
+		if err := professor.TelValidator(v); err != nil {
+			return nil, &ValidationError{Name: "tel", err: fmt.Errorf("ent: validator failed for field \"tel\": %w", err)}
+		}
+	}
 	if _, ok := pc.mutation.Email(); !ok {
 		return nil, &ValidationError{Name: "email", err: errors.New("ent: missing required field \"email\"")}
+	}
+	if v, ok := pc.mutation.Email(); ok {
+		if err := professor.EmailValidator(v); err != nil {
+			return nil, &ValidationError{Name: "email", err: fmt.Errorf("ent: validator failed for field \"email\": %w", err)}
+		}
 	}
 	var (
 		err  error

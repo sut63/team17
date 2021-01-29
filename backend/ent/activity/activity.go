@@ -80,3 +80,10 @@ var ForeignKeys = []string{
 	"term_term_acti",
 	"year_year_acti",
 }
+
+var (
+	// ACTIVITYNAMEValidator is a validator for the "ACTIVITYNAME" field. It is called by the builders before save.
+	ACTIVITYNAMEValidator func(string) error
+	// HoursValidator is a validator for the "hours" field. It is called by the builders before save.
+	HoursValidator func(int) error
+)

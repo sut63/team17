@@ -38,8 +38,8 @@ func (ac *ActivityCreate) SetAdded(t time.Time) *ActivityCreate {
 }
 
 // SetHours sets the hours field.
-func (ac *ActivityCreate) SetHours(s string) *ActivityCreate {
-	ac.mutation.SetHours(s)
+func (ac *ActivityCreate) SetHours(i int) *ActivityCreate {
+	ac.mutation.SetHours(i)
 	return ac
 }
 
@@ -148,11 +148,21 @@ func (ac *ActivityCreate) Save(ctx context.Context) (*Activity, error) {
 	if _, ok := ac.mutation.ACTIVITYNAME(); !ok {
 		return nil, &ValidationError{Name: "ACTIVITYNAME", err: errors.New("ent: missing required field \"ACTIVITYNAME\"")}
 	}
+	if v, ok := ac.mutation.ACTIVITYNAME(); ok {
+		if err := activity.ACTIVITYNAMEValidator(v); err != nil {
+			return nil, &ValidationError{Name: "ACTIVITYNAME", err: fmt.Errorf("ent: validator failed for field \"ACTIVITYNAME\": %w", err)}
+		}
+	}
 	if _, ok := ac.mutation.Added(); !ok {
 		return nil, &ValidationError{Name: "added", err: errors.New("ent: missing required field \"added\"")}
 	}
 	if _, ok := ac.mutation.Hours(); !ok {
 		return nil, &ValidationError{Name: "hours", err: errors.New("ent: missing required field \"hours\"")}
+	}
+	if v, ok := ac.mutation.Hours(); ok {
+		if err := activity.HoursValidator(v); err != nil {
+			return nil, &ValidationError{Name: "hours", err: fmt.Errorf("ent: validator failed for field \"hours\": %w", err)}
+		}
 	}
 	var (
 		err  error
@@ -232,7 +242,7 @@ func (ac *ActivityCreate) createSpec() (*Activity, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := ac.mutation.Hours(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeInt,
 			Value:  value,
 			Column: activity.FieldHours,
 		})

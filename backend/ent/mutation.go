@@ -74,7 +74,8 @@ type ActivityMutation struct {
 	id                *int
 	_ACTIVITYNAME     *string
 	added             *time.Time
-	hours             *string
+	hours             *int
+	addhours          *int
 	clearedFields     map[string]struct{}
 	acti_stud         *int
 	clearedacti_stud  bool
@@ -244,12 +245,13 @@ func (m *ActivityMutation) ResetAdded() {
 }
 
 // SetHours sets the hours field.
-func (m *ActivityMutation) SetHours(s string) {
-	m.hours = &s
+func (m *ActivityMutation) SetHours(i int) {
+	m.hours = &i
+	m.addhours = nil
 }
 
 // Hours returns the hours value in the mutation.
-func (m *ActivityMutation) Hours() (r string, exists bool) {
+func (m *ActivityMutation) Hours() (r int, exists bool) {
 	v := m.hours
 	if v == nil {
 		return
@@ -261,7 +263,7 @@ func (m *ActivityMutation) Hours() (r string, exists bool) {
 // If the Activity object wasn't provided to the builder, the object is fetched
 // from the database.
 // An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *ActivityMutation) OldHours(ctx context.Context) (v string, err error) {
+func (m *ActivityMutation) OldHours(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, fmt.Errorf("OldHours is allowed only on UpdateOne operations")
 	}
@@ -275,9 +277,28 @@ func (m *ActivityMutation) OldHours(ctx context.Context) (v string, err error) {
 	return oldValue.Hours, nil
 }
 
+// AddHours adds i to hours.
+func (m *ActivityMutation) AddHours(i int) {
+	if m.addhours != nil {
+		*m.addhours += i
+	} else {
+		m.addhours = &i
+	}
+}
+
+// AddedHours returns the value that was added to the hours field in this mutation.
+func (m *ActivityMutation) AddedHours() (r int, exists bool) {
+	v := m.addhours
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
 // ResetHours reset all changes of the "hours" field.
 func (m *ActivityMutation) ResetHours() {
 	m.hours = nil
+	m.addhours = nil
 }
 
 // SetActiStudID sets the acti_stud edge to Student by id.
@@ -552,7 +573,7 @@ func (m *ActivityMutation) SetField(name string, value ent.Value) error {
 		m.SetAdded(v)
 		return nil
 	case activity.FieldHours:
-		v, ok := value.(string)
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -565,13 +586,21 @@ func (m *ActivityMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented
 // or decremented during this mutation.
 func (m *ActivityMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addhours != nil {
+		fields = append(fields, activity.FieldHours)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was in/decremented
 // from a field with the given name. The second value indicates
 // that this field was not set, or was not define in the schema.
 func (m *ActivityMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case activity.FieldHours:
+		return m.AddedHours()
+	}
 	return nil, false
 }
 
@@ -580,6 +609,13 @@ func (m *ActivityMutation) AddedField(name string) (ent.Value, bool) {
 // type mismatch the field type.
 func (m *ActivityMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case activity.FieldHours:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddHours(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Activity numeric field %s", name)
 }
