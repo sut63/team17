@@ -26,7 +26,7 @@ type Activity struct {
 	// Added holds the value of the "added" field.
 	Added time.Time `json:"added,omitempty"`
 	// Hours holds the value of the "hours" field.
-	Hours string `json:"hours,omitempty"`
+	Hours int `json:"hours,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ActivityQuery when eager-loading is set.
 	Edges             ActivityEdges `json:"edges"`
@@ -130,7 +130,7 @@ func (*Activity) scanValues() []interface{} {
 		&sql.NullInt64{},  // id
 		&sql.NullString{}, // ACTIVITYNAME
 		&sql.NullTime{},   // added
-		&sql.NullString{}, // hours
+		&sql.NullInt64{},  // hours
 	}
 }
 
@@ -167,10 +167,10 @@ func (a *Activity) assignValues(values ...interface{}) error {
 	} else if value.Valid {
 		a.Added = value.Time
 	}
-	if value, ok := values[2].(*sql.NullString); !ok {
+	if value, ok := values[2].(*sql.NullInt64); !ok {
 		return fmt.Errorf("unexpected type %T for field hours", values[2])
 	} else if value.Valid {
-		a.Hours = value.String
+		a.Hours = int(value.Int64)
 	}
 	values = values[3:]
 	if len(values) == len(activity.ForeignKeys) {
@@ -261,7 +261,7 @@ func (a *Activity) String() string {
 	builder.WriteString(", added=")
 	builder.WriteString(a.Added.Format(time.ANSIC))
 	builder.WriteString(", hours=")
-	builder.WriteString(a.Hours)
+	builder.WriteString(fmt.Sprintf("%v", a.Hours))
 	builder.WriteByte(')')
 	return builder.String()
 }

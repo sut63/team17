@@ -130,6 +130,16 @@ func (pu *ProfessorUpdate) ClearProfPros() *ProfessorUpdate {
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
 func (pu *ProfessorUpdate) Save(ctx context.Context) (int, error) {
+	if v, ok := pu.mutation.Tel(); ok {
+		if err := professor.TelValidator(v); err != nil {
+			return 0, &ValidationError{Name: "tel", err: fmt.Errorf("ent: validator failed for field \"tel\": %w", err)}
+		}
+	}
+	if v, ok := pu.mutation.Email(); ok {
+		if err := professor.EmailValidator(v); err != nil {
+			return 0, &ValidationError{Name: "email", err: fmt.Errorf("ent: validator failed for field \"email\": %w", err)}
+		}
+	}
 
 	var (
 		err      error
@@ -442,6 +452,16 @@ func (puo *ProfessorUpdateOne) ClearProfPros() *ProfessorUpdateOne {
 
 // Save executes the query and returns the updated entity.
 func (puo *ProfessorUpdateOne) Save(ctx context.Context) (*Professor, error) {
+	if v, ok := puo.mutation.Tel(); ok {
+		if err := professor.TelValidator(v); err != nil {
+			return nil, &ValidationError{Name: "tel", err: fmt.Errorf("ent: validator failed for field \"tel\": %w", err)}
+		}
+	}
+	if v, ok := puo.mutation.Email(); ok {
+		if err := professor.EmailValidator(v); err != nil {
+			return nil, &ValidationError{Name: "email", err: fmt.Errorf("ent: validator failed for field \"email\": %w", err)}
+		}
+	}
 
 	var (
 		err  error

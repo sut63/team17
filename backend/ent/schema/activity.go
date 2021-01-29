@@ -1,6 +1,8 @@
 package schema
 
 import (
+	
+
 	"github.com/facebookincubator/ent"
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/facebookincubator/ent/schema/edge"
@@ -14,9 +16,9 @@ type Activity struct {
 // Fields of the Activity.
 func (Activity) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("ACTIVITYNAME"),
+		field.String("ACTIVITYNAME").MinLen(5),
 		field.Time("added"),
-		field.String("hours"),
+		field.Int("hours").Min(1).Positive(),
 	}
 }
 

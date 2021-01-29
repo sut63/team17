@@ -46,8 +46,15 @@ func (au *ActivityUpdate) SetAdded(t time.Time) *ActivityUpdate {
 }
 
 // SetHours sets the hours field.
-func (au *ActivityUpdate) SetHours(s string) *ActivityUpdate {
-	au.mutation.SetHours(s)
+func (au *ActivityUpdate) SetHours(i int) *ActivityUpdate {
+	au.mutation.ResetHours()
+	au.mutation.SetHours(i)
+	return au
+}
+
+// AddHours adds i to hours.
+func (au *ActivityUpdate) AddHours(i int) *ActivityUpdate {
+	au.mutation.AddHours(i)
 	return au
 }
 
@@ -183,6 +190,16 @@ func (au *ActivityUpdate) ClearActiTerm() *ActivityUpdate {
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
 func (au *ActivityUpdate) Save(ctx context.Context) (int, error) {
+	if v, ok := au.mutation.ACTIVITYNAME(); ok {
+		if err := activity.ACTIVITYNAMEValidator(v); err != nil {
+			return 0, &ValidationError{Name: "ACTIVITYNAME", err: fmt.Errorf("ent: validator failed for field \"ACTIVITYNAME\": %w", err)}
+		}
+	}
+	if v, ok := au.mutation.Hours(); ok {
+		if err := activity.HoursValidator(v); err != nil {
+			return 0, &ValidationError{Name: "hours", err: fmt.Errorf("ent: validator failed for field \"hours\": %w", err)}
+		}
+	}
 
 	var (
 		err      error
@@ -267,7 +284,14 @@ func (au *ActivityUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := au.mutation.Hours(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: activity.FieldHours,
+		})
+	}
+	if value, ok := au.mutation.AddedHours(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
 			Value:  value,
 			Column: activity.FieldHours,
 		})
@@ -478,8 +502,15 @@ func (auo *ActivityUpdateOne) SetAdded(t time.Time) *ActivityUpdateOne {
 }
 
 // SetHours sets the hours field.
-func (auo *ActivityUpdateOne) SetHours(s string) *ActivityUpdateOne {
-	auo.mutation.SetHours(s)
+func (auo *ActivityUpdateOne) SetHours(i int) *ActivityUpdateOne {
+	auo.mutation.ResetHours()
+	auo.mutation.SetHours(i)
+	return auo
+}
+
+// AddHours adds i to hours.
+func (auo *ActivityUpdateOne) AddHours(i int) *ActivityUpdateOne {
+	auo.mutation.AddHours(i)
 	return auo
 }
 
@@ -615,6 +646,16 @@ func (auo *ActivityUpdateOne) ClearActiTerm() *ActivityUpdateOne {
 
 // Save executes the query and returns the updated entity.
 func (auo *ActivityUpdateOne) Save(ctx context.Context) (*Activity, error) {
+	if v, ok := auo.mutation.ACTIVITYNAME(); ok {
+		if err := activity.ACTIVITYNAMEValidator(v); err != nil {
+			return nil, &ValidationError{Name: "ACTIVITYNAME", err: fmt.Errorf("ent: validator failed for field \"ACTIVITYNAME\": %w", err)}
+		}
+	}
+	if v, ok := auo.mutation.Hours(); ok {
+		if err := activity.HoursValidator(v); err != nil {
+			return nil, &ValidationError{Name: "hours", err: fmt.Errorf("ent: validator failed for field \"hours\": %w", err)}
+		}
+	}
 
 	var (
 		err  error
@@ -697,7 +738,14 @@ func (auo *ActivityUpdateOne) sqlSave(ctx context.Context) (a *Activity, err err
 	}
 	if value, ok := auo.mutation.Hours(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: activity.FieldHours,
+		})
+	}
+	if value, ok := auo.mutation.AddedHours(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
 			Value:  value,
 			Column: activity.FieldHours,
 		})

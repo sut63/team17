@@ -13,7 +13,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "activityname", Type: field.TypeString},
 		{Name: "added", Type: field.TypeTime},
-		{Name: "hours", Type: field.TypeString},
+		{Name: "hours", Type: field.TypeInt},
 		{Name: "agency_agen_acti", Type: field.TypeInt, Nullable: true},
 		{Name: "place_place_acti", Type: field.TypeInt, Nullable: true},
 		{Name: "student_stud_acti", Type: field.TypeInt, Nullable: true},
@@ -226,7 +226,7 @@ var (
 	ProfessorsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString},
-		{Name: "tel", Type: field.TypeString},
+		{Name: "tel", Type: field.TypeString, Size: 10},
 		{Name: "email", Type: field.TypeString},
 		{Name: "faculty_facu_prof", Type: field.TypeInt, Nullable: true},
 		{Name: "prefix_ID", Type: field.TypeInt, Nullable: true},
