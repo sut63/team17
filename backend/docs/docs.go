@@ -2279,7 +2279,7 @@ var doc = `{
                     "type": "integer"
                 },
                 "hours": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "place": {
                     "type": "integer"
@@ -2443,7 +2443,7 @@ var doc = `{
                 },
                 "hours": {
                     "description": "Hours holds the value of the \"hours\" field.",
-                    "type": "string"
+                    "type": "integer"
                 },
                 "id": {
                     "description": "ID of the ent.",
