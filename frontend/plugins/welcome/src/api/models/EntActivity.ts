@@ -46,10 +46,10 @@ export interface EntActivity {
     edges?: EntActivityEdges;
     /**
      * Hours holds the value of the "hours" field.
-     * @type {string}
+     * @type {number}
      * @memberof EntActivity
      */
-    hours?: string;
+    hours?: number;
     /**
      * ID of the ent.
      * @type {number}

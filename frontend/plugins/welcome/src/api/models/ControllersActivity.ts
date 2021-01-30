@@ -39,10 +39,10 @@ export interface ControllersActivity {
     agency?: number;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof ControllersActivity
      */
-    hours?: string;
+    hours?: number;
     /**
      * 
      * @type {number}
