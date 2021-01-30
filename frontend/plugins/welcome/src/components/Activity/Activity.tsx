@@ -170,8 +170,8 @@ const Activity: FC<{}> = () => {
     const validateHours = (val: string) => {
       return val;
     }
-  //validate จำนวนชั่วโมงจิตอาสา
-    const validateAdded = (val: string) => {
+  //validate วันที่ เวลา
+   const validateAdded = (val: string) => {
       return val;
     }
 
@@ -200,8 +200,10 @@ const Activity: FC<{}> = () => {
         case 'activityname':
           setError("ใส่ชื่อกิจกรรมใหม่");
           return;
+          
         case 'hours':
           setError("จำนวนชั่วโมงจิตอาสาต้องเป็นจำนวนเต็มบวก");
+
         case 'added':
           setError("กรุณาใส่วันที่จัดกิจกรรม");
           return;
