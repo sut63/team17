@@ -9,7 +9,7 @@ definitions:
       agency:
         type: integer
       hours:
-        type: string
+        type: integer
       place:
         type: integer
       student:
@@ -120,7 +120,7 @@ definitions:
         type: object
       hours:
         description: Hours holds the value of the "hours" field.
-        type: string
+        type: integer
       id:
         description: ID of the ent.
         type: integer
