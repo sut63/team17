@@ -198,19 +198,79 @@ func init() {
 	// studentDescFname is the schema descriptor for fname field.
 	studentDescFname := studentFields[0].Descriptor()
 	// student.FnameValidator is a validator for the "fname" field. It is called by the builders before save.
-	student.FnameValidator = studentDescFname.Validators[0].(func(string) error)
+	student.FnameValidator = func() func(string) error {
+		validators := studentDescFname.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(fname string) error {
+			for _, fn := range fns {
+				if err := fn(fname); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// studentDescLname is the schema descriptor for lname field.
 	studentDescLname := studentFields[1].Descriptor()
 	// student.LnameValidator is a validator for the "lname" field. It is called by the builders before save.
-	student.LnameValidator = studentDescLname.Validators[0].(func(string) error)
+	student.LnameValidator = func() func(string) error {
+		validators := studentDescLname.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(lname string) error {
+			for _, fn := range fns {
+				if err := fn(lname); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// studentDescSchoolname is the schema descriptor for schoolname field.
 	studentDescSchoolname := studentFields[2].Descriptor()
 	// student.SchoolnameValidator is a validator for the "schoolname" field. It is called by the builders before save.
-	student.SchoolnameValidator = studentDescSchoolname.Validators[0].(func(string) error)
+	student.SchoolnameValidator = func() func(string) error {
+		validators := studentDescSchoolname.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(schoolname string) error {
+			for _, fn := range fns {
+				if err := fn(schoolname); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// studentDescRecentAddress is the schema descriptor for recent_address field.
 	studentDescRecentAddress := studentFields[3].Descriptor()
 	// student.RecentAddressValidator is a validator for the "recent_address" field. It is called by the builders before save.
-	student.RecentAddressValidator = studentDescRecentAddress.Validators[0].(func(string) error)
+	student.RecentAddressValidator = func() func(string) error {
+		validators := studentDescRecentAddress.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(recent_address string) error {
+			for _, fn := range fns {
+				if err := fn(recent_address); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// studentDescEmail is the schema descriptor for email field.
+	studentDescEmail := studentFields[5].Descriptor()
+	// student.EmailValidator is a validator for the "email" field. It is called by the builders before save.
+	student.EmailValidator = studentDescEmail.Validators[0].(func(string) error)
 	subjectFields := schema.Subject{}.Fields()
 	_ = subjectFields
 	// subjectDescCode is the schema descriptor for code field.

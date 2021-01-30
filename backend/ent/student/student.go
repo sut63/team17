@@ -137,4 +137,6 @@ var (
 	SchoolnameValidator func(string) error
 	// RecentAddressValidator is a validator for the "recent_address" field. It is called by the builders before save.
 	RecentAddressValidator func(string) error
+	// EmailValidator is a validator for the "email" field. It is called by the builders before save.
+	EmailValidator func(string) error
 )
