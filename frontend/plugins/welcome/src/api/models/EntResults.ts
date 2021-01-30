@@ -44,10 +44,6 @@ export interface EntResults {
      * @memberof EntResults
      */
     id?: number;
-    subjectID?: number;
-    yearID?: number;
-    termID?: number;
-    studentID?: number;
 }
 
 export function EntResultsFromJSON(json: any): EntResults {
@@ -78,10 +74,6 @@ export function EntResultsToJSON(value?: EntResults | null): any {
         'edges': EntResultsEdgesToJSON(value.edges),
         'grade': value.grade,
         'id': value.id,
-        'YearID': value.yearID,
-        'TermID': value.termID,
-        'SubjectID': value.subjectID,
-        'StudentID': value.studentID,
     };
 }
 
