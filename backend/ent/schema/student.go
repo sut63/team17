@@ -3,6 +3,9 @@ package schema
 import "github.com/facebookincubator/ent"
 import "github.com/facebookincubator/ent/schema/field"
 import "github.com/facebookincubator/ent/schema/edge"
+import (
+	"regexp"
+)
 
 // Student holds the schema definition for the Student entity.
 type Student struct {
@@ -12,12 +15,12 @@ type Student struct {
 // Fields of the Student.
 func (Student) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("fname").NotEmpty(),
-		field.String("lname").NotEmpty(),
-		field.String("schoolname").NotEmpty(),
-		field.String("recent_address").NotEmpty(),
+		field.String("fname").NotEmpty().Match(regexp.MustCompile("[A-Za-z]")),
+		field.String("lname").NotEmpty().Match(regexp.MustCompile("[A-Za-z]")),
+		field.String("schoolname").NotEmpty().Match(regexp.MustCompile("[A-Za-z]")),
+		field.String("recent_address").NotEmpty().Match(regexp.MustCompile("[A-Za-z0-9\\/]")),
 		field.Int("telephone"),
-		field.String("email"),
+		field.String("email").Match(regexp.MustCompile("/^(([^<>()[\\]\\.,;:\\s@\"]+(\\.[^<>()[\\]\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/")),
 	}
 }
 

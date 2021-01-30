@@ -269,6 +269,11 @@ func (sc *StudentCreate) Save(ctx context.Context) (*Student, error) {
 	if _, ok := sc.mutation.Email(); !ok {
 		return nil, &ValidationError{Name: "email", err: errors.New("ent: missing required field \"email\"")}
 	}
+	if v, ok := sc.mutation.Email(); ok {
+		if err := student.EmailValidator(v); err != nil {
+			return nil, &ValidationError{Name: "email", err: fmt.Errorf("ent: validator failed for field \"email\": %w", err)}
+		}
+	}
 	var (
 		err  error
 		node *Student
