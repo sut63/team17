@@ -3,27 +3,19 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Alert from '@material-ui/lab/Alert';
 import Swal from 'sweetalert2'; // alert
 import {
-    Container,
     Grid,
     FormControl,
     Select,
-    InputLabel,
     MenuItem,
     TextField,
     Button,
-    CardMedia,
-    Snackbar,
     Avatar,
+    Paper,
   } from '@material-ui/core';
 import{
-  Content,
-    InfoCard,
+    Content,
     Header,
     Page,
     pageTheme,
@@ -116,18 +108,7 @@ interface Students {
 
 const StudentUI: FC<{}> = () => {
 
-const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: string) => {
-  if (reason === 'clickaway') {
-    return;
-  }
-  setSuccess(false);
-  setFail(false);
-};
-
-  const [success, setSuccess] =useState(false);
-  const [fail, setFail] =useState(false);
   const api = new DefaultApi();
-
   const [pref,Setpref] = useState<EntPrefix[]>([]);
   const [prov,Setprov] = useState<EntProvince[]>([]);
   const [gend,Setgend] = useState<EntGender[]>([]);
@@ -158,16 +139,7 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
     }, []);
 
     const [Student, setStudent] = React.useState< Partial<Students>>({});
-
-    const h = (
-      event: React.ChangeEvent<{ name?: string; value: unknown }>,
-    ) => {
-      const name = event.target.name as keyof typeof Student;
-      const { value } = event.target;
-      setStudent({ ...Student, [name]: value });
-      console.log(Student);
-    };
-
+       
     const Toast = Swal.mixin({
       toast: true,
       position: 'top-end',
@@ -180,6 +152,94 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
       },
     });
 
+    const alertMessage = (icon: any, title: any) => {
+      Toast.fire({
+        icon: icon,
+        title: title,
+      });
+    } 
+
+    const [fnameError, setfnameError] = React.useState('');
+    const [lnameError, setlnameError] = React.useState('');
+    const [schoolError, setschoolError] = React.useState('');
+    const [emailError, setemailError] = React.useState('');
+    const [addrError, setaddrError] = React.useState('');
+
+    const validateEmail = (email: string) => {
+      const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(email);
+    }
+
+    const validateTextfield = (val: string) => {
+      return val.match("[A-Za-z]");
+    }
+
+    const validateAddress = (val: string) => {
+      return val.match("[A-Za-z0-9\\/]");
+    }
+
+    const checkPattern  = (id: string, value: string) => {
+      switch(id) {
+        case 'fname':
+          validateTextfield(value) ? setfnameError('') : setfnameError('ชื่อใช้ภาษาอังกฤษเท่านั้น');
+          return;
+        case 'lname':
+          validateTextfield(value) ? setlnameError('') : setlnameError('นามสกุลใช้ภาษาอังกฤษเท่านั้น');
+          return;
+        case 'school':
+          validateTextfield(value) ? setschoolError('') : setschoolError('ชื่อโรงเรียนใช้ภาษาอังกฤษเท่านั้น');
+          return;
+        case 'school':
+          validateAddress(value) ? setaddrError('') : setaddrError('รูปแบบที่อยู่ไม่ถูกต้อง');
+          return;
+        case 'email':
+          validateEmail(value) ?  setemailError('') :  setemailError('รูปแบบอีเมลไม่ถูกต้อง');
+          return;
+        default:
+          return;
+      }
+    }
+
+    const checkCaseSaveError = (field: string) => {
+      switch(field) {
+        case 'fname':
+          alertMessage("error","ชื่อใช้ภาษาอังกฤษเท่านั้น");
+          return;
+        case 'lname':
+          alertMessage("error","นามสกุลใช้ภาษาอังกฤษเท่านั้น");
+          return;
+        case 'schoolname':
+          alertMessage("error","ชื่อโรงเรียนใช้ภาษาอังกฤษเท่านั้น");
+          return;
+        case 'email':
+          alertMessage("error","รูปแบบอีเมลไม่ถูกต้อง");
+          return;
+        case 'recent_address':
+          alertMessage("error","รูปแบบที่อยู่ไม่ถูกต้อง");
+          return;
+        default:
+          alertMessage("error","บันทึกข้อมูลไม่สำเร็จ");
+          return;
+      }
+    }
+
+    const h = (
+      event: React.ChangeEvent<{ name?: string; value: unknown }>,
+    ) => {
+      const name = event.target.name as keyof typeof Student;
+      const { value } = event.target;
+      setStudent({ ...Student, [name]: value });
+      console.log(Student);
+    };
+
+    const i = (event: React.ChangeEvent<{ id?: string; value: any }>) => {
+      const id = event.target.id as keyof typeof Student;
+      const { value } = event.target;
+      const validateValue = value.toString()
+      checkPattern(id, validateValue)
+      setStudent({ ...Student, [id]: value });
+    };
+    
     function clear() {
       setStudent({});
     }
@@ -205,10 +265,7 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
               title: 'บันทึกข้อมูลสำเร็จ',
             });
           } else {
-            Toast.fire({
-              icon: 'error',
-              title: 'บันทึกข้อมูลไม่สำเร็จ',
-            });
+            checkCaseSaveError(data.error.Name)
           }
         });
     }
@@ -226,8 +283,7 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
     <Page theme={pageTheme.home}>
     <Header
       title={'Student Management'}
-      subtitle='Student Registration Department'
-    >
+      subtitle='Student Registration Department'>
         <Avatar alt="Remy Sharp"/>
         <div style={{ marginLeft: 10, marginRight: 20 }}>{cookieName}</div>
         <Button variant="text" color="secondary" size="large"
@@ -281,9 +337,9 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
                 <Grid item xs={4}>
                   <b>School</b>
                   <div>
-                  <TextField variant='outlined' type='string' name="school" value={Student.school||''}
-                    onChange={h}/>
-                  </div>
+                  <TextField variant='outlined' type='string' id="school" value={Student.school||''} helperText= {schoolError} error= {schoolError? true:false}
+                    onChange={i}/>
+                  </div>  
                 </Grid>
               </Grid>
 
@@ -340,8 +396,8 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
                 <Grid item xs={4}>
                   <b>First Name</b>
                   <div>
-                  <TextField variant='outlined' type='string' name="fname" value={Student.fname||''}
-                    onChange={h}/>
+                  <TextField variant='outlined' type='string' id="fname" value={Student.fname||''} helperText= {fnameError} error= {fnameError ? true:false}
+                    onChange={i}/>
                   </div>  
                 </Grid>
               </Grid>
@@ -390,7 +446,7 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
                 <Grid item xs={4}>
                   <b>Telephone Number</b>
                   <div>
-                  <TextField variant='outlined' type='number' name="tel" value={Student.tel||''}
+                  <TextField variant='outlined' type='tel' name="tel" value={Student.tel||''}
                     onChange={h}/>
                   </div>
                 </Grid>
@@ -404,8 +460,8 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
               <Grid item xs={4}>
                 <b>Last Name</b>
                 <div>
-                <TextField variant='outlined' type='string' name="lname" value={Student.lname||''}
-                    onChange={h}/>
+                <TextField variant='outlined' type='string' id="lname" value={Student.lname||''} helperText= {lnameError} error= {lnameError ? true:false}
+                    onChange={i}/>
                 </div>
               </Grid>
             </Grid>
@@ -414,8 +470,8 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
               <Grid item xs={4}>
                   <b>Recent Address</b>
                   <div>
-                  <TextField variant='outlined' type='string' name="addr" value={Student.addr||''}
-                    onChange={h}/>
+                  <TextField variant='outlined' type='string' name="addr" helperText= {addrError} error= {addrError ? true:false}
+                    onChange={i}/>
                   </div>
               </Grid>
             </Grid>
@@ -444,8 +500,8 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
               <Grid item xs={4}>
                 <b>Email</b>
                 <div>
-                <TextField variant='outlined' type='email' name="email" value={Student.email||''}
-                    onChange={h}/>
+                <TextField variant='outlined' type='email' id="email" value={Student.email||''} helperText= {emailError} error= {emailError? true:false}
+                    onChange={i}/>
                 </div>
               </Grid>
             </Grid>
@@ -463,16 +519,6 @@ const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: st
             <Button variant='contained' color='primary'  onClick={() => {
                   save(); 
               }}>Save</Button>
-            <Snackbar open={fail} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-              <Alert onClose={handleClose} severity="error">
-                Error
-              </Alert>
-            </Snackbar>
-            <Snackbar open={success} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-              <Alert onClose={handleClose} severity="success">
-                Successful
-              </Alert>
-            </Snackbar>
            </TableCell>
            <TableCell></TableCell>
          </TableBody>
