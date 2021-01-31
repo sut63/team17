@@ -3,19 +3,27 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import Alert from '@material-ui/lab/Alert';
 import Swal from 'sweetalert2'; // alert
 import {
+    Container,
     Grid,
     FormControl,
     Select,
+    InputLabel,
     MenuItem,
     TextField,
     Button,
+    CardMedia,
+    Snackbar,
     Avatar,
-    Paper,
   } from '@material-ui/core';
 import{
-    Content,
+  Content,
+    InfoCard,
     Header,
     Page,
     pageTheme,
@@ -189,7 +197,7 @@ const StudentUI: FC<{}> = () => {
         case 'school':
           validateTextfield(value) ? setschoolError('') : setschoolError('ชื่อโรงเรียนใช้ภาษาอังกฤษเท่านั้น');
           return;
-        case 'school':
+        case 'addr':
           validateAddress(value) ? setaddrError('') : setaddrError('รูปแบบที่อยู่ไม่ถูกต้อง');
           return;
         case 'email':
@@ -211,11 +219,11 @@ const StudentUI: FC<{}> = () => {
         case 'schoolname':
           alertMessage("error","ชื่อโรงเรียนใช้ภาษาอังกฤษเท่านั้น");
           return;
-        case 'email':
-          alertMessage("error","รูปแบบอีเมลไม่ถูกต้อง");
-          return;
         case 'recent_address':
           alertMessage("error","รูปแบบที่อยู่ไม่ถูกต้อง");
+          return;
+        case 'email':
+          alertMessage("error","รูปแบบอีเมลไม่ถูกต้อง");
           return;
         default:
           alertMessage("error","บันทึกข้อมูลไม่สำเร็จ");
@@ -469,8 +477,9 @@ const StudentUI: FC<{}> = () => {
             <Grid container spacing={1}>
               <Grid item xs={4}>
                   <b>Recent Address</b>
+
                   <div>
-                  <TextField variant='outlined' type='string' name="addr" helperText= {addrError} error= {addrError ? true:false}
+                  <TextField variant='outlined' type='string' id="addr" value={Student.addr||''} helperText= {addrError} error= {addrError ? true:false}
                     onChange={i}/>
                   </div>
               </Grid>
