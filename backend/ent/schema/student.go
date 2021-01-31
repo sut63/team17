@@ -20,7 +20,7 @@ func (Student) Fields() []ent.Field {
 		field.String("schoolname").NotEmpty().Match(regexp.MustCompile("[A-Za-z]")),
 		field.String("recent_address").NotEmpty().Match(regexp.MustCompile("[A-Za-z0-9\\/]")),
 		field.Int("telephone"),
-		field.String("email").Match(regexp.MustCompile("/^(([^<>()[\\]\\.,;:\\s@\"]+(\\.[^<>()[\\]\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/")),
+		field.String("email").Match(regexp.MustCompile("[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}")),
 	}
 }
 

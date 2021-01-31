@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -50,6 +51,7 @@ func (ctl *StudentController) CreateStudent(c *gin.Context) {
 	obj := Student{}
 	if err := c.ShouldBind(&obj); err != nil {
 		c.JSON(400, gin.H{
+			"status": false,
 			"error": "student binding failed",
 		})
 		return
@@ -61,6 +63,7 @@ func (ctl *StudentController) CreateStudent(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(400, gin.H{
+			"status": false,
 			"error": "user not found",
 		})
 		return
@@ -72,6 +75,7 @@ func (ctl *StudentController) CreateStudent(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(400, gin.H{
+			"status": false,
 			"error": "user not found",
 		})
 		return
@@ -83,6 +87,7 @@ func (ctl *StudentController) CreateStudent(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(400, gin.H{
+			"status": false,
 			"error": "user not found",
 		})
 		return
@@ -94,6 +99,7 @@ func (ctl *StudentController) CreateStudent(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(400, gin.H{
+			"status": false,
 			"error": "user not found",
 		})
 		return
@@ -105,6 +111,7 @@ func (ctl *StudentController) CreateStudent(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(400, gin.H{
+			"status": false,
 			"error": "user not found",
 		})
 		return
@@ -116,6 +123,7 @@ func (ctl *StudentController) CreateStudent(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(400, gin.H{
+			"status": false,
 			"error": "user not found",
 		})
 		return
@@ -127,6 +135,7 @@ func (ctl *StudentController) CreateStudent(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(400, gin.H{
+			"status": false,
 			"error": "user not found",
 		})
 		return
@@ -151,12 +160,14 @@ func (ctl *StudentController) CreateStudent(c *gin.Context) {
 		SetStudSubd(sub).
 		SetStudPost(pos).
 		Save(context.Background())
-	if err != nil {
-		c.JSON(400, gin.H{
-			"error": "saving failed",
-		})
-		return
-	}
+		if err != nil {
+			fmt.Println(err)
+			c.JSON(400, gin.H{
+				"status": false,
+				"error":  err,
+			})
+			return
+		}
 
 	c.JSON(200, gin.H{
 		"status": true,
