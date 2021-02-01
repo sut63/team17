@@ -10,7 +10,7 @@ import Course from './components/Course'
 import Province from './components/Province'
 import Professor from './components/Professor'
 import Warn from './components/Warning_Role'
-//import si from './components/Search_Student'
+import si from './components/SearchStudent'
 import { Cookies } from './Cookie'
 
 var ck = new Cookies()
@@ -21,7 +21,7 @@ export const plugin = createPlugin({
   register({ router }) {
     if(role == "เจ้าหน้าที่ฝ่ายพนักงานบริการนักศึกษา"){
       router.registerRoute('/', WelcomePage);
-      router.registerRoute('/student', Warn);
+      router.registerRoute('/student', Student);
       router.registerRoute('/member', Member);
       router.registerRoute('/activity', Warn);
       router.registerRoute('/professor', Warn);
@@ -30,7 +30,7 @@ export const plugin = createPlugin({
       router.registerRoute('/result', Result);
       router.registerRoute('/course', Warn);
       
-      //router.registerRoute('/si', si);
+      router.registerRoute('/si', si);
       router.registerRoute('/as', WelcomePage);
       router.registerRoute('/pf', WelcomePage);
       router.registerRoute('/pv', WelcomePage);
