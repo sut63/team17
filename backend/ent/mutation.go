@@ -8052,8 +8052,7 @@ type StudentMutation struct {
 	lname            *string
 	schoolname       *string
 	recent_address   *string
-	telephone        *int
-	addtelephone     *int
+	telephone        *string
 	email            *string
 	clearedFields    map[string]struct{}
 	stud_gend        *int
@@ -8306,13 +8305,12 @@ func (m *StudentMutation) ResetRecentAddress() {
 }
 
 // SetTelephone sets the telephone field.
-func (m *StudentMutation) SetTelephone(i int) {
-	m.telephone = &i
-	m.addtelephone = nil
+func (m *StudentMutation) SetTelephone(s string) {
+	m.telephone = &s
 }
 
 // Telephone returns the telephone value in the mutation.
-func (m *StudentMutation) Telephone() (r int, exists bool) {
+func (m *StudentMutation) Telephone() (r string, exists bool) {
 	v := m.telephone
 	if v == nil {
 		return
@@ -8324,7 +8322,7 @@ func (m *StudentMutation) Telephone() (r int, exists bool) {
 // If the Student object wasn't provided to the builder, the object is fetched
 // from the database.
 // An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *StudentMutation) OldTelephone(ctx context.Context) (v int, err error) {
+func (m *StudentMutation) OldTelephone(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, fmt.Errorf("OldTelephone is allowed only on UpdateOne operations")
 	}
@@ -8338,28 +8336,9 @@ func (m *StudentMutation) OldTelephone(ctx context.Context) (v int, err error) {
 	return oldValue.Telephone, nil
 }
 
-// AddTelephone adds i to telephone.
-func (m *StudentMutation) AddTelephone(i int) {
-	if m.addtelephone != nil {
-		*m.addtelephone += i
-	} else {
-		m.addtelephone = &i
-	}
-}
-
-// AddedTelephone returns the value that was added to the telephone field in this mutation.
-func (m *StudentMutation) AddedTelephone() (r int, exists bool) {
-	v := m.addtelephone
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ResetTelephone reset all changes of the "telephone" field.
 func (m *StudentMutation) ResetTelephone() {
 	m.telephone = nil
-	m.addtelephone = nil
 }
 
 // SetEmail sets the email field.
@@ -8868,7 +8847,7 @@ func (m *StudentMutation) SetField(name string, value ent.Value) error {
 		m.SetRecentAddress(v)
 		return nil
 	case student.FieldTelephone:
-		v, ok := value.(int)
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -8888,21 +8867,13 @@ func (m *StudentMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented
 // or decremented during this mutation.
 func (m *StudentMutation) AddedFields() []string {
-	var fields []string
-	if m.addtelephone != nil {
-		fields = append(fields, student.FieldTelephone)
-	}
-	return fields
+	return nil
 }
 
 // AddedField returns the numeric value that was in/decremented
 // from a field with the given name. The second value indicates
 // that this field was not set, or was not define in the schema.
 func (m *StudentMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case student.FieldTelephone:
-		return m.AddedTelephone()
-	}
 	return nil, false
 }
 
@@ -8911,13 +8882,6 @@ func (m *StudentMutation) AddedField(name string) (ent.Value, bool) {
 // type mismatch the field type.
 func (m *StudentMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case student.FieldTelephone:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddTelephone(v)
-		return nil
 	}
 	return fmt.Errorf("unknown Student numeric field %s", name)
 }

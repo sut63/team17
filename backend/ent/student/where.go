@@ -120,7 +120,7 @@ func RecentAddress(v string) predicate.Student {
 }
 
 // Telephone applies equality check predicate on the "telephone" field. It's identical to TelephoneEQ.
-func Telephone(v int) predicate.Student {
+func Telephone(v string) predicate.Student {
 	return predicate.Student(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldTelephone), v))
 	})
@@ -578,21 +578,21 @@ func RecentAddressContainsFold(v string) predicate.Student {
 }
 
 // TelephoneEQ applies the EQ predicate on the "telephone" field.
-func TelephoneEQ(v int) predicate.Student {
+func TelephoneEQ(v string) predicate.Student {
 	return predicate.Student(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldTelephone), v))
 	})
 }
 
 // TelephoneNEQ applies the NEQ predicate on the "telephone" field.
-func TelephoneNEQ(v int) predicate.Student {
+func TelephoneNEQ(v string) predicate.Student {
 	return predicate.Student(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldTelephone), v))
 	})
 }
 
 // TelephoneIn applies the In predicate on the "telephone" field.
-func TelephoneIn(vs ...int) predicate.Student {
+func TelephoneIn(vs ...string) predicate.Student {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -609,7 +609,7 @@ func TelephoneIn(vs ...int) predicate.Student {
 }
 
 // TelephoneNotIn applies the NotIn predicate on the "telephone" field.
-func TelephoneNotIn(vs ...int) predicate.Student {
+func TelephoneNotIn(vs ...string) predicate.Student {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -626,30 +626,65 @@ func TelephoneNotIn(vs ...int) predicate.Student {
 }
 
 // TelephoneGT applies the GT predicate on the "telephone" field.
-func TelephoneGT(v int) predicate.Student {
+func TelephoneGT(v string) predicate.Student {
 	return predicate.Student(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldTelephone), v))
 	})
 }
 
 // TelephoneGTE applies the GTE predicate on the "telephone" field.
-func TelephoneGTE(v int) predicate.Student {
+func TelephoneGTE(v string) predicate.Student {
 	return predicate.Student(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldTelephone), v))
 	})
 }
 
 // TelephoneLT applies the LT predicate on the "telephone" field.
-func TelephoneLT(v int) predicate.Student {
+func TelephoneLT(v string) predicate.Student {
 	return predicate.Student(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldTelephone), v))
 	})
 }
 
 // TelephoneLTE applies the LTE predicate on the "telephone" field.
-func TelephoneLTE(v int) predicate.Student {
+func TelephoneLTE(v string) predicate.Student {
 	return predicate.Student(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldTelephone), v))
+	})
+}
+
+// TelephoneContains applies the Contains predicate on the "telephone" field.
+func TelephoneContains(v string) predicate.Student {
+	return predicate.Student(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldTelephone), v))
+	})
+}
+
+// TelephoneHasPrefix applies the HasPrefix predicate on the "telephone" field.
+func TelephoneHasPrefix(v string) predicate.Student {
+	return predicate.Student(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldTelephone), v))
+	})
+}
+
+// TelephoneHasSuffix applies the HasSuffix predicate on the "telephone" field.
+func TelephoneHasSuffix(v string) predicate.Student {
+	return predicate.Student(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldTelephone), v))
+	})
+}
+
+// TelephoneEqualFold applies the EqualFold predicate on the "telephone" field.
+func TelephoneEqualFold(v string) predicate.Student {
+	return predicate.Student(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldTelephone), v))
+	})
+}
+
+// TelephoneContainsFold applies the ContainsFold predicate on the "telephone" field.
+func TelephoneContainsFold(v string) predicate.Student {
+	return predicate.Student(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldTelephone), v))
 	})
 }
 

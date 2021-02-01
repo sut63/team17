@@ -58,15 +58,8 @@ func (su *StudentUpdate) SetRecentAddress(s string) *StudentUpdate {
 }
 
 // SetTelephone sets the telephone field.
-func (su *StudentUpdate) SetTelephone(i int) *StudentUpdate {
-	su.mutation.ResetTelephone()
-	su.mutation.SetTelephone(i)
-	return su
-}
-
-// AddTelephone adds i to telephone.
-func (su *StudentUpdate) AddTelephone(i int) *StudentUpdate {
-	su.mutation.AddTelephone(i)
+func (su *StudentUpdate) SetTelephone(s string) *StudentUpdate {
+	su.mutation.SetTelephone(s)
 	return su
 }
 
@@ -338,6 +331,11 @@ func (su *StudentUpdate) Save(ctx context.Context) (int, error) {
 			return 0, &ValidationError{Name: "recent_address", err: fmt.Errorf("ent: validator failed for field \"recent_address\": %w", err)}
 		}
 	}
+	if v, ok := su.mutation.Telephone(); ok {
+		if err := student.TelephoneValidator(v); err != nil {
+			return 0, &ValidationError{Name: "telephone", err: fmt.Errorf("ent: validator failed for field \"telephone\": %w", err)}
+		}
+	}
 	if v, ok := su.mutation.Email(); ok {
 		if err := student.EmailValidator(v); err != nil {
 			return 0, &ValidationError{Name: "email", err: fmt.Errorf("ent: validator failed for field \"email\": %w", err)}
@@ -441,14 +439,7 @@ func (su *StudentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := su.mutation.Telephone(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: student.FieldTelephone,
-		})
-	}
-	if value, ok := su.mutation.AddedTelephone(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
+			Type:   field.TypeString,
 			Value:  value,
 			Column: student.FieldTelephone,
 		})
@@ -824,15 +815,8 @@ func (suo *StudentUpdateOne) SetRecentAddress(s string) *StudentUpdateOne {
 }
 
 // SetTelephone sets the telephone field.
-func (suo *StudentUpdateOne) SetTelephone(i int) *StudentUpdateOne {
-	suo.mutation.ResetTelephone()
-	suo.mutation.SetTelephone(i)
-	return suo
-}
-
-// AddTelephone adds i to telephone.
-func (suo *StudentUpdateOne) AddTelephone(i int) *StudentUpdateOne {
-	suo.mutation.AddTelephone(i)
+func (suo *StudentUpdateOne) SetTelephone(s string) *StudentUpdateOne {
+	suo.mutation.SetTelephone(s)
 	return suo
 }
 
@@ -1104,6 +1088,11 @@ func (suo *StudentUpdateOne) Save(ctx context.Context) (*Student, error) {
 			return nil, &ValidationError{Name: "recent_address", err: fmt.Errorf("ent: validator failed for field \"recent_address\": %w", err)}
 		}
 	}
+	if v, ok := suo.mutation.Telephone(); ok {
+		if err := student.TelephoneValidator(v); err != nil {
+			return nil, &ValidationError{Name: "telephone", err: fmt.Errorf("ent: validator failed for field \"telephone\": %w", err)}
+		}
+	}
 	if v, ok := suo.mutation.Email(); ok {
 		if err := student.EmailValidator(v); err != nil {
 			return nil, &ValidationError{Name: "email", err: fmt.Errorf("ent: validator failed for field \"email\": %w", err)}
@@ -1205,14 +1194,7 @@ func (suo *StudentUpdateOne) sqlSave(ctx context.Context) (s *Student, err error
 	}
 	if value, ok := suo.mutation.Telephone(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: student.FieldTelephone,
-		})
-	}
-	if value, ok := suo.mutation.AddedTelephone(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
+			Type:   field.TypeString,
 			Value:  value,
 			Column: student.FieldTelephone,
 		})

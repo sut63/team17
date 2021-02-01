@@ -377,7 +377,7 @@ var (
 		{Name: "lname", Type: field.TypeString},
 		{Name: "schoolname", Type: field.TypeString},
 		{Name: "recent_address", Type: field.TypeString},
-		{Name: "telephone", Type: field.TypeInt},
+		{Name: "telephone", Type: field.TypeString},
 		{Name: "email", Type: field.TypeString},
 		{Name: "degree_degr_stud", Type: field.TypeInt, Nullable: true},
 		{Name: "gender_gend_stud", Type: field.TypeInt, Nullable: true},
