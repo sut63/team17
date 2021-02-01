@@ -87,17 +87,6 @@ type Genders struct {
 type Gender struct {
 	Gender string
 }
-type Students struct {
-	Student []Student
-}
-type Student struct {
-	Fname  string
-	Lname  string
-	Addr   string
-	Email  string
-	School string
-	Tel    int
-}
 type Countrys struct {
 	Country []Country
 }
@@ -229,27 +218,7 @@ func main() {
 			Save(context.Background())
 	}
 
-	// Set Genders Data
-	Students := Students{
-		Student: []Student{
-			Student{"Max", "Alask", "west", "A", "De", 1},
-			Student{"Tom", "Ronwe", "north", "B", "Ce", 2},
-		},
-	}
-
-	for _, u := range Students.Student {
-		client.Student.
-			Create().
-			SetFname(u.Fname).
-			SetLname(u.Lname).
-			SetEmail(u.Email).
-			SetRecentAddress(u.Addr).
-			SetSchoolname(u.School).
-			SetTelephone(u.Tel).
-			Save(context.Background())
-	}
-
-	// Set Term Data
+	// Set Term Datac
 	terms := Terms{
 		Term: []Term{
 			Term{1},
