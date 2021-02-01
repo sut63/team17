@@ -1,16 +1,23 @@
 import { createPlugin } from '@backstage/core';
 import WelcomePage from './components/WelcomePage';
+import Logins from './components/Login';
+import Member from './components/Member';
+import Warn from './components/Warning_Role';
+
+import Student from './components/Student';
+import Activity from './components/Activity';
+import Result from './components/Results';
+import Course from './components/Course';
+import Province from './components/Province';
+import Professor from './components/Professor';
+
+import SearchStudent from './components/SearchStudent';
 import SearchGrade from './components/SearchGrade';
-import Student from './components/Student'
-import Logins from './components/Login'
-import Member from './components/Member'
-import Activity from './components/Activity'
-import Result from './components/Results'
-import Course from './components/Course'
-import Province from './components/Province'
-import Professor from './components/Professor'
-import Warn from './components/Warning_Role'
-import si from './components/SearchStudent'
+import SearchActivity from './components/SearchActivity';
+import SearchCourse from './components/SearchCourse';
+import SearchProfessor from './components/SearchProfessor';
+import SearchProvince from './components/SearchProvince';
+
 import { Cookies } from './Cookie'
 
 var ck = new Cookies()
@@ -30,12 +37,12 @@ export const plugin = createPlugin({
       router.registerRoute('/result', Result);
       router.registerRoute('/course', Warn);
       
-      router.registerRoute('/si', si);
-      router.registerRoute('/as', WelcomePage);
-      router.registerRoute('/pf', WelcomePage);
-      router.registerRoute('/pv', WelcomePage);
+      router.registerRoute('/si', SearchStudent);
+      router.registerRoute('/as', Warn);
+      router.registerRoute('/pf', Warn);
+      router.registerRoute('/pv', Warn);
       router.registerRoute('/sg', SearchGrade);
-      router.registerRoute('/cs', WelcomePage);
+      router.registerRoute('/cs', Warn);
     }else if(role=="เจ้าหน้าที่ฝ่ายทะเบียนมหาวิทยาลัย"){
       router.registerRoute('/', WelcomePage);
       router.registerRoute('/student', Warn);
@@ -47,12 +54,12 @@ export const plugin = createPlugin({
       router.registerRoute('/result', Warn);
       router.registerRoute('/course', Course);
 
-      router.registerRoute('/si', WelcomePage);
-      router.registerRoute('/as', WelcomePage);
-      router.registerRoute('/pf', WelcomePage);
-      router.registerRoute('/pv', WelcomePage);
-      router.registerRoute('/sg', WelcomePage);
-      router.registerRoute('/cs', WelcomePage);
+      router.registerRoute('/si', Warn);
+      router.registerRoute('/as', Warn);
+      router.registerRoute('/pf', Warn);
+      router.registerRoute('/pv', Warn);
+      router.registerRoute('/sg', Warn);
+      router.registerRoute('/cs', SearchCourse);
     }else if(role=="เจ้าหน้าที่ฝ่ายทะเบียน"){
       router.registerRoute('/', WelcomePage);
       router.registerRoute('/student', Warn);
@@ -64,12 +71,12 @@ export const plugin = createPlugin({
       router.registerRoute('/result', Warn);
       router.registerRoute('/course', Warn);
 
-      router.registerRoute('/si', WelcomePage);
-      router.registerRoute('/as', WelcomePage);
-      router.registerRoute('/pf', WelcomePage);
-      router.registerRoute('/pv', WelcomePage);
-      router.registerRoute('/sg', WelcomePage);
-      router.registerRoute('/cs', WelcomePage);
+      router.registerRoute('/si', Warn);
+      router.registerRoute('/as', Warn);
+      router.registerRoute('/pf', SearchProfessor);
+      router.registerRoute('/pv', SearchProvince);
+      router.registerRoute('/sg', Warn);
+      router.registerRoute('/cs', Warn);
     }else if(role=="เจ้าหน้าที่ฝ่ายกิจกรรมนักศึกษา"){
       router.registerRoute('/', WelcomePage);
       router.registerRoute('/student', Warn);
@@ -81,12 +88,12 @@ export const plugin = createPlugin({
       router.registerRoute('/result', Warn);
       router.registerRoute('/course', Warn);
 
-      router.registerRoute('/si', WelcomePage);
-      router.registerRoute('/as', WelcomePage);
-      router.registerRoute('/pf', WelcomePage);
-      router.registerRoute('/pv', WelcomePage);
-      router.registerRoute('/sg', WelcomePage);
-      router.registerRoute('/cs', WelcomePage);
+      router.registerRoute('/si', Warn);
+      router.registerRoute('/as', SearchActivity);
+      router.registerRoute('/pf', Warn);
+      router.registerRoute('/pv', Warn);
+      router.registerRoute('/sg', Warn);
+      router.registerRoute('/cs', Warn);
     }else{
       router.registerRoute('/', Logins);
       router.registerRoute('/student', Logins);
