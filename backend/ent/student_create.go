@@ -50,8 +50,8 @@ func (sc *StudentCreate) SetRecentAddress(s string) *StudentCreate {
 }
 
 // SetTelephone sets the telephone field.
-func (sc *StudentCreate) SetTelephone(i int) *StudentCreate {
-	sc.mutation.SetTelephone(i)
+func (sc *StudentCreate) SetTelephone(s string) *StudentCreate {
+	sc.mutation.SetTelephone(s)
 	return sc
 }
 
@@ -266,6 +266,11 @@ func (sc *StudentCreate) Save(ctx context.Context) (*Student, error) {
 	if _, ok := sc.mutation.Telephone(); !ok {
 		return nil, &ValidationError{Name: "telephone", err: errors.New("ent: missing required field \"telephone\"")}
 	}
+	if v, ok := sc.mutation.Telephone(); ok {
+		if err := student.TelephoneValidator(v); err != nil {
+			return nil, &ValidationError{Name: "telephone", err: fmt.Errorf("ent: validator failed for field \"telephone\": %w", err)}
+		}
+	}
 	if _, ok := sc.mutation.Email(); !ok {
 		return nil, &ValidationError{Name: "email", err: errors.New("ent: missing required field \"email\"")}
 	}
@@ -368,7 +373,7 @@ func (sc *StudentCreate) createSpec() (*Student, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := sc.mutation.Telephone(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
+			Type:   field.TypeString,
 			Value:  value,
 			Column: student.FieldTelephone,
 		})

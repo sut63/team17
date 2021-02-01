@@ -28,7 +28,7 @@ type Student struct {
 	// RecentAddress holds the value of the "recent_address" field.
 	RecentAddress string `json:"recent_address,omitempty"`
 	// Telephone holds the value of the "telephone" field.
-	Telephone int `json:"telephone,omitempty"`
+	Telephone string `json:"telephone,omitempty"`
 	// Email holds the value of the "email" field.
 	Email string `json:"email,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -192,7 +192,7 @@ func (*Student) scanValues() []interface{} {
 		&sql.NullString{}, // lname
 		&sql.NullString{}, // schoolname
 		&sql.NullString{}, // recent_address
-		&sql.NullInt64{},  // telephone
+		&sql.NullString{}, // telephone
 		&sql.NullString{}, // email
 	}
 }
@@ -242,10 +242,10 @@ func (s *Student) assignValues(values ...interface{}) error {
 	} else if value.Valid {
 		s.RecentAddress = value.String
 	}
-	if value, ok := values[4].(*sql.NullInt64); !ok {
+	if value, ok := values[4].(*sql.NullString); !ok {
 		return fmt.Errorf("unexpected type %T for field telephone", values[4])
 	} else if value.Valid {
-		s.Telephone = int(value.Int64)
+		s.Telephone = value.String
 	}
 	if value, ok := values[5].(*sql.NullString); !ok {
 		return fmt.Errorf("unexpected type %T for field email", values[5])
@@ -377,7 +377,7 @@ func (s *Student) String() string {
 	builder.WriteString(", recent_address=")
 	builder.WriteString(s.RecentAddress)
 	builder.WriteString(", telephone=")
-	builder.WriteString(fmt.Sprintf("%v", s.Telephone))
+	builder.WriteString(s.Telephone)
 	builder.WriteString(", email=")
 	builder.WriteString(s.Email)
 	builder.WriteByte(')')

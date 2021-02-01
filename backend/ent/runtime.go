@@ -267,6 +267,10 @@ func init() {
 			return nil
 		}
 	}()
+	// studentDescTelephone is the schema descriptor for telephone field.
+	studentDescTelephone := studentFields[4].Descriptor()
+	// student.TelephoneValidator is a validator for the "telephone" field. It is called by the builders before save.
+	student.TelephoneValidator = studentDescTelephone.Validators[0].(func(string) error)
 	// studentDescEmail is the schema descriptor for email field.
 	studentDescEmail := studentFields[5].Descriptor()
 	// student.EmailValidator is a validator for the "email" field. It is called by the builders before save.

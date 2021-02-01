@@ -141,9 +141,6 @@ func (ctl *StudentController) CreateStudent(c *gin.Context) {
 		return
 	}
 
-	str1 := obj.Tel
-	i1, err := strconv.Atoi(str1)
-
 	save, err := ctl.client.Student.
 		Create().
 		SetFname(obj.Fname).
@@ -151,7 +148,7 @@ func (ctl *StudentController) CreateStudent(c *gin.Context) {
 		SetRecentAddress(obj.Addr).
 		SetSchoolname(obj.School).
 		SetEmail(obj.Email).
-		SetTelephone(i1).
+		SetTelephone(obj.Tel).
 		SetStudDegr(d).
 		SetStudGend(s).
 		SetStudPref(pre).
