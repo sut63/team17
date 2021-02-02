@@ -25,7 +25,7 @@ type Province struct {
 	// Subdistrict holds the value of the "subdistrict" field.
 	Subdistrict string `json:"subdistrict,omitempty"`
 	// Postal holds the value of the "postal" field.
-	Postal int `json:"postal,omitempty"`
+	Postal string `json:"postal,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ProvinceQuery when eager-loading is set.
 	Edges               ProvinceEdges `json:"edges"`
@@ -140,7 +140,7 @@ func (*Province) scanValues() []interface{} {
 		&sql.NullString{}, // province
 		&sql.NullString{}, // district
 		&sql.NullString{}, // subdistrict
-		&sql.NullInt64{},  // postal
+		&sql.NullString{}, // postal
 	}
 }
 
@@ -180,10 +180,10 @@ func (pr *Province) assignValues(values ...interface{}) error {
 	} else if value.Valid {
 		pr.Subdistrict = value.String
 	}
-	if value, ok := values[3].(*sql.NullInt64); !ok {
+	if value, ok := values[3].(*sql.NullString); !ok {
 		return fmt.Errorf("unexpected type %T for field postal", values[3])
 	} else if value.Valid {
-		pr.Postal = int(value.Int64)
+		pr.Postal = value.String
 	}
 	values = values[4:]
 	if len(values) == len(province.ForeignKeys) {
@@ -274,7 +274,7 @@ func (pr *Province) String() string {
 	builder.WriteString(", subdistrict=")
 	builder.WriteString(pr.Subdistrict)
 	builder.WriteString(", postal=")
-	builder.WriteString(fmt.Sprintf("%v", pr.Postal))
+	builder.WriteString(pr.Postal)
 	builder.WriteByte(')')
 	return builder.String()
 }

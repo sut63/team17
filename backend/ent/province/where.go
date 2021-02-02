@@ -113,7 +113,7 @@ func Subdistrict(v string) predicate.Province {
 }
 
 // Postal applies equality check predicate on the "postal" field. It's identical to PostalEQ.
-func Postal(v int) predicate.Province {
+func Postal(v string) predicate.Province {
 	return predicate.Province(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldPostal), v))
 	})
@@ -453,21 +453,21 @@ func SubdistrictContainsFold(v string) predicate.Province {
 }
 
 // PostalEQ applies the EQ predicate on the "postal" field.
-func PostalEQ(v int) predicate.Province {
+func PostalEQ(v string) predicate.Province {
 	return predicate.Province(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldPostal), v))
 	})
 }
 
 // PostalNEQ applies the NEQ predicate on the "postal" field.
-func PostalNEQ(v int) predicate.Province {
+func PostalNEQ(v string) predicate.Province {
 	return predicate.Province(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldPostal), v))
 	})
 }
 
 // PostalIn applies the In predicate on the "postal" field.
-func PostalIn(vs ...int) predicate.Province {
+func PostalIn(vs ...string) predicate.Province {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -484,7 +484,7 @@ func PostalIn(vs ...int) predicate.Province {
 }
 
 // PostalNotIn applies the NotIn predicate on the "postal" field.
-func PostalNotIn(vs ...int) predicate.Province {
+func PostalNotIn(vs ...string) predicate.Province {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -501,30 +501,65 @@ func PostalNotIn(vs ...int) predicate.Province {
 }
 
 // PostalGT applies the GT predicate on the "postal" field.
-func PostalGT(v int) predicate.Province {
+func PostalGT(v string) predicate.Province {
 	return predicate.Province(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldPostal), v))
 	})
 }
 
 // PostalGTE applies the GTE predicate on the "postal" field.
-func PostalGTE(v int) predicate.Province {
+func PostalGTE(v string) predicate.Province {
 	return predicate.Province(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldPostal), v))
 	})
 }
 
 // PostalLT applies the LT predicate on the "postal" field.
-func PostalLT(v int) predicate.Province {
+func PostalLT(v string) predicate.Province {
 	return predicate.Province(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldPostal), v))
 	})
 }
 
 // PostalLTE applies the LTE predicate on the "postal" field.
-func PostalLTE(v int) predicate.Province {
+func PostalLTE(v string) predicate.Province {
 	return predicate.Province(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldPostal), v))
+	})
+}
+
+// PostalContains applies the Contains predicate on the "postal" field.
+func PostalContains(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldPostal), v))
+	})
+}
+
+// PostalHasPrefix applies the HasPrefix predicate on the "postal" field.
+func PostalHasPrefix(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldPostal), v))
+	})
+}
+
+// PostalHasSuffix applies the HasSuffix predicate on the "postal" field.
+func PostalHasSuffix(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldPostal), v))
+	})
+}
+
+// PostalEqualFold applies the EqualFold predicate on the "postal" field.
+func PostalEqualFold(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldPostal), v))
+	})
+}
+
+// PostalContainsFold applies the ContainsFold predicate on the "postal" field.
+func PostalContainsFold(v string) predicate.Province {
+	return predicate.Province(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldPostal), v))
 	})
 }
 

@@ -42,8 +42,8 @@ func (pc *ProvinceCreate) SetSubdistrict(s string) *ProvinceCreate {
 }
 
 // SetPostal sets the postal field.
-func (pc *ProvinceCreate) SetPostal(i int) *ProvinceCreate {
-	pc.mutation.SetPostal(i)
+func (pc *ProvinceCreate) SetPostal(s string) *ProvinceCreate {
+	pc.mutation.SetPostal(s)
 	return pc
 }
 
@@ -289,7 +289,7 @@ func (pc *ProvinceCreate) createSpec() (*Province, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := pc.mutation.Postal(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
+			Type:   field.TypeString,
 			Value:  value,
 			Column: province.FieldPostal,
 		})

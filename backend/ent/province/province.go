@@ -108,5 +108,5 @@ var (
 	// SubdistrictValidator is a validator for the "subdistrict" field. It is called by the builders before save.
 	SubdistrictValidator func(string) error
 	// PostalValidator is a validator for the "postal" field. It is called by the builders before save.
-	PostalValidator func(int) error
+	PostalValidator func(string) error
 )

@@ -47,19 +47,19 @@ definitions:
     type: object
   controllers.Province:
     properties:
-      continent:
+      cont:
         type: integer
-      country:
+      coun:
         type: integer
-      district:
+      dist:
         type: string
-      postal:
-        type: integer
-      province:
+      post:
         type: string
-      region:
+      prov:
+        type: string
+      regi:
         type: integer
-      subdistrict:
+      subd:
         type: string
     type: object
   controllers.Results:
@@ -490,7 +490,7 @@ definitions:
         type: integer
       postal:
         description: Postal holds the value of the "postal" field.
-        type: integer
+        type: string
       province:
         description: Province holds the value of the "province" field.
         type: string
@@ -618,7 +618,7 @@ definitions:
         type: string
       telephone:
         description: Telephone holds the value of the "telephone" field.
-        type: integer
+        type: string
     type: object
   ent.StudentEdges:
     properties:
@@ -1765,6 +1765,36 @@ paths:
           schema:
             $ref: '#/definitions/gin.H'
       summary: Create province
+  /provinces/{id}:
+    get:
+      description: get province by ID
+      operationId: get-province
+      parameters:
+      - description: Province ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Province'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a province entity by ID
   /regions:
     get:
       description: list region entities

@@ -6167,8 +6167,7 @@ type ProvinceMutation struct {
 	province         *string
 	district         *string
 	subdistrict      *string
-	postal           *int
-	addpostal        *int
+	postal           *string
 	clearedFields    map[string]struct{}
 	prov_regi        *int
 	clearedprov_regi bool
@@ -6379,13 +6378,12 @@ func (m *ProvinceMutation) ResetSubdistrict() {
 }
 
 // SetPostal sets the postal field.
-func (m *ProvinceMutation) SetPostal(i int) {
-	m.postal = &i
-	m.addpostal = nil
+func (m *ProvinceMutation) SetPostal(s string) {
+	m.postal = &s
 }
 
 // Postal returns the postal value in the mutation.
-func (m *ProvinceMutation) Postal() (r int, exists bool) {
+func (m *ProvinceMutation) Postal() (r string, exists bool) {
 	v := m.postal
 	if v == nil {
 		return
@@ -6397,7 +6395,7 @@ func (m *ProvinceMutation) Postal() (r int, exists bool) {
 // If the Province object wasn't provided to the builder, the object is fetched
 // from the database.
 // An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *ProvinceMutation) OldPostal(ctx context.Context) (v int, err error) {
+func (m *ProvinceMutation) OldPostal(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, fmt.Errorf("OldPostal is allowed only on UpdateOne operations")
 	}
@@ -6411,28 +6409,9 @@ func (m *ProvinceMutation) OldPostal(ctx context.Context) (v int, err error) {
 	return oldValue.Postal, nil
 }
 
-// AddPostal adds i to postal.
-func (m *ProvinceMutation) AddPostal(i int) {
-	if m.addpostal != nil {
-		*m.addpostal += i
-	} else {
-		m.addpostal = &i
-	}
-}
-
-// AddedPostal returns the value that was added to the postal field in this mutation.
-func (m *ProvinceMutation) AddedPostal() (r int, exists bool) {
-	v := m.addpostal
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ResetPostal reset all changes of the "postal" field.
 func (m *ProvinceMutation) ResetPostal() {
 	m.postal = nil
-	m.addpostal = nil
 }
 
 // SetProvRegiID sets the prov_regi edge to Region by id.
@@ -6811,7 +6790,7 @@ func (m *ProvinceMutation) SetField(name string, value ent.Value) error {
 		m.SetSubdistrict(v)
 		return nil
 	case province.FieldPostal:
-		v, ok := value.(int)
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -6824,21 +6803,13 @@ func (m *ProvinceMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented
 // or decremented during this mutation.
 func (m *ProvinceMutation) AddedFields() []string {
-	var fields []string
-	if m.addpostal != nil {
-		fields = append(fields, province.FieldPostal)
-	}
-	return fields
+	return nil
 }
 
 // AddedField returns the numeric value that was in/decremented
 // from a field with the given name. The second value indicates
 // that this field was not set, or was not define in the schema.
 func (m *ProvinceMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case province.FieldPostal:
-		return m.AddedPostal()
-	}
 	return nil, false
 }
 
@@ -6847,13 +6818,6 @@ func (m *ProvinceMutation) AddedField(name string) (ent.Value, bool) {
 // type mismatch the field type.
 func (m *ProvinceMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case province.FieldPostal:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddPostal(v)
-		return nil
 	}
 	return fmt.Errorf("unknown Province numeric field %s", name)
 }

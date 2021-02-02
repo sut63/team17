@@ -279,7 +279,7 @@ var (
 		{Name: "province", Type: field.TypeString, Unique: true},
 		{Name: "district", Type: field.TypeString},
 		{Name: "subdistrict", Type: field.TypeString},
-		{Name: "postal", Type: field.TypeInt},
+		{Name: "postal", Type: field.TypeString},
 		{Name: "continent_cont_prov", Type: field.TypeInt, Nullable: true},
 		{Name: "country_coun_prov", Type: field.TypeInt, Nullable: true},
 		{Name: "region_regi_prov", Type: field.TypeInt, Nullable: true},
