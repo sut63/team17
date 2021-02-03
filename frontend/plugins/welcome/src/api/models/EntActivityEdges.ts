@@ -84,11 +84,11 @@ export function EntActivityEdgesFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'actiAgen': !exists(json, 'actiAgen') ? undefined : EntAgencyFromJSON(json['actiAgen']),
-        'actiPlace': !exists(json, 'actiPlace') ? undefined : EntPlaceFromJSON(json['actiPlace']),
-        'actiStud': !exists(json, 'actiStud') ? undefined : EntStudentFromJSON(json['actiStud']),
-        'actiTerm': !exists(json, 'actiTerm') ? undefined : EntTermFromJSON(json['actiTerm']),
-        'actiYear': !exists(json, 'actiYear') ? undefined : EntYearFromJSON(json['actiYear']),
+        'actiAgen': !exists(json, 'ActiAgen') ? undefined : EntAgencyFromJSON(json['ActiAgen']),
+        'actiPlace': !exists(json, 'ActiPlace') ? undefined : EntPlaceFromJSON(json['ActiPlace']),
+        'actiStud': !exists(json, 'ActiStud') ? undefined : EntStudentFromJSON(json['ActiStud']),
+        'actiTerm': !exists(json, 'ActiTerm') ? undefined : EntTermFromJSON(json['ActiTerm']),
+        'actiYear': !exists(json, 'ActiYear') ? undefined : EntYearFromJSON(json['ActiYear']),
     };
 }
 
