@@ -73,7 +73,7 @@ export const plugin = createPlugin({
 
       router.registerRoute('/si', Warn);
       router.registerRoute('/as', Warn);
-      router.registerRoute('/pf', SearchProfessor);
+     // router.registerRoute('/pf', SearchProfessor);
       router.registerRoute('/pv', SearchProvince);
       router.registerRoute('/sg', Warn);
       router.registerRoute('/cs', Warn);
@@ -107,10 +107,11 @@ export const plugin = createPlugin({
 
       router.registerRoute('/si', Logins);
       router.registerRoute('/as', Logins);
-      router.registerRoute('/pf', Logins);
+      //router.registerRoute('/pf', Logins);
       router.registerRoute('/pv', Logins);
       router.registerRoute('/sg', Logins);
       router.registerRoute('/cs', Logins);
+      router.registerRoute('/pf', SearchProfessor);
     }
   },
 });
