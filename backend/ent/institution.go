@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/sut63/team17/app/ent/faculty"
 	"github.com/sut63/team17/app/ent/institution"
 )
 
@@ -19,16 +20,19 @@ type Institution struct {
 	Institution string `json:"institution,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the InstitutionQuery when eager-loading is set.
-	Edges InstitutionEdges `json:"edges"`
+	Edges             InstitutionEdges `json:"edges"`
+	faculty_facu_inst *int
 }
 
 // InstitutionEdges holds the relations/edges for other nodes in the graph.
 type InstitutionEdges struct {
 	// InstCour holds the value of the inst_cour edge.
 	InstCour []*Course
+	// InstFacu holds the value of the inst_facu edge.
+	InstFacu *Faculty
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 }
 
 // InstCourOrErr returns the InstCour value or an error if the edge
@@ -40,11 +44,32 @@ func (e InstitutionEdges) InstCourOrErr() ([]*Course, error) {
 	return nil, &NotLoadedError{edge: "inst_cour"}
 }
 
+// InstFacuOrErr returns the InstFacu value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e InstitutionEdges) InstFacuOrErr() (*Faculty, error) {
+	if e.loadedTypes[1] {
+		if e.InstFacu == nil {
+			// The edge inst_facu was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: faculty.Label}
+		}
+		return e.InstFacu, nil
+	}
+	return nil, &NotLoadedError{edge: "inst_facu"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Institution) scanValues() []interface{} {
 	return []interface{}{
 		&sql.NullInt64{},  // id
 		&sql.NullString{}, // institution
+	}
+}
+
+// fkValues returns the types for scanning foreign-keys values from sql.Rows.
+func (*Institution) fkValues() []interface{} {
+	return []interface{}{
+		&sql.NullInt64{}, // faculty_facu_inst
 	}
 }
 
@@ -65,12 +90,26 @@ func (i *Institution) assignValues(values ...interface{}) error {
 	} else if value.Valid {
 		i.Institution = value.String
 	}
+	values = values[1:]
+	if len(values) == len(institution.ForeignKeys) {
+		if value, ok := values[0].(*sql.NullInt64); !ok {
+			return fmt.Errorf("unexpected type %T for edge-field faculty_facu_inst", value)
+		} else if value.Valid {
+			i.faculty_facu_inst = new(int)
+			*i.faculty_facu_inst = int(value.Int64)
+		}
+	}
 	return nil
 }
 
 // QueryInstCour queries the inst_cour edge of the Institution.
 func (i *Institution) QueryInstCour() *CourseQuery {
 	return (&InstitutionClient{config: i.config}).QueryInstCour(i)
+}
+
+// QueryInstFacu queries the inst_facu edge of the Institution.
+func (i *Institution) QueryInstFacu() *FacultyQuery {
+	return (&InstitutionClient{config: i.config}).QueryInstFacu(i)
 }
 
 // Update returns a builder for updating this Institution.

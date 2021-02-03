@@ -24,5 +24,7 @@ func (Institution) Fields() []ent.Field {
 func (Institution) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("inst_cour", Course.Type),
+		edge.From("inst_facu", Faculty.Type).
+			Ref("facu_inst").Unique(),
 	}
 }

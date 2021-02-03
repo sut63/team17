@@ -1156,6 +1156,22 @@ func (c *FacultyClient) QueryFacuProf(f *Faculty) *ProfessorQuery {
 	return query
 }
 
+// QueryFacuInst queries the facu_inst edge of a Faculty.
+func (c *FacultyClient) QueryFacuInst(f *Faculty) *InstitutionQuery {
+	query := &InstitutionQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := f.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(faculty.Table, faculty.FieldID, id),
+			sqlgraph.To(institution.Table, institution.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, faculty.FacuInstTable, faculty.FacuInstColumn),
+		)
+		fromV = sqlgraph.Neighbors(f.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *FacultyClient) Hooks() []Hook {
 	return c.hooks.Faculty
@@ -1347,6 +1363,22 @@ func (c *InstitutionClient) QueryInstCour(i *Institution) *CourseQuery {
 			sqlgraph.From(institution.Table, institution.FieldID, id),
 			sqlgraph.To(course.Table, course.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, institution.InstCourTable, institution.InstCourColumn),
+		)
+		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryInstFacu queries the inst_facu edge of a Institution.
+func (c *InstitutionClient) QueryInstFacu(i *Institution) *FacultyQuery {
+	query := &FacultyQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := i.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(institution.Table, institution.FieldID, id),
+			sqlgraph.To(faculty.Table, faculty.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, institution.InstFacuTable, institution.InstFacuColumn),
 		)
 		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
 		return fromV, nil

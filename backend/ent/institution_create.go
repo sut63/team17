@@ -10,6 +10,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/sut63/team17/app/ent/course"
+	"github.com/sut63/team17/app/ent/faculty"
 	"github.com/sut63/team17/app/ent/institution"
 )
 
@@ -39,6 +40,25 @@ func (ic *InstitutionCreate) AddInstCour(c ...*Course) *InstitutionCreate {
 		ids[i] = c[i].ID
 	}
 	return ic.AddInstCourIDs(ids...)
+}
+
+// SetInstFacuID sets the inst_facu edge to Faculty by id.
+func (ic *InstitutionCreate) SetInstFacuID(id int) *InstitutionCreate {
+	ic.mutation.SetInstFacuID(id)
+	return ic
+}
+
+// SetNillableInstFacuID sets the inst_facu edge to Faculty by id if the given value is not nil.
+func (ic *InstitutionCreate) SetNillableInstFacuID(id *int) *InstitutionCreate {
+	if id != nil {
+		ic = ic.SetInstFacuID(*id)
+	}
+	return ic
+}
+
+// SetInstFacu sets the inst_facu edge to Faculty.
+func (ic *InstitutionCreate) SetInstFacu(f *Faculty) *InstitutionCreate {
+	return ic.SetInstFacuID(f.ID)
 }
 
 // Mutation returns the InstitutionMutation object of the builder.
@@ -135,6 +155,25 @@ func (ic *InstitutionCreate) createSpec() (*Institution, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: course.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ic.mutation.InstFacuIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   institution.InstFacuTable,
+			Columns: []string{institution.InstFacuColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: faculty.FieldID,
 				},
 			},
 		}

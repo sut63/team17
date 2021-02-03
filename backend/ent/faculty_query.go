@@ -14,6 +14,7 @@ import (
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/sut63/team17/app/ent/course"
 	"github.com/sut63/team17/app/ent/faculty"
+	"github.com/sut63/team17/app/ent/institution"
 	"github.com/sut63/team17/app/ent/predicate"
 	"github.com/sut63/team17/app/ent/professor"
 )
@@ -29,6 +30,7 @@ type FacultyQuery struct {
 	// eager-loading edges.
 	withFacuCour *CourseQuery
 	withFacuProf *ProfessorQuery
+	withFacuInst *InstitutionQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -87,6 +89,24 @@ func (fq *FacultyQuery) QueryFacuProf() *ProfessorQuery {
 			sqlgraph.From(faculty.Table, faculty.FieldID, fq.sqlQuery()),
 			sqlgraph.To(professor.Table, professor.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, faculty.FacuProfTable, faculty.FacuProfColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(fq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryFacuInst chains the current query on the facu_inst edge.
+func (fq *FacultyQuery) QueryFacuInst() *InstitutionQuery {
+	query := &InstitutionQuery{config: fq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := fq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(faculty.Table, faculty.FieldID, fq.sqlQuery()),
+			sqlgraph.To(institution.Table, institution.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, faculty.FacuInstTable, faculty.FacuInstColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(fq.driver.Dialect(), step)
 		return fromU, nil
@@ -295,6 +315,17 @@ func (fq *FacultyQuery) WithFacuProf(opts ...func(*ProfessorQuery)) *FacultyQuer
 	return fq
 }
 
+//  WithFacuInst tells the query-builder to eager-loads the nodes that are connected to
+// the "facu_inst" edge. The optional arguments used to configure the query builder of the edge.
+func (fq *FacultyQuery) WithFacuInst(opts ...func(*InstitutionQuery)) *FacultyQuery {
+	query := &InstitutionQuery{config: fq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	fq.withFacuInst = query
+	return fq
+}
+
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
@@ -361,9 +392,10 @@ func (fq *FacultyQuery) sqlAll(ctx context.Context) ([]*Faculty, error) {
 	var (
 		nodes       = []*Faculty{}
 		_spec       = fq.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [3]bool{
 			fq.withFacuCour != nil,
 			fq.withFacuProf != nil,
+			fq.withFacuInst != nil,
 		}
 	)
 	_spec.ScanValues = func() []interface{} {
@@ -440,6 +472,34 @@ func (fq *FacultyQuery) sqlAll(ctx context.Context) ([]*Faculty, error) {
 				return nil, fmt.Errorf(`unexpected foreign-key "faculty_facu_prof" returned %v for node %v`, *fk, n.ID)
 			}
 			node.Edges.FacuProf = append(node.Edges.FacuProf, n)
+		}
+	}
+
+	if query := fq.withFacuInst; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[int]*Faculty)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+		}
+		query.withFKs = true
+		query.Where(predicate.Institution(func(s *sql.Selector) {
+			s.Where(sql.InValues(faculty.FacuInstColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.faculty_facu_inst
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "faculty_facu_inst" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "faculty_facu_inst" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.FacuInst = append(node.Edges.FacuInst, n)
 		}
 	}
 

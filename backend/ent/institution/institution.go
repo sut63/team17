@@ -12,6 +12,8 @@ const (
 
 	// EdgeInstCour holds the string denoting the inst_cour edge name in mutations.
 	EdgeInstCour = "inst_cour"
+	// EdgeInstFacu holds the string denoting the inst_facu edge name in mutations.
+	EdgeInstFacu = "inst_facu"
 
 	// Table holds the table name of the institution in the database.
 	Table = "institutions"
@@ -22,12 +24,24 @@ const (
 	InstCourInverseTable = "courses"
 	// InstCourColumn is the table column denoting the inst_cour relation/edge.
 	InstCourColumn = "institution_inst_cour"
+	// InstFacuTable is the table the holds the inst_facu relation/edge.
+	InstFacuTable = "institutions"
+	// InstFacuInverseTable is the table name for the Faculty entity.
+	// It exists in this package in order to avoid circular dependency with the "faculty" package.
+	InstFacuInverseTable = "faculties"
+	// InstFacuColumn is the table column denoting the inst_facu relation/edge.
+	InstFacuColumn = "faculty_facu_inst"
 )
 
 // Columns holds all SQL columns for institution fields.
 var Columns = []string{
 	FieldID,
 	FieldInstitution,
+}
+
+// ForeignKeys holds the SQL foreign-keys that are owned by the Institution type.
+var ForeignKeys = []string{
+	"faculty_facu_inst",
 }
 
 var (

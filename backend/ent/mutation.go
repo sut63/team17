@@ -3242,6 +3242,8 @@ type FacultyMutation struct {
 	removedfacu_cour map[int]struct{}
 	facu_prof        map[int]struct{}
 	removedfacu_prof map[int]struct{}
+	facu_inst        map[int]struct{}
+	removedfacu_inst map[int]struct{}
 	done             bool
 	oldValue         func(context.Context) (*Faculty, error)
 }
@@ -3446,6 +3448,48 @@ func (m *FacultyMutation) ResetFacuProf() {
 	m.removedfacu_prof = nil
 }
 
+// AddFacuInstIDs adds the facu_inst edge to Institution by ids.
+func (m *FacultyMutation) AddFacuInstIDs(ids ...int) {
+	if m.facu_inst == nil {
+		m.facu_inst = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.facu_inst[ids[i]] = struct{}{}
+	}
+}
+
+// RemoveFacuInstIDs removes the facu_inst edge to Institution by ids.
+func (m *FacultyMutation) RemoveFacuInstIDs(ids ...int) {
+	if m.removedfacu_inst == nil {
+		m.removedfacu_inst = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.removedfacu_inst[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedFacuInst returns the removed ids of facu_inst.
+func (m *FacultyMutation) RemovedFacuInstIDs() (ids []int) {
+	for id := range m.removedfacu_inst {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// FacuInstIDs returns the facu_inst ids in the mutation.
+func (m *FacultyMutation) FacuInstIDs() (ids []int) {
+	for id := range m.facu_inst {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetFacuInst reset all changes of the "facu_inst" edge.
+func (m *FacultyMutation) ResetFacuInst() {
+	m.facu_inst = nil
+	m.removedfacu_inst = nil
+}
+
 // Op returns the operation name.
 func (m *FacultyMutation) Op() Op {
 	return m.op
@@ -3561,12 +3605,15 @@ func (m *FacultyMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this
 // mutation.
 func (m *FacultyMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.facu_cour != nil {
 		edges = append(edges, faculty.EdgeFacuCour)
 	}
 	if m.facu_prof != nil {
 		edges = append(edges, faculty.EdgeFacuProf)
+	}
+	if m.facu_inst != nil {
+		edges = append(edges, faculty.EdgeFacuInst)
 	}
 	return edges
 }
@@ -3587,6 +3634,12 @@ func (m *FacultyMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case faculty.EdgeFacuInst:
+		ids := make([]ent.Value, 0, len(m.facu_inst))
+		for id := range m.facu_inst {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
@@ -3594,12 +3647,15 @@ func (m *FacultyMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this
 // mutation.
 func (m *FacultyMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.removedfacu_cour != nil {
 		edges = append(edges, faculty.EdgeFacuCour)
 	}
 	if m.removedfacu_prof != nil {
 		edges = append(edges, faculty.EdgeFacuProf)
+	}
+	if m.removedfacu_inst != nil {
+		edges = append(edges, faculty.EdgeFacuInst)
 	}
 	return edges
 }
@@ -3620,6 +3676,12 @@ func (m *FacultyMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case faculty.EdgeFacuInst:
+		ids := make([]ent.Value, 0, len(m.removedfacu_inst))
+		for id := range m.removedfacu_inst {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
@@ -3627,7 +3689,7 @@ func (m *FacultyMutation) RemovedIDs(name string) []ent.Value {
 // ClearedEdges returns all edge names that were cleared in this
 // mutation.
 func (m *FacultyMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	return edges
 }
 
@@ -3657,6 +3719,9 @@ func (m *FacultyMutation) ResetEdge(name string) error {
 		return nil
 	case faculty.EdgeFacuProf:
 		m.ResetFacuProf()
+		return nil
+	case faculty.EdgeFacuInst:
+		m.ResetFacuInst()
 		return nil
 	}
 	return fmt.Errorf("unknown Faculty edge %s", name)
@@ -4041,6 +4106,8 @@ type InstitutionMutation struct {
 	clearedFields    map[string]struct{}
 	inst_cour        map[int]struct{}
 	removedinst_cour map[int]struct{}
+	inst_facu        *int
+	clearedinst_facu bool
 	done             bool
 	oldValue         func(context.Context) (*Institution, error)
 }
@@ -4203,6 +4270,45 @@ func (m *InstitutionMutation) ResetInstCour() {
 	m.removedinst_cour = nil
 }
 
+// SetInstFacuID sets the inst_facu edge to Faculty by id.
+func (m *InstitutionMutation) SetInstFacuID(id int) {
+	m.inst_facu = &id
+}
+
+// ClearInstFacu clears the inst_facu edge to Faculty.
+func (m *InstitutionMutation) ClearInstFacu() {
+	m.clearedinst_facu = true
+}
+
+// InstFacuCleared returns if the edge inst_facu was cleared.
+func (m *InstitutionMutation) InstFacuCleared() bool {
+	return m.clearedinst_facu
+}
+
+// InstFacuID returns the inst_facu id in the mutation.
+func (m *InstitutionMutation) InstFacuID() (id int, exists bool) {
+	if m.inst_facu != nil {
+		return *m.inst_facu, true
+	}
+	return
+}
+
+// InstFacuIDs returns the inst_facu ids in the mutation.
+// Note that ids always returns len(ids) <= 1 for unique edges, and you should use
+// InstFacuID instead. It exists only for internal usage by the builders.
+func (m *InstitutionMutation) InstFacuIDs() (ids []int) {
+	if id := m.inst_facu; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetInstFacu reset all changes of the "inst_facu" edge.
+func (m *InstitutionMutation) ResetInstFacu() {
+	m.inst_facu = nil
+	m.clearedinst_facu = false
+}
+
 // Op returns the operation name.
 func (m *InstitutionMutation) Op() Op {
 	return m.op
@@ -4318,9 +4424,12 @@ func (m *InstitutionMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this
 // mutation.
 func (m *InstitutionMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.inst_cour != nil {
 		edges = append(edges, institution.EdgeInstCour)
+	}
+	if m.inst_facu != nil {
+		edges = append(edges, institution.EdgeInstFacu)
 	}
 	return edges
 }
@@ -4335,6 +4444,10 @@ func (m *InstitutionMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case institution.EdgeInstFacu:
+		if id := m.inst_facu; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
@@ -4342,7 +4455,7 @@ func (m *InstitutionMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this
 // mutation.
 func (m *InstitutionMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.removedinst_cour != nil {
 		edges = append(edges, institution.EdgeInstCour)
 	}
@@ -4366,7 +4479,10 @@ func (m *InstitutionMutation) RemovedIDs(name string) []ent.Value {
 // ClearedEdges returns all edge names that were cleared in this
 // mutation.
 func (m *InstitutionMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.clearedinst_facu {
+		edges = append(edges, institution.EdgeInstFacu)
+	}
 	return edges
 }
 
@@ -4374,6 +4490,8 @@ func (m *InstitutionMutation) ClearedEdges() []string {
 // cleared in this mutation.
 func (m *InstitutionMutation) EdgeCleared(name string) bool {
 	switch name {
+	case institution.EdgeInstFacu:
+		return m.clearedinst_facu
 	}
 	return false
 }
@@ -4382,6 +4500,9 @@ func (m *InstitutionMutation) EdgeCleared(name string) bool {
 // error if the edge name is not defined in the schema.
 func (m *InstitutionMutation) ClearEdge(name string) error {
 	switch name {
+	case institution.EdgeInstFacu:
+		m.ClearInstFacu()
+		return nil
 	}
 	return fmt.Errorf("unknown Institution unique edge %s", name)
 }
@@ -4393,6 +4514,9 @@ func (m *InstitutionMutation) ResetEdge(name string) error {
 	switch name {
 	case institution.EdgeInstCour:
 		m.ResetInstCour()
+		return nil
+	case institution.EdgeInstFacu:
+		m.ResetInstFacu()
 		return nil
 	}
 	return fmt.Errorf("unknown Institution edge %s", name)

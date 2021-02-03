@@ -11,6 +11,7 @@ import (
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/sut63/team17/app/ent/course"
 	"github.com/sut63/team17/app/ent/faculty"
+	"github.com/sut63/team17/app/ent/institution"
 	"github.com/sut63/team17/app/ent/professor"
 )
 
@@ -55,6 +56,21 @@ func (fc *FacultyCreate) AddFacuProf(p ...*Professor) *FacultyCreate {
 		ids[i] = p[i].ID
 	}
 	return fc.AddFacuProfIDs(ids...)
+}
+
+// AddFacuInstIDs adds the facu_inst edge to Institution by ids.
+func (fc *FacultyCreate) AddFacuInstIDs(ids ...int) *FacultyCreate {
+	fc.mutation.AddFacuInstIDs(ids...)
+	return fc
+}
+
+// AddFacuInst adds the facu_inst edges to Institution.
+func (fc *FacultyCreate) AddFacuInst(i ...*Institution) *FacultyCreate {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return fc.AddFacuInstIDs(ids...)
 }
 
 // Mutation returns the FacultyMutation object of the builder.
@@ -170,6 +186,25 @@ func (fc *FacultyCreate) createSpec() (*Faculty, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: professor.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := fc.mutation.FacuInstIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   faculty.FacuInstTable,
+			Columns: []string{faculty.FacuInstColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: institution.FieldID,
 				},
 			},
 		}

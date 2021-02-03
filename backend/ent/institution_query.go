@@ -13,6 +13,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/sut63/team17/app/ent/course"
+	"github.com/sut63/team17/app/ent/faculty"
 	"github.com/sut63/team17/app/ent/institution"
 	"github.com/sut63/team17/app/ent/predicate"
 )
@@ -27,6 +28,8 @@ type InstitutionQuery struct {
 	predicates []predicate.Institution
 	// eager-loading edges.
 	withInstCour *CourseQuery
+	withInstFacu *FacultyQuery
+	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -67,6 +70,24 @@ func (iq *InstitutionQuery) QueryInstCour() *CourseQuery {
 			sqlgraph.From(institution.Table, institution.FieldID, iq.sqlQuery()),
 			sqlgraph.To(course.Table, course.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, institution.InstCourTable, institution.InstCourColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(iq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryInstFacu chains the current query on the inst_facu edge.
+func (iq *InstitutionQuery) QueryInstFacu() *FacultyQuery {
+	query := &FacultyQuery{config: iq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := iq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(institution.Table, institution.FieldID, iq.sqlQuery()),
+			sqlgraph.To(faculty.Table, faculty.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, institution.InstFacuTable, institution.InstFacuColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(iq.driver.Dialect(), step)
 		return fromU, nil
@@ -264,6 +285,17 @@ func (iq *InstitutionQuery) WithInstCour(opts ...func(*CourseQuery)) *Institutio
 	return iq
 }
 
+//  WithInstFacu tells the query-builder to eager-loads the nodes that are connected to
+// the "inst_facu" edge. The optional arguments used to configure the query builder of the edge.
+func (iq *InstitutionQuery) WithInstFacu(opts ...func(*FacultyQuery)) *InstitutionQuery {
+	query := &FacultyQuery{config: iq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	iq.withInstFacu = query
+	return iq
+}
+
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
@@ -329,15 +361,26 @@ func (iq *InstitutionQuery) prepareQuery(ctx context.Context) error {
 func (iq *InstitutionQuery) sqlAll(ctx context.Context) ([]*Institution, error) {
 	var (
 		nodes       = []*Institution{}
+		withFKs     = iq.withFKs
 		_spec       = iq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			iq.withInstCour != nil,
+			iq.withInstFacu != nil,
 		}
 	)
+	if iq.withInstFacu != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, institution.ForeignKeys...)
+	}
 	_spec.ScanValues = func() []interface{} {
 		node := &Institution{config: iq.config}
 		nodes = append(nodes, node)
 		values := node.scanValues()
+		if withFKs {
+			values = append(values, node.fkValues()...)
+		}
 		return values
 	}
 	_spec.Assign = func(values ...interface{}) error {
@@ -380,6 +423,31 @@ func (iq *InstitutionQuery) sqlAll(ctx context.Context) ([]*Institution, error) 
 				return nil, fmt.Errorf(`unexpected foreign-key "institution_inst_cour" returned %v for node %v`, *fk, n.ID)
 			}
 			node.Edges.InstCour = append(node.Edges.InstCour, n)
+		}
+	}
+
+	if query := iq.withInstFacu; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*Institution)
+		for i := range nodes {
+			if fk := nodes[i].faculty_facu_inst; fk != nil {
+				ids = append(ids, *fk)
+				nodeids[*fk] = append(nodeids[*fk], nodes[i])
+			}
+		}
+		query.Where(faculty.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "faculty_facu_inst" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.InstFacu = n
+			}
 		}
 	}
 

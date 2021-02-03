@@ -11,6 +11,7 @@ import (
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/sut63/team17/app/ent/course"
 	"github.com/sut63/team17/app/ent/faculty"
+	"github.com/sut63/team17/app/ent/institution"
 	"github.com/sut63/team17/app/ent/predicate"
 	"github.com/sut63/team17/app/ent/professor"
 )
@@ -65,6 +66,21 @@ func (fu *FacultyUpdate) AddFacuProf(p ...*Professor) *FacultyUpdate {
 	return fu.AddFacuProfIDs(ids...)
 }
 
+// AddFacuInstIDs adds the facu_inst edge to Institution by ids.
+func (fu *FacultyUpdate) AddFacuInstIDs(ids ...int) *FacultyUpdate {
+	fu.mutation.AddFacuInstIDs(ids...)
+	return fu
+}
+
+// AddFacuInst adds the facu_inst edges to Institution.
+func (fu *FacultyUpdate) AddFacuInst(i ...*Institution) *FacultyUpdate {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return fu.AddFacuInstIDs(ids...)
+}
+
 // Mutation returns the FacultyMutation object of the builder.
 func (fu *FacultyUpdate) Mutation() *FacultyMutation {
 	return fu.mutation
@@ -98,6 +114,21 @@ func (fu *FacultyUpdate) RemoveFacuProf(p ...*Professor) *FacultyUpdate {
 		ids[i] = p[i].ID
 	}
 	return fu.RemoveFacuProfIDs(ids...)
+}
+
+// RemoveFacuInstIDs removes the facu_inst edge to Institution by ids.
+func (fu *FacultyUpdate) RemoveFacuInstIDs(ids ...int) *FacultyUpdate {
+	fu.mutation.RemoveFacuInstIDs(ids...)
+	return fu
+}
+
+// RemoveFacuInst removes facu_inst edges to Institution.
+func (fu *FacultyUpdate) RemoveFacuInst(i ...*Institution) *FacultyUpdate {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return fu.RemoveFacuInstIDs(ids...)
 }
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
@@ -258,6 +289,44 @@ func (fu *FacultyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if nodes := fu.mutation.RemovedFacuInstIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   faculty.FacuInstTable,
+			Columns: []string{faculty.FacuInstColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: institution.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fu.mutation.FacuInstIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   faculty.FacuInstTable,
+			Columns: []string{faculty.FacuInstColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: institution.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, fu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{faculty.Label}
@@ -312,6 +381,21 @@ func (fuo *FacultyUpdateOne) AddFacuProf(p ...*Professor) *FacultyUpdateOne {
 	return fuo.AddFacuProfIDs(ids...)
 }
 
+// AddFacuInstIDs adds the facu_inst edge to Institution by ids.
+func (fuo *FacultyUpdateOne) AddFacuInstIDs(ids ...int) *FacultyUpdateOne {
+	fuo.mutation.AddFacuInstIDs(ids...)
+	return fuo
+}
+
+// AddFacuInst adds the facu_inst edges to Institution.
+func (fuo *FacultyUpdateOne) AddFacuInst(i ...*Institution) *FacultyUpdateOne {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return fuo.AddFacuInstIDs(ids...)
+}
+
 // Mutation returns the FacultyMutation object of the builder.
 func (fuo *FacultyUpdateOne) Mutation() *FacultyMutation {
 	return fuo.mutation
@@ -345,6 +429,21 @@ func (fuo *FacultyUpdateOne) RemoveFacuProf(p ...*Professor) *FacultyUpdateOne {
 		ids[i] = p[i].ID
 	}
 	return fuo.RemoveFacuProfIDs(ids...)
+}
+
+// RemoveFacuInstIDs removes the facu_inst edge to Institution by ids.
+func (fuo *FacultyUpdateOne) RemoveFacuInstIDs(ids ...int) *FacultyUpdateOne {
+	fuo.mutation.RemoveFacuInstIDs(ids...)
+	return fuo
+}
+
+// RemoveFacuInst removes facu_inst edges to Institution.
+func (fuo *FacultyUpdateOne) RemoveFacuInst(i ...*Institution) *FacultyUpdateOne {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return fuo.RemoveFacuInstIDs(ids...)
 }
 
 // Save executes the query and returns the updated entity.
@@ -495,6 +594,44 @@ func (fuo *FacultyUpdateOne) sqlSave(ctx context.Context) (f *Faculty, err error
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: professor.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if nodes := fuo.mutation.RemovedFacuInstIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   faculty.FacuInstTable,
+			Columns: []string{faculty.FacuInstColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: institution.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fuo.mutation.FacuInstIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   faculty.FacuInstTable,
+			Columns: []string{faculty.FacuInstColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: institution.FieldID,
 				},
 			},
 		}

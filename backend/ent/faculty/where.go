@@ -265,6 +265,34 @@ func HasFacuProfWith(preds ...predicate.Professor) predicate.Faculty {
 	})
 }
 
+// HasFacuInst applies the HasEdge predicate on the "facu_inst" edge.
+func HasFacuInst() predicate.Faculty {
+	return predicate.Faculty(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(FacuInstTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, FacuInstTable, FacuInstColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasFacuInstWith applies the HasEdge predicate on the "facu_inst" edge with a given conditions (other predicates).
+func HasFacuInstWith(preds ...predicate.Institution) predicate.Faculty {
+	return predicate.Faculty(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(FacuInstInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, FacuInstTable, FacuInstColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups list of predicates with the AND operator between them.
 func And(predicates ...predicate.Faculty) predicate.Faculty {
 	return predicate.Faculty(func(s *sql.Selector) {

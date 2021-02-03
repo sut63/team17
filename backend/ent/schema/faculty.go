@@ -25,5 +25,6 @@ func (Faculty) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("facu_cour", Course.Type),
 		edge.To("facu_prof", Professor.Type),
+		edge.To("facu_inst", Institution.Type),
 	}
 }

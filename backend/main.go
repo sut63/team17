@@ -60,7 +60,8 @@ type Facultys struct {
 }
 
 type Faculty struct {
-	Faculty string
+	Faculty      string
+	institutions []Institution
 }
 
 type Professorships struct {
@@ -359,21 +360,61 @@ func main() {
 	// Set Faculty Data
 	facultys := Facultys{
 		Faculty: []Faculty{
-			Faculty{"สำนักวิชาวิทยาศาสตร์"},
-			Faculty{"สำนักวิชาเทคโนโลยีสังคม"},
-			Faculty{"สำนักวิชาเทคโนโลยีการเกษตร"},
-			Faculty{"สำนักวิชาวิศวกรรมศาสตร์"},
-			Faculty{"สำนักวิชาแพทยศาสตร์"},
-			Faculty{"สำนักวิชาพยาบาลศาสตร์"},
-			Faculty{"สำนักวิชาทันตแพทยศาสตร์"},
-			Faculty{"สำนักวิชาสาธารณสุขศาสตร์"},
+			Faculty{
+				"สำนักวิชาวิทยาศาสตร์",
+				[]Institution{
+					Institution{"สาขาวิชาเคมี"},
+					Institution{"สาขาวิชาคณิตศาสตร์"},
+					Institution{"สาขาวิชาฟิสิกส์"},
+					Institution{"สาขาวิชาวิทยาศาสตร์การกีฬา"},
+				},
+			},
+			Faculty{"สำนักวิชาเทคโนโลยีสังคม", []Institution{
+				Institution{"สาขาวิชาเทคโนโลยีการจัดการ"},
+				Institution{"สาขาวิชานวัตกรรมเทคโนโลยีอุตสาหกรรมบริการ"},
+			}},
+			Faculty{"สำนักวิชาเทคโนโลยีการเกษตร", []Institution{
+				Institution{"สาขาวิชาเทคโนโลยีการผลิตพืช"},
+				Institution{"สาขาวิชาเทคโนโลยีและนวัตกรรมทางสัตว์"},
+				Institution{"สาขาวิชาเทคโนโลยีอาหาร"},
+			}},
+			Faculty{"สำนักวิชาวิศวกรรมศาสตร์", []Institution{
+				Institution{"สาขาวิชาวิศวกรรมคอมพิวเตอร์"},
+				Institution{"สาขาวิชาวิศวกรรมโยธา"},
+				Institution{"สาขาวิชาวิศวกรรมเครื่องกล"},
+				Institution{"สาขาวิชาวิศวกรรมการผลิตอัตโนมัติและหุ่นยนต์"},
+				Institution{"สาขาวิชาวิศวกรรมปิโตรเลียมและเทคโนโลยีธรณี"},
+				Institution{"สาขาวิชาวิศวกรรมอิเล็กทรอนิกส์"},
+				Institution{"สาขาวิชาวิศวรรมเมคคาทรอนิกส์"},
+			}},
+			Faculty{"สำนักวิชาแพทยศาสตร์", []Institution{
+				Institution{"สาขาวิชาแพทยศาสตร์"},
+			}},
+			Faculty{"สำนักวิชาพยาบาลศาสตร์", []Institution{
+				Institution{"สาขาวิชาพยาบาลศาสตร์"},
+			}},
+			Faculty{"สำนักวิชาทันตแพทยศาสตร์", []Institution{
+				Institution{"สาขาวิชาทันตแพทยศาสตร์"},
+			}},
+			Faculty{"สำนักวิชาสาธารณสุขศาสตร์", []Institution{
+				Institution{"สาขาวิชาอนามัยสิ่งแวดล้อม"},
+				Institution{"สาขาวิชาอาชีวอนามัยและความปลอดภัย"},
+			}},
 		},
 	}
+
 	for _, fa := range facultys.Faculty {
-		client.Faculty.
+		facu, _ := client.Faculty.
 			Create().
 			SetFaculty(fa.Faculty).
 			Save(context.Background())
+		for _, in := range fa.institutions {
+			client.Institution.
+				Create().
+				SetInstitution(in.Institution).
+				SetInstFacu(facu).
+				Save(context.Background())
+		}
 	}
 
 	// Set Professorship Data
@@ -464,45 +505,6 @@ func main() {
 			Save(context.Background())
 	}
 
-	// Set Institution Data
-	institutions := Institutions{
-		Institution: []Institution{
-			Institution{"สาขาวิชาเคมี"},
-			Institution{"สาขาวิชาคณิตศาสตร์"},
-			Institution{"สาขาวิชาฟิสิกส์"},
-			Institution{"สาขาวิทยาศาสตร์การกีฬา"},
-			Institution{"สาขาวิชาวิศวกรรมคอมพิวเตอร์"},
-			Institution{"สาขาวิชาวิศวกรรมเครื่องกล"},
-			Institution{"สาขาวิชาวิศวกรรมโยธา"},
-			Institution{"สาขาวิชาวิศวกรรมไฟฟ้า"},
-			Institution{"สาขาวิชาวิศวกรรมขนส่งและโลจิสติกส์"},
-			Institution{"สาขาวิชาวิศวกรรมเซรามิก"},
-			Institution{"สาขาวิชาวิศวกรรมโทรคมนาคม"},
-			Institution{"สาขาวิชาวิศวกรรมปิโตรเลียมและเทคโนโลยีธรณี"},
-			Institution{"สาขาวิชาวิศวกรรมพอลิเมอร์"},
-			Institution{"สาขาวิชาวิศวกรรมอุตสาหการ"},
-			Institution{"สาขาวิชาวิศวกรรมยานยนต์"},
-			Institution{"สาขาวิชาวิศวกรรมอากาศยาน"},
-			Institution{"สาขาวิชาวิศวกรรมอิเล็กทรอนิกส์"},
-			Institution{"สาขาวิชาวิศวกรรมเกษตรและอาหาร"},
-			Institution{"สาขาวิชาวิศวกรรมนวัตกรรมและการออกแบบวัสดุ"},
-			Institution{"สาขาวิชาวิศวกรรมโยธาและโครงสร้างพื้นฐาน"},
-			Institution{"สาขาวิชาวิศวกรรมเมคคาทรอนิกส์"},
-			Institution{"สาขาวิชาเทคโนโลยีการจัดการ"},
-			Institution{"สาขาวิชาเทคโนโลยีอาหาร"},
-			Institution{"สาขาวิชาแพทยศาสตรบัณฑิต"},
-			Institution{"สาขาวิชาพยาบาลศาสตรบัณฑิต"},
-			Institution{"สาขาวิชาทันตแพทยศาสตรบัณฑิต"},
-			Institution{"สาขาวิชาอาชีวอนามัยและความปลอดภัย"},
-			Institution{"สาขาวิชาอนามัยสิ่งแวดล้อม"},
-		},
-	}
-	for _, in := range institutions.Institution {
-		client.Institution.
-			Create().
-			SetInstitution(in.Institution).
-			Save(context.Background())
-	}
 
 	// Set degree Data
 	degrees := Degrees{

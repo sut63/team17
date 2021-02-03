@@ -28,9 +28,11 @@ type FacultyEdges struct {
 	FacuCour []*Course
 	// FacuProf holds the value of the facu_prof edge.
 	FacuProf []*Professor
+	// FacuInst holds the value of the facu_inst edge.
+	FacuInst []*Institution
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [3]bool
 }
 
 // FacuCourOrErr returns the FacuCour value or an error if the edge
@@ -49,6 +51,15 @@ func (e FacultyEdges) FacuProfOrErr() ([]*Professor, error) {
 		return e.FacuProf, nil
 	}
 	return nil, &NotLoadedError{edge: "facu_prof"}
+}
+
+// FacuInstOrErr returns the FacuInst value or an error if the edge
+// was not loaded in eager-loading.
+func (e FacultyEdges) FacuInstOrErr() ([]*Institution, error) {
+	if e.loadedTypes[2] {
+		return e.FacuInst, nil
+	}
+	return nil, &NotLoadedError{edge: "facu_inst"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -87,6 +98,11 @@ func (f *Faculty) QueryFacuCour() *CourseQuery {
 // QueryFacuProf queries the facu_prof edge of the Faculty.
 func (f *Faculty) QueryFacuProf() *ProfessorQuery {
 	return (&FacultyClient{config: f.config}).QueryFacuProf(f)
+}
+
+// QueryFacuInst queries the facu_inst edge of the Faculty.
+func (f *Faculty) QueryFacuInst() *InstitutionQuery {
+	return (&FacultyClient{config: f.config}).QueryFacuInst(f)
 }
 
 // Update returns a builder for updating this Faculty.

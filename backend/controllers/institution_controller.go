@@ -61,19 +61,10 @@ func (ctl *InstitutionController) GetInstitution(c *gin.Context) {
 // @Failure 500 {object} gin.H
 // @Router /institutions [get]
 func (ctl *InstitutionController) ListInstitution(c *gin.Context) {
-	limitQuery := c.Query("limit")
-	limit := 100
-	if limitQuery != "" {
-		limit64, err := strconv.ParseInt(limitQuery, 23, 64)
-		if err == nil {
-			limit = int(limit64)
-		}
-	}
-
 	offsetQuery := c.Query("offset")
 	offset := 0
 	if offsetQuery != "" {
-		offset64, err := strconv.ParseInt(offsetQuery, 23, 64)
+		offset64, err := strconv.ParseInt(offsetQuery, 8, 64)
 		if err == nil {
 			offset = int(offset64)
 		}
@@ -81,7 +72,7 @@ func (ctl *InstitutionController) ListInstitution(c *gin.Context) {
 
 	institutions, err := ctl.client.Institution.
 		Query().
-		Limit(limit).
+		WithInstFacu().
 		Offset(offset).
 		All(context.Background())
 
@@ -95,14 +86,15 @@ func (ctl *InstitutionController) ListInstitution(c *gin.Context) {
 	c.JSON(200, institutions)
 }
 
-// NewInstitutionController creates and registers handles for the institution controller
 func NewInstitutionController(router gin.IRouter, client *ent.Client) *InstitutionController {
-	ggt := &InstitutionController{
+	ins := &InstitutionController{
 		client: client,
 		router: router,
 	}
-	ggt.register()
-	return ggt
+
+	ins.register()
+	return ins
+
 }
 
 // InstitutionController registers routes to the main engine

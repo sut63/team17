@@ -190,13 +190,22 @@ var (
 	InstitutionsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "institution", Type: field.TypeString},
+		{Name: "faculty_facu_inst", Type: field.TypeInt, Nullable: true},
 	}
 	// InstitutionsTable holds the schema information for the "institutions" table.
 	InstitutionsTable = &schema.Table{
-		Name:        "institutions",
-		Columns:     InstitutionsColumns,
-		PrimaryKey:  []*schema.Column{InstitutionsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{},
+		Name:       "institutions",
+		Columns:    InstitutionsColumns,
+		PrimaryKey: []*schema.Column{InstitutionsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:  "institutions_faculties_facu_inst",
+				Columns: []*schema.Column{InstitutionsColumns[2]},
+
+				RefColumns: []*schema.Column{FacultiesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// PlacesColumns holds the columns for the "places" table.
 	PlacesColumns = []*schema.Column{
@@ -526,6 +535,7 @@ func init() {
 	CoursesTable.ForeignKeys[0].RefTable = DegreesTable
 	CoursesTable.ForeignKeys[1].RefTable = FacultiesTable
 	CoursesTable.ForeignKeys[2].RefTable = InstitutionsTable
+	InstitutionsTable.ForeignKeys[0].RefTable = FacultiesTable
 	ProfessorsTable.ForeignKeys[0].RefTable = FacultiesTable
 	ProfessorsTable.ForeignKeys[1].RefTable = PrefixesTable
 	ProfessorsTable.ForeignKeys[2].RefTable = ProfessorshipsTable

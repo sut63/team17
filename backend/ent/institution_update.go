@@ -10,6 +10,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/sut63/team17/app/ent/course"
+	"github.com/sut63/team17/app/ent/faculty"
 	"github.com/sut63/team17/app/ent/institution"
 	"github.com/sut63/team17/app/ent/predicate"
 )
@@ -49,6 +50,25 @@ func (iu *InstitutionUpdate) AddInstCour(c ...*Course) *InstitutionUpdate {
 	return iu.AddInstCourIDs(ids...)
 }
 
+// SetInstFacuID sets the inst_facu edge to Faculty by id.
+func (iu *InstitutionUpdate) SetInstFacuID(id int) *InstitutionUpdate {
+	iu.mutation.SetInstFacuID(id)
+	return iu
+}
+
+// SetNillableInstFacuID sets the inst_facu edge to Faculty by id if the given value is not nil.
+func (iu *InstitutionUpdate) SetNillableInstFacuID(id *int) *InstitutionUpdate {
+	if id != nil {
+		iu = iu.SetInstFacuID(*id)
+	}
+	return iu
+}
+
+// SetInstFacu sets the inst_facu edge to Faculty.
+func (iu *InstitutionUpdate) SetInstFacu(f *Faculty) *InstitutionUpdate {
+	return iu.SetInstFacuID(f.ID)
+}
+
 // Mutation returns the InstitutionMutation object of the builder.
 func (iu *InstitutionUpdate) Mutation() *InstitutionMutation {
 	return iu.mutation
@@ -67,6 +87,12 @@ func (iu *InstitutionUpdate) RemoveInstCour(c ...*Course) *InstitutionUpdate {
 		ids[i] = c[i].ID
 	}
 	return iu.RemoveInstCourIDs(ids...)
+}
+
+// ClearInstFacu clears the inst_facu edge to Faculty.
+func (iu *InstitutionUpdate) ClearInstFacu() *InstitutionUpdate {
+	iu.mutation.ClearInstFacu()
+	return iu
 }
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
@@ -189,6 +215,41 @@ func (iu *InstitutionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if iu.mutation.InstFacuCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   institution.InstFacuTable,
+			Columns: []string{institution.InstFacuColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: faculty.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.InstFacuIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   institution.InstFacuTable,
+			Columns: []string{institution.InstFacuColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: faculty.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, iu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{institution.Label}
@@ -228,6 +289,25 @@ func (iuo *InstitutionUpdateOne) AddInstCour(c ...*Course) *InstitutionUpdateOne
 	return iuo.AddInstCourIDs(ids...)
 }
 
+// SetInstFacuID sets the inst_facu edge to Faculty by id.
+func (iuo *InstitutionUpdateOne) SetInstFacuID(id int) *InstitutionUpdateOne {
+	iuo.mutation.SetInstFacuID(id)
+	return iuo
+}
+
+// SetNillableInstFacuID sets the inst_facu edge to Faculty by id if the given value is not nil.
+func (iuo *InstitutionUpdateOne) SetNillableInstFacuID(id *int) *InstitutionUpdateOne {
+	if id != nil {
+		iuo = iuo.SetInstFacuID(*id)
+	}
+	return iuo
+}
+
+// SetInstFacu sets the inst_facu edge to Faculty.
+func (iuo *InstitutionUpdateOne) SetInstFacu(f *Faculty) *InstitutionUpdateOne {
+	return iuo.SetInstFacuID(f.ID)
+}
+
 // Mutation returns the InstitutionMutation object of the builder.
 func (iuo *InstitutionUpdateOne) Mutation() *InstitutionMutation {
 	return iuo.mutation
@@ -246,6 +326,12 @@ func (iuo *InstitutionUpdateOne) RemoveInstCour(c ...*Course) *InstitutionUpdate
 		ids[i] = c[i].ID
 	}
 	return iuo.RemoveInstCourIDs(ids...)
+}
+
+// ClearInstFacu clears the inst_facu edge to Faculty.
+func (iuo *InstitutionUpdateOne) ClearInstFacu() *InstitutionUpdateOne {
+	iuo.mutation.ClearInstFacu()
+	return iuo
 }
 
 // Save executes the query and returns the updated entity.
@@ -358,6 +444,41 @@ func (iuo *InstitutionUpdateOne) sqlSave(ctx context.Context) (i *Institution, e
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: course.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iuo.mutation.InstFacuCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   institution.InstFacuTable,
+			Columns: []string{institution.InstFacuColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: faculty.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.InstFacuIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   institution.InstFacuTable,
+			Columns: []string{institution.InstFacuColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: faculty.FieldID,
 				},
 			},
 		}
