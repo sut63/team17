@@ -1207,16 +1207,10 @@ export class DefaultApi extends runtime.BaseAPI {
      * list activity entities
      * List activity entities
      */
-    async listActivityRaw(requestParameters: ListActivityRequest): Promise<runtime.ApiResponse<Array<EntActivity>>> {
+    async listActivityRaw(): Promise<runtime.ApiResponse<Array<EntActivity>>> {
         const queryParameters: runtime.HTTPQuery = {};
 
-        if (requestParameters.limit !== undefined) {
-            queryParameters['limit'] = requestParameters.limit;
-        }
-
-        if (requestParameters.offset !== undefined) {
-            queryParameters['offset'] = requestParameters.offset;
-        }
+       
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -1234,8 +1228,8 @@ export class DefaultApi extends runtime.BaseAPI {
      * list activity entities
      * List activity entities
      */
-    async listActivity(requestParameters: ListActivityRequest): Promise<Array<EntActivity>> {
-        const response = await this.listActivityRaw(requestParameters);
+    async listActivity(): Promise<Array<EntActivity>> {
+        const response = await this.listActivityRaw();
         return await response.value();
     }
 
