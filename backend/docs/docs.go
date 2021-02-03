@@ -2695,6 +2695,13 @@ var doc = `{
                         "$ref": "#/definitions/ent.Course"
                     }
                 },
+                "facuInst": {
+                    "description": "FacuInst holds the value of the facu_inst edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.Institution"
+                    }
+                },
                 "facuProf": {
                     "description": "FacuProf holds the value of the facu_prof edge.",
                     "type": "array",
@@ -2761,6 +2768,11 @@ var doc = `{
                     "items": {
                         "$ref": "#/definitions/ent.Course"
                     }
+                },
+                "instFacu": {
+                    "description": "InstFacu holds the value of the inst_facu edge.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.Faculty"
                 }
             }
         },

@@ -18,6 +18,10 @@ import {
     EntCourseFromJSON,
     EntCourseFromJSONTyped,
     EntCourseToJSON,
+    EntInstitution,
+    EntInstitutionFromJSON,
+    EntInstitutionFromJSONTyped,
+    EntInstitutionToJSON,
     EntProfessor,
     EntProfessorFromJSON,
     EntProfessorFromJSONTyped,
@@ -37,6 +41,12 @@ export interface EntFacultyEdges {
      */
     facuCour?: Array<EntCourse>;
     /**
+     * FacuInst holds the value of the facu_inst edge.
+     * @type {Array<EntInstitution>}
+     * @memberof EntFacultyEdges
+     */
+    facuInst?: Array<EntInstitution>;
+    /**
      * FacuProf holds the value of the facu_prof edge.
      * @type {Array<EntProfessor>}
      * @memberof EntFacultyEdges
@@ -55,6 +65,7 @@ export function EntFacultyEdgesFromJSONTyped(json: any, ignoreDiscriminator: boo
     return {
         
         'facuCour': !exists(json, 'facuCour') ? undefined : ((json['facuCour'] as Array<any>).map(EntCourseFromJSON)),
+        'facuInst': !exists(json, 'facuInst') ? undefined : ((json['facuInst'] as Array<any>).map(EntInstitutionFromJSON)),
         'facuProf': !exists(json, 'facuProf') ? undefined : ((json['facuProf'] as Array<any>).map(EntProfessorFromJSON)),
     };
 }
@@ -69,6 +80,7 @@ export function EntFacultyEdgesToJSON(value?: EntFacultyEdges | null): any {
     return {
         
         'facuCour': value.facuCour === undefined ? undefined : ((value.facuCour as Array<any>).map(EntCourseToJSON)),
+        'facuInst': value.facuInst === undefined ? undefined : ((value.facuInst as Array<any>).map(EntInstitutionToJSON)),
         'facuProf': value.facuProf === undefined ? undefined : ((value.facuProf as Array<any>).map(EntProfessorToJSON)),
     };
 }

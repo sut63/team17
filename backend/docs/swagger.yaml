@@ -312,6 +312,11 @@ definitions:
         items:
           $ref: '#/definitions/ent.Course'
         type: array
+      facuInst:
+        description: FacuInst holds the value of the facu_inst edge.
+        items:
+          $ref: '#/definitions/ent.Institution'
+        type: array
       facuProf:
         description: FacuProf holds the value of the facu_prof edge.
         items:
@@ -363,6 +368,10 @@ definitions:
         items:
           $ref: '#/definitions/ent.Course'
         type: array
+      instFacu:
+        $ref: '#/definitions/ent.Faculty'
+        description: InstFacu holds the value of the inst_facu edge.
+        type: object
     type: object
   ent.Place:
     properties:

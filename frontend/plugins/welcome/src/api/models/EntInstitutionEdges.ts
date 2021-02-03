@@ -18,6 +18,10 @@ import {
     EntCourseFromJSON,
     EntCourseFromJSONTyped,
     EntCourseToJSON,
+    EntFaculty,
+    EntFacultyFromJSON,
+    EntFacultyFromJSONTyped,
+    EntFacultyToJSON,
 } from './';
 
 /**
@@ -32,6 +36,12 @@ export interface EntInstitutionEdges {
      * @memberof EntInstitutionEdges
      */
     instCour?: Array<EntCourse>;
+    /**
+     * 
+     * @type {EntFaculty}
+     * @memberof EntInstitutionEdges
+     */
+    instFacu?: EntFaculty;
 }
 
 export function EntInstitutionEdgesFromJSON(json: any): EntInstitutionEdges {
@@ -45,6 +55,7 @@ export function EntInstitutionEdgesFromJSONTyped(json: any, ignoreDiscriminator:
     return {
         
         'instCour': !exists(json, 'instCour') ? undefined : ((json['instCour'] as Array<any>).map(EntCourseFromJSON)),
+        'instFacu': !exists(json, 'InstFacu') ? undefined : EntFacultyFromJSON(json['InstFacu']),
     };
 }
 
@@ -58,6 +69,7 @@ export function EntInstitutionEdgesToJSON(value?: EntInstitutionEdges | null): a
     return {
         
         'instCour': value.instCour === undefined ? undefined : ((value.instCour as Array<any>).map(EntCourseToJSON)),
+        'instFacu': EntFacultyToJSON(value.instFacu),
     };
 }
 
