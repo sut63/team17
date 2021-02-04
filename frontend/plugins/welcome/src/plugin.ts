@@ -70,10 +70,10 @@ export const plugin = createPlugin({
       router.registerRoute('/province', Province);
       router.registerRoute('/result', Warn);
       router.registerRoute('/course', Warn);
-
+      router.registerRoute('/pf', SearchProfessor);
       router.registerRoute('/si', Warn);
       router.registerRoute('/as', Warn);
-     // router.registerRoute('/pf', SearchProfessor);
+     
       router.registerRoute('/pv', SearchProvince);
       router.registerRoute('/sg', Warn);
       router.registerRoute('/cs', Warn);
