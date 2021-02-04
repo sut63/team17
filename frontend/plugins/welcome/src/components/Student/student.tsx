@@ -188,7 +188,7 @@ const StudentUI: FC<{}> = () => {
     }
 
     const validateTel = (val: string) => {
-      return val.match("\\d{10}");
+      return val.match("^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\\s\\./0-9]*$");
     }
 
     const checkPattern  = (id: string, value: string) => {
