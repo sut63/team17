@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import {
     Content,
-    Header,
     Page,
     pageTheme,
-    ContentHeader,
     InfoCard,
 } from '@backstage/core';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
 import { Alert } from '@material-ui/lab';
 
-import { makeStyles, Theme, createStyles, ThemeProvider } from '@material-ui/core/styles';
+import { makeStyles, Theme, createStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
