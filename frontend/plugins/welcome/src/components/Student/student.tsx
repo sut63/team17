@@ -99,7 +99,7 @@ interface Students {
    * @type {number}
    * @memberof ControllersStudent
    */
-  tel?: number;
+  tel?: string;
   /**
    * 
    * @type {number}
@@ -172,6 +172,7 @@ const StudentUI: FC<{}> = () => {
     const [schoolError, setschoolError] = React.useState('');
     const [emailError, setemailError] = React.useState('');
     const [addrError, setaddrError] = React.useState('');
+    const [telError, settelError] = React.useState('');
 
     const validateEmail = (email: string) => {
       const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -186,6 +187,10 @@ const StudentUI: FC<{}> = () => {
       return val.match("[A-Za-z0-9\\/]");
     }
 
+    const validateTel = (val: string) => {
+      return val.match("\\d{10}");
+    }
+
     const checkPattern  = (id: string, value: string) => {
       switch(id) {
         case 'fname':
@@ -196,6 +201,9 @@ const StudentUI: FC<{}> = () => {
           return;
         case 'school':
           validateTextfield(value) ? setschoolError('') : setschoolError('ชื่อโรงเรียนใช้ภาษาอังกฤษเท่านั้น');
+          return;
+        case 'tel':
+          validateTel(value) ? settelError('') : settelError('กรุณาใส่เบอร์โทรศัพท์ให้ถูกต้อง');
           return;
         case 'addr':
           validateAddress(value) ? setaddrError('') : setaddrError('รูปแบบที่อยู่ไม่ถูกต้อง');
@@ -218,6 +226,9 @@ const StudentUI: FC<{}> = () => {
           return;
         case 'schoolname':
           alertMessage("error","ชื่อโรงเรียนใช้ภาษาอังกฤษเท่านั้น");
+          return;
+        case 'telephone':
+          alertMessage("error","กรุณาใส่เบอร์โทรศัพท์ให้ถูกต้อง");
           return;
         case 'recent_address':
           alertMessage("error","รูปแบบที่อยู่ไม่ถูกต้อง");
@@ -454,8 +465,8 @@ const StudentUI: FC<{}> = () => {
                 <Grid item xs={4}>
                   <b>Telephone Number</b>
                   <div>
-                  <TextField variant='outlined' type='tel' name="tel" value={Student.tel||''}
-                    onChange={h}/>
+                  <TextField variant='outlined' type='tel' id="tel" value={Student.tel||''} helperText= {telError} error= {telError ? true:false}
+                    onChange={i}/>
                   </div>
                 </Grid>
               </Grid>
@@ -463,7 +474,6 @@ const StudentUI: FC<{}> = () => {
            </TableCell>
            
            <TableCell>
-
             <Grid container spacing={1}>
               <Grid item xs={4}>
                 <b>Last Name</b>
