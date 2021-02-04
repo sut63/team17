@@ -82,7 +82,7 @@ export const plugin = createPlugin({
       router.registerRoute('/student', Warn);
       router.registerRoute('/member', Member);
       router.registerRoute('/activity', Activity);
-      router.registerRoute('/professor', Professor);
+      router.registerRoute('/professor', Warn);
       router.registerRoute('/login', Logins);
       router.registerRoute('/province', Warn);
       router.registerRoute('/result', Warn);
