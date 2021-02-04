@@ -269,8 +269,8 @@ const Activity: FC<{}> = () => {
         <Page theme={pageTheme.home}>
           <Header  
           
-          title={'Student Management'}
-          subtitle='Student Registration Department'
+          title={'Student Activity '}
+          subtitle='Student Activities Department'
           >
             <Avatar alt="Remy Sharp"/>
             <div style={{ marginLeft: 10, marginRight: 20 }}>{cookieName}</div>
@@ -319,6 +319,7 @@ const Activity: FC<{}> = () => {
                   label="ชื่อกิจกรรม"
                   error = {activitynameError ? true : false}
                   helperText={activitynameError}
+                  variant="outlined"
                   name="activityname"
                   type="string"
                   value={activity.activityname || ''} // (undefined || '') = ''
@@ -431,6 +432,7 @@ const Activity: FC<{}> = () => {
                 <TextField
                   error = {hoursError ? true : false}
                   helperText={hoursError}
+                  variant="outlined"
                   label="ชั่วโมงจิตอาสา"
                   name="hours"
                   type="number"
@@ -453,6 +455,7 @@ const Activity: FC<{}> = () => {
                     <TextField 
                      error = {addedError ? true : false}
                      helperText={addedError}
+                      variant="outlined"
                       label="เลือกเวลา"
                       name="added"
                       type="datetime-local"
