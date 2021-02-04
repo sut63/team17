@@ -13,7 +13,12 @@ import {
   SidebarPinButton,
 } from '@backstage/core';
 import { Cookies } from 'plugin-welcome/src/Cookie';
-
+import PostAddIcon from '@material-ui/icons/PostAdd';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import AddLocationIcon from '@material-ui/icons/AddLocation';
+import SchoolIcon from '@material-ui/icons/School';
+import GroupAddIcon from '@material-ui/icons/GroupAdd';
+import BookIcon from '@material-ui/icons/Book';
 var ck = new Cookies()
 
  function Clears() {
@@ -28,12 +33,12 @@ export const AppSidebar = () => (
     <SidebarItem icon={HomeIcon} to="./" text="Home" />
     <SidebarDivider />
     <SidebarItem icon={CreateComponentIcon} to="/member" text="Member" />
-    <SidebarItem icon={CreateComponentIcon} to="/student" text="Student Background" />
-    <SidebarItem icon={CreateComponentIcon} to="/result" text="Student Result" />
-    <SidebarItem icon={CreateComponentIcon} to="/province" text="Province" />
-    <SidebarItem icon={CreateComponentIcon} to="/professor" text="Professor Background" />
-    <SidebarItem icon={CreateComponentIcon} to="/activity" text="Student Activity" />
-    <SidebarItem icon={CreateComponentIcon} to="/course" text="Course" />
+    <SidebarItem icon={GroupAddIcon} to="/student" text="Student Background" />
+    <SidebarItem icon={BookIcon} to="/result" text="Student Result" />
+    <SidebarItem icon={AddLocationIcon} to="/province" text="Province" />
+    <SidebarItem icon={PersonAddIcon} to="/professor" text="Professor Background" />
+    <SidebarItem icon={PostAddIcon} to="/activity" text="Student Activity" />
+    <SidebarItem icon={SchoolIcon} to="/course" text="Course" />
     <SidebarDivider />
     <SidebarItem icon={SearchComponentIcon} to="/si" text="Student Info" />
     <SidebarItem icon={SearchComponentIcon} to="/sg" text="Student Grade" />
