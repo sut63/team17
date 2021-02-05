@@ -13,7 +13,7 @@ import Professor from './components/Professor';
 
 import SearchStudent from './components/SearchStudent';
 import SearchGrade from './components/SearchGrade';
-import SearchActivity from './components/Search Activity';
+import SearchActivity from './components/SearchActivity';
 import SearchCourse from './components/SearchCourse';
 import SearchProfessor from './components/SearchProfessor';
 import SearchProvince from './components/SearchProvince';
