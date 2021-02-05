@@ -101,7 +101,7 @@ const StudentSearchUI: FC<{}> = () => {
     var boo = false
     var arr = ""
     for(let i = 0; i < res.length ; i++){
-      if(res[i].fname === fname || res[i].lname === lname){
+      if(res[i].fname === fname || res[i].lname === lname){ 
         boo = true
         arr += "f"
         console.log(res[i].id)
@@ -180,17 +180,6 @@ const StudentSearchUI: FC<{}> = () => {
           color="primary" 
           > 
           Search
-          </Button>
-              </TableCell>
-              <TableCell>
-              <Button  
-          onClick={() => {
-            Clear();
-          }}
-          variant="contained" 
-          color="primary" 
-          > 
-          Clear 
           </Button>
               </TableCell>
             </TableRow>
