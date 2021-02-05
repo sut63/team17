@@ -13,7 +13,7 @@ import Professor from './components/Professor';
 
 import SearchStudent from './components/SearchStudent';
 import SearchGrade from './components/SearchGrade';
-import SearchActivity from './components/SearchActivity';
+import SearchActivity from './components/Search Activity';
 import SearchCourse from './components/SearchCourse';
 import SearchProfessor from './components/SearchProfessor';
 import SearchProvince from './components/SearchProvince';
@@ -109,7 +109,7 @@ export const plugin = createPlugin({
       router.registerRoute('/as', Logins);
       router.registerRoute('/pf', Logins);
       router.registerRoute('/pv', Logins);
-      router.registerRoute('/sg', Logins);
+      router.registerRoute('/sg', SearchGrade);
       router.registerRoute('/cs', Logins);
     }
   },
