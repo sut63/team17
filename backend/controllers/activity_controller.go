@@ -116,6 +116,14 @@ func (ctl *ActivityController) CreateActivity(c *gin.Context) {
 	}
 
 	time, err := time.Parse(time.RFC3339, obj.Added+ ":00+07:00")
+	if err != nil {
+		c.JSON(400, gin.H{
+			"status": false,
+			"error": "time not found",
+		})
+		return
+	}
+
 
 	save, err := ctl.client.Activity.
 		Create().
