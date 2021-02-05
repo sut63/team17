@@ -39,7 +39,7 @@ export const plugin = createPlugin({
       
       router.registerRoute('/si', SearchStudent);
       router.registerRoute('/as', Warn);
-      router.registerRoute('/pf', Warn);
+      router.registerRoute('/pf', SearchProfessor);
       router.registerRoute('/pv', Warn);
       router.registerRoute('/sg', SearchGrade);
       router.registerRoute('/cs', Warn);
@@ -56,7 +56,7 @@ export const plugin = createPlugin({
 
       router.registerRoute('/si', Warn);
       router.registerRoute('/as', Warn);
-      router.registerRoute('/pf', Warn);
+      router.registerRoute('/pf', SearchProfessor);
       router.registerRoute('/pv', Warn);
       router.registerRoute('/sg', Warn);
       router.registerRoute('/cs', SearchCourse);
@@ -90,10 +90,11 @@ export const plugin = createPlugin({
 
       router.registerRoute('/si', Warn);
       router.registerRoute('/as', SearchActivity);
-      router.registerRoute('/pf', Warn);
+      router.registerRoute('/pf', SearchProfessor);
       router.registerRoute('/pv', Warn);
       router.registerRoute('/sg', Warn);
       router.registerRoute('/cs', Warn);
+      
     }else{
       router.registerRoute('/', Logins);
       router.registerRoute('/student', Logins);
