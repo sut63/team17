@@ -64,9 +64,9 @@ export function EntProfessorEdgesFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'profFacu': !exists(json, 'profFacu') ? undefined : EntFacultyFromJSON(json['profFacu']),
-        'profPre': !exists(json, 'profPre') ? undefined : EntPrefixFromJSON(json['profPre']),
-        'profPros': !exists(json, 'profPros') ? undefined : EntProfessorshipFromJSON(json['profPros']),
+        'profFacu': !exists(json, 'ProfFacu') ? undefined : EntFacultyFromJSON(json['ProfFacu']),
+        'profPre': !exists(json, 'ProfPre') ? undefined : EntPrefixFromJSON(json['ProfPre']),
+        'profPros': !exists(json, 'ProfPros') ? undefined : EntProfessorshipFromJSON(json['ProfPros']),
     };
 }
 
