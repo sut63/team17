@@ -190,6 +190,7 @@ const StudentSearchUI: FC<{}> = () => {
              <TableCell align='center'><b>Title</b></TableCell>
              <TableCell align='center'><b>First Name</b></TableCell>
              <TableCell align='center'><b>Last Name</b></TableCell>
+             <TableCell align='center'><b>Sex</b></TableCell>
              <TableCell align='center'><b>Degree</b></TableCell>
              <TableCell align='center'><b>Telephone</b></TableCell>
              <TableCell align='center'><b>Email</b></TableCell>
@@ -199,6 +200,7 @@ const StudentSearchUI: FC<{}> = () => {
           <TableCell align='center'><b>{item.edges?.studPref?.prefix}</b></TableCell>
           <TableCell align='center'><b>{item.fname}</b></TableCell>
           <TableCell align='center'><b>{item.lname}</b></TableCell>
+          <TableCell align='center'><b>{item.edges?.studGend?.gender}</b></TableCell>
           <TableCell align='center'><b>{item.edges?.studDegr?.degree}</b></TableCell>
           <TableCell align='center'><b>{item.telephone}</b></TableCell>
           <TableCell align='center'><b>{item.email}</b></TableCell>
