@@ -197,13 +197,13 @@ const Activity: FC<{}> = () => {
 
     const checkerror = (s: string) => {
       switch(s) {
-        case 'activityname':
+        case 'ACTIVITYNAME':
           setError("ใส่ชื่อกิจกรรมใหม่");
           return;
           
         case 'hours':
           setError("จำนวนชั่วโมงจิตอาสาต้องเป็นจำนวนเต็มบวก");
-
+          return;
         case 'added':
           setError("กรุณาใส่วันที่จัดกิจกรรม");
           return;
@@ -252,7 +252,7 @@ const Activity: FC<{}> = () => {
         .then(response => response.json())
         .then(data => {
           console.log(data);
-          if (data.status === true) {
+          if (data.status == true) {
             clear();
             setOpen(true);
           } else {
