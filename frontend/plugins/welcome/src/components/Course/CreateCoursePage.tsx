@@ -11,6 +11,7 @@ import {
   Button,
   Select,
   MenuItem,
+  Avatar,
   InputLabel,
   FormHelperText,
 } from '@material-ui/core';
@@ -21,6 +22,14 @@ import {
   EntFaculty,
   CreateCourseRequest,
 } from '../../api';
+
+import { Cookies } from '../../Cookie';
+
+// header css
+const HeaderCustom = {
+  minHeight: '50px',
+};
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -106,13 +115,6 @@ const CreateCoursePage = () => {
 
   const handleInputChange = (e: any) => {
     const { coursename, ...other } = course;
-    let regExp = /ปริญญา+/i;
-    let newCourseName = e.target.value;
-    if (newCourseName && !newCourseName.match(regExp)) {
-      setCourseNameError(true);
-    } else {
-      setCourseNameError(false);
-    }
     setCourse({ ...other, coursename: e.target.value });
   };
 
@@ -177,20 +179,42 @@ const CreateCoursePage = () => {
   };
 
   const validateCourseData = () => {
+    let regExp = /ปริญญา+/i;
+    if (course.coursename && !course.coursename.match(regExp)) {
+      setCourseNameError(true);
+    } else {
+      setCourseNameError(false);
+    }
     return (
       course.coursename != '' &&
+      course.coursename.match(regExp) &&
       course.degree != '' &&
       course.faculty != '' &&
       course.institution != ''
     );
   };
+
+  //cookie logout
+  var cook = new Cookies()
+  var cookieName = cook.GetCookie()
+
+  function Clears() {
+    cook.ClearCookie()
+    window.location.reload(false)
+  }
+
   return (
     <>
       <Page theme={pageTheme.home}>
         <Header
           title="ระบบบันทึกข้อมูลหลักสูตร"
           subtitle="เพื่อเพิ่มข้อมูลหลักสูตรต่างๆภายในมหาลัย"
-        ></Header>
+        >
+          <Avatar alt="Remy Sharp"/>
+          <div style={{ marginLeft: 10, marginRight: 20 }}>{cookieName}</div>
+          <Button variant="text" color="secondary" size="large"
+          onClick={Clears} > Logout </Button>
+        </Header>
         <Content>
           {alert ? (
             <div>
