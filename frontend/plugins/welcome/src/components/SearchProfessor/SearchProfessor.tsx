@@ -121,15 +121,6 @@ export default function ComponentsTable() {
 
   }
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
   const checkresearch = async () => {
     var check = false;
     professor.map(item => {
@@ -145,18 +136,9 @@ export default function ComponentsTable() {
       alertMessage("error", "ไม่พบข้อมูล");
     }
     console.log(checkname)
-    if (name == "") {
-      alertMessage("info", "แสดงข้อมูลอาจารย์");
-    }
   };
 
-  function redirectToProfessor() {
-    window.location.href = "http://localhost:3000/professor"
-}
 
-function redirectToSearchProfessor() {
-  window.location.href = "http://localhost:3000/searchProfessor"
-}
 
   return (
     <Page theme={pageTheme.home}>
@@ -166,6 +148,7 @@ function redirectToSearchProfessor() {
     >
     </Header>
       <Content>
+      
         <Container maxWidth="sm">
           <Grid container spacing={3}>
             <Grid item xs={12}></Grid>
@@ -218,10 +201,11 @@ function redirectToSearchProfessor() {
               </Button>
               
             </Grid>
-
-            <Grid container justify="center">
-          <Grid item xs={12} >
-            <Paper>
+          </Grid>
+        </Container>
+      
+        <br></br>
+        <Paper>
               {search ? (
                 <div>
                   {  checkname? (
@@ -255,46 +239,10 @@ function redirectToSearchProfessor() {
                     </TableContainer>
                     
                   )
-                    : name == "" ? (
-                      <div>
-                        <TableContainer component={Paper}>
-                          <Table>
-                            <TableHead>
-                              <TableRow>
-                                <TableCell align="center">คำนำหน้า</TableCell>
-                                <TableCell align="center">ชื่อ - นามสกุล</TableCell>
-                                <TableCell align="center">ตำแหน่ง</TableCell>
-                                <TableCell align="center">สำนักวิชา</TableCell>
-                                <TableCell align="center">เบอร์มือถือ</TableCell>
-                                <TableCell align="center">E - mail</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-
-                              {professor.map((item => (
-                                <TableRow key={item.id}>
-                                  <TableCell align="center">{item.edges?.profPre?.prefix}</TableCell>
-                                  <TableCell align="center">{item.name}</TableCell>
-                                  <TableCell align="center">{item.edges?.profPros?.professorship}</TableCell>
-                                  <TableCell align="center">{item.edges?.profFacu?.faculty}</TableCell>
-                                  <TableCell align="center">{item.tel}</TableCell>
-                                  <TableCell align="center">{item.email}</TableCell>
-                                </TableRow>
-                              )))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-
-                      </div>
-                    ) : null}
+                     : null}
                 </div>
               ) : null}
             </Paper>
-          </Grid>
-        </Grid>
-      
-          </Grid>
-        </Container>
       </Content>
     </Page>
   );
