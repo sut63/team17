@@ -627,7 +627,7 @@ definitions:
         type: string
       telephone:
         description: Telephone holds the value of the "telephone" field.
-        type: integer
+        type: string
     type: object
   ent.StudentEdges:
     properties:
