@@ -157,7 +157,6 @@ const Activity: FC<{}> = () => {
    // สำหรับตรวจสอบความถูกต้อง
    const [activitynameError, setActivityNameError] = React.useState('');
    const [hoursError, setHoursError] = React.useState('');
-   const [addedError, setAddedError] = React.useState('');
    const [errors, setError] = React.useState(String);
 
 
@@ -168,10 +167,6 @@ const Activity: FC<{}> = () => {
 
     //validate จำนวนชั่วโมงจิตอาสา
     const validateHours = (val: string) => {
-      return val;
-    }
-  //validate วันที่ เวลา
-   const validateAdded = (val: string) => {
       return val;
     }
 
@@ -186,10 +181,7 @@ const Activity: FC<{}> = () => {
           return;
         case 'hours':
           validateHours(value) ? setHoursError('') : setHoursError('จำนวนชั่วโมงจิตอาสาต้องมากกว่า 0');
-          return;
-        case 'added':
-          validateAdded(value) ? setAddedError('') : setAddedError('ใส่วันที่จัดกิจกรรม');
-          return;     
+          return;   
         default:
           return;
   }
@@ -203,9 +195,6 @@ const Activity: FC<{}> = () => {
           
         case 'hours':
           setError("จำนวนชั่วโมงจิตอาสาต้องเป็นจำนวนเต็มบวก");
-          return;
-        case 'added':
-          setError("กรุณาใส่วันที่จัดกิจกรรม");
           return;
       default:
           setError("กรุณากรอกข้อมูลให้ครบถ้วน");
@@ -453,8 +442,7 @@ const Activity: FC<{}> = () => {
                 <Grid item xs={9}>
                   <form className={classes.container} noValidate>
                     <TextField 
-                     error = {addedError ? true : false}
-                     helperText={addedError}
+                    
                       variant="outlined"
                       label="เลือกเวลา"
                       name="added"
