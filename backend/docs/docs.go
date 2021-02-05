@@ -3104,7 +3104,7 @@ var doc = `{
                 },
                 "telephone": {
                     "description": "Telephone holds the value of the \"telephone\" field.",
-                    "type": "integer"
+                    "type": "string"
                 }
             }
         },
