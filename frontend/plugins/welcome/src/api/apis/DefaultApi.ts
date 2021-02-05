@@ -1210,7 +1210,7 @@ export class DefaultApi extends runtime.BaseAPI {
     async listActivityRaw(): Promise<runtime.ApiResponse<Array<EntActivity>>> {
         const queryParameters: runtime.HTTPQuery = {};
 
-       
+        
 
         const headerParameters: runtime.HTTPHeaders = {};
 
