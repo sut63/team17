@@ -4,12 +4,13 @@ import {
     Page,
     pageTheme,
     InfoCard,
+    Header
 } from '@backstage/core';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 
 import { Alert } from '@material-ui/lab';
-
+import { Avatar } from '@material-ui/core';
 import { makeStyles, Theme, createStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -22,7 +23,7 @@ import Button from '@material-ui/core/Button';
 import { DefaultApi } from '../../api/apis';
 
 import SearchIcon from '@material-ui/icons/Search';
-
+import { Cookies } from '../../Cookie';
 import { EntActivity } from '../../api/models/EntActivity';
 
 
@@ -153,9 +154,27 @@ export default function SearchActivity() {
         setActivitysearch(event.target.value as string);
     };
     
+     //cookie logout
+     var cook = new Cookies()
+     var cookieName = cook.GetCookie()
+   
+     function Clears() {
+       cook.ClearCookie()
+       window.location.reload(false)
+     }
 
     return (
-        <Page theme={pageTheme.service}>
+        <Page theme={pageTheme.home}>
+          <Header  
+          
+          title={'Search Student Activity '}
+          subtitle='Student Activities Department'
+          >
+            <Avatar alt="Remy Sharp"/>
+            <div style={{ marginLeft: 10, marginRight: 20 }}>{cookieName}</div>
+            <Button variant="text" color="secondary" size="large"
+              onClick={Clears} > Logout </Button>
+          </Header>
             <Content>
             <InfoCard title="ค้นหาประวัติกิจกรรมนักศึกษา">
 
@@ -166,7 +185,6 @@ export default function SearchActivity() {
                     <div className={classes.paper}><strong>ชื่อนักศึกษา</strong></div>
                     <TextField
                         id="name"
-                       // label="ค้นหารหัสพนักงาน"
                         type="string"
                         size="medium"
                         value={activitysearch}
