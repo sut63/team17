@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"regexp"
+
 	"github.com/facebookincubator/ent"
 	"github.com/facebookincubator/ent/schema/edge"
 	"github.com/facebookincubator/ent/schema/field"
@@ -14,10 +16,10 @@ type Province struct {
 // Fields of the Province.
 func (Province) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("province").NotEmpty().Unique(),
-		field.String("district").NotEmpty(),
-		field.String("subdistrict").NotEmpty(),
-		field.Int("postal").Positive(),
+		field.String("province").NotEmpty().Match(regexp.MustCompile("[A-Za-z]")),
+		field.String("district").NotEmpty().Match(regexp.MustCompile("[A-Za-z]")),
+		field.String("subdistrict").NotEmpty.()Match(regexp.MustCompile("[A-Za-z]")),
+		field.String("postal").Match(regexp.MustCompile("[\\d{5}][0-9]")),
 	}
 }
 
