@@ -27,6 +27,7 @@ type Province struct {
 	Regi int
 	Coun int
 	Cont int
+
 }
 
 // CreateProvince handles POST requests for adding province entities
@@ -85,7 +86,7 @@ func (ctl *ProvinceController) CreateProvince(c *gin.Context) {
 		})
 		return
 	}
-
+	
 	save, err := ctl.client.Province.
 		Create().
 		SetDistrict(obj.Dist).
