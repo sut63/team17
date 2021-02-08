@@ -24,43 +24,43 @@ export interface ControllersProvince {
      * @type {number}
      * @memberof ControllersProvince
      */
-    continent?: number;
+    cont?: number;
     /**
      * 
      * @type {number}
      * @memberof ControllersProvince
      */
-    country?: number;
+    coun?: number;
     /**
      * 
      * @type {string}
      * @memberof ControllersProvince
      */
-    district?: string;
+    dist?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersProvince
+     */
+    post?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersProvince
+     */
+    prov?: string;
     /**
      * 
      * @type {number}
      * @memberof ControllersProvince
      */
-    postal?: number;
+    regi?: number;
     /**
      * 
      * @type {string}
      * @memberof ControllersProvince
      */
-    province?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof ControllersProvince
-     */
-    region?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof ControllersProvince
-     */
-    subdistrict?: string;
+    subd?: string;
 }
 
 export function ControllersProvinceFromJSON(json: any): ControllersProvince {
@@ -73,13 +73,13 @@ export function ControllersProvinceFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'continent': !exists(json, 'continent') ? undefined : json['continent'],
-        'country': !exists(json, 'country') ? undefined : json['country'],
-        'district': !exists(json, 'district') ? undefined : json['district'],
-        'postal': !exists(json, 'postal') ? undefined : json['postal'],
-        'province': !exists(json, 'province') ? undefined : json['province'],
-        'region': !exists(json, 'region') ? undefined : json['region'],
-        'subdistrict': !exists(json, 'subdistrict') ? undefined : json['subdistrict'],
+        'cont': !exists(json, 'cont') ? undefined : json['cont'],
+        'coun': !exists(json, 'coun') ? undefined : json['coun'],
+        'dist': !exists(json, 'dist') ? undefined : json['dist'],
+        'post': !exists(json, 'post') ? undefined : json['post'],
+        'prov': !exists(json, 'prov') ? undefined : json['prov'],
+        'regi': !exists(json, 'regi') ? undefined : json['regi'],
+        'subd': !exists(json, 'subd') ? undefined : json['subd'],
     };
 }
 
@@ -92,13 +92,13 @@ export function ControllersProvinceToJSON(value?: ControllersProvince | null): a
     }
     return {
         
-        'continent': value.continent,
-        'country': value.country,
-        'district': value.district,
-        'postal': value.postal,
-        'province': value.province,
-        'region': value.region,
-        'subdistrict': value.subdistrict,
+        'cont': value.cont,
+        'coun': value.coun,
+        'dist': value.dist,
+        'post': value.post,
+        'prov': value.prov,
+        'regi': value.regi,
+        'subd': value.subd,
     };
 }
 

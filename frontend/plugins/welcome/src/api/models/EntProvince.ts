@@ -46,10 +46,10 @@ export interface EntProvince {
     id?: number;
     /**
      * Postal holds the value of the "postal" field.
-     * @type {number}
+     * @type {string}
      * @memberof EntProvince
      */
-    postal?: number;
+    postal?: string;
     /**
      * Province holds the value of the "province" field.
      * @type {string}
