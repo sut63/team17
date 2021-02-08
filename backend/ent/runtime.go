@@ -165,7 +165,22 @@ func init() {
 	// provinceDescPostal is the schema descriptor for postal field.
 	provinceDescPostal := provinceFields[3].Descriptor()
 	// province.PostalValidator is a validator for the "postal" field. It is called by the builders before save.
-	province.PostalValidator = provinceDescPostal.Validators[0].(func(int) error)
+	province.PostalValidator = func() func(string) error {
+		validators := provinceDescPostal.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+			validators[2].(func(string) error),
+		}
+		return func(postal string) error {
+			for _, fn := range fns {
+				if err := fn(postal); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	regionFields := schema.Region{}.Fields()
 	_ = regionFields
 	// regionDescName is the schema descriptor for name field.

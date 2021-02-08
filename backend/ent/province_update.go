@@ -50,15 +50,8 @@ func (pu *ProvinceUpdate) SetSubdistrict(s string) *ProvinceUpdate {
 }
 
 // SetPostal sets the postal field.
-func (pu *ProvinceUpdate) SetPostal(i int) *ProvinceUpdate {
-	pu.mutation.ResetPostal()
-	pu.mutation.SetPostal(i)
-	return pu
-}
-
-// AddPostal adds i to postal.
-func (pu *ProvinceUpdate) AddPostal(i int) *ProvinceUpdate {
-	pu.mutation.AddPostal(i)
+func (pu *ProvinceUpdate) SetPostal(s string) *ProvinceUpdate {
+	pu.mutation.SetPostal(s)
 	return pu
 }
 
@@ -375,14 +368,7 @@ func (pu *ProvinceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := pu.mutation.Postal(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: province.FieldPostal,
-		})
-	}
-	if value, ok := pu.mutation.AddedPostal(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
+			Type:   field.TypeString,
 			Value:  value,
 			Column: province.FieldPostal,
 		})
@@ -681,15 +667,8 @@ func (puo *ProvinceUpdateOne) SetSubdistrict(s string) *ProvinceUpdateOne {
 }
 
 // SetPostal sets the postal field.
-func (puo *ProvinceUpdateOne) SetPostal(i int) *ProvinceUpdateOne {
-	puo.mutation.ResetPostal()
-	puo.mutation.SetPostal(i)
-	return puo
-}
-
-// AddPostal adds i to postal.
-func (puo *ProvinceUpdateOne) AddPostal(i int) *ProvinceUpdateOne {
-	puo.mutation.AddPostal(i)
+func (puo *ProvinceUpdateOne) SetPostal(s string) *ProvinceUpdateOne {
+	puo.mutation.SetPostal(s)
 	return puo
 }
 
@@ -1004,14 +983,7 @@ func (puo *ProvinceUpdateOne) sqlSave(ctx context.Context) (pr *Province, err er
 	}
 	if value, ok := puo.mutation.Postal(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: province.FieldPostal,
-		})
-	}
-	if value, ok := puo.mutation.AddedPostal(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
+			Type:   field.TypeString,
 			Value:  value,
 			Column: province.FieldPostal,
 		})
