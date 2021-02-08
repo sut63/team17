@@ -1536,6 +1536,51 @@ var doc = `{
                 }
             }
         },
+        "/provinces/{id}": {
+            "get": {
+                "description": "get province by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a province entity by ID",
+                "operationId": "get-province",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Province ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.Province"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
         "/regions": {
             "get": {
                 "description": "list region entities",
@@ -2338,25 +2383,25 @@ var doc = `{
         "controllers.Province": {
             "type": "object",
             "properties": {
-                "continent": {
+                "cont": {
                     "type": "integer"
                 },
-                "country": {
+                "coun": {
                     "type": "integer"
                 },
-                "district": {
+                "dist": {
                     "type": "string"
                 },
-                "postal": {
-                    "type": "integer"
-                },
-                "province": {
+                "post": {
                     "type": "string"
                 },
-                "region": {
+                "prov": {
+                    "type": "string"
+                },
+                "regi": {
                     "type": "integer"
                 },
-                "subdistrict": {
+                "subd": {
                     "type": "string"
                 }
             }
@@ -2937,7 +2982,7 @@ var doc = `{
                 },
                 "postal": {
                     "description": "Postal holds the value of the \"postal\" field.",
-                    "type": "integer"
+                    "type": "string"
                 },
                 "province": {
                     "description": "Province holds the value of the \"province\" field.",

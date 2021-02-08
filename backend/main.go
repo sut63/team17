@@ -114,7 +114,7 @@ type Province struct {
 	Province    string
 	District    string
 	Subdistrict string
-	Postal      int
+	Postal      string
 }
 
 type Emps struct {
@@ -489,10 +489,10 @@ func main() {
 	// Set Province Data
 	provinces := Provinces{
 		Province: []Province{
-			Province{"d", "เมืองนครราชสีมา", "ในเมือง", 30000},
-			Province{"a", "เมืองนครราชสีมา", "จอหอ", 30310},
-			Province{"b", "สีดา", "โพนทอง", 30430},
-			Province{"c", "โนนสูง", "โนนสูง", 30280},
+			Province{"d", "เมืองนครราชสีมา", "ในเมือง", "30000"},
+			Province{"a", "เมืองนครราชสีมา", "จอหอ", "30310"},
+			Province{"b", "สีดา", "โพนทอง", "30430"},
+			Province{"c", "โนนสูง", "โนนสูง", "30280"},
 		},
 	}
 	for _, pv := range provinces.Province {
