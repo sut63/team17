@@ -16,10 +16,10 @@ type Province struct {
 // Fields of the Province.
 func (Province) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("province").NotEmpty().Match(regexp.MustCompile("[A-Za-z]")),
-		field.String("district").NotEmpty().Match(regexp.MustCompile("[A-Za-z]")),
-		field.String("subdistrict").NotEmpty.()Match(regexp.MustCompile("[A-Za-z]")),
-		field.String("postal").Match(regexp.MustCompile("[\\d{5}][0-9]")),
+		field.String("province").NotEmpty(),
+		field.String("district").NotEmpty(),
+		field.String("subdistrict").NotEmpty(),
+		field.String("postal").Match(regexp.MustCompile("[0-9]")).MaxLen(5).MinLen(5),
 	}
 }
 
