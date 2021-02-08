@@ -147,8 +147,8 @@ const SearchProvince: FC<{}> = () => {
     return(
         <Page theme={pageTheme.home}>
         <Header
-            title={'Student Management'}
-            subtitle='Student Registration Department'>
+            title={'Province Management'}
+            subtitle='Province Registration Department'>
                 <Avatar alt="Remy Sharp"/>
                 <div style={{ marginLeft: 10, marginRight: 20 }}>{cookieName}</div>
                 <Button variant="text" color="secondary" size="large"
@@ -160,7 +160,7 @@ const SearchProvince: FC<{}> = () => {
          <TableBody>
            <TableRow>
              <TableCell>
-                <TextField value={search||''} type='string' name='search' label="Enter First Name" onChange={sh}/>
+                <TextField value={search||''} type='string' name='search' label="Enter province" onChange={sh}/>
               </TableCell>
               <TableCell>
       <Button  
