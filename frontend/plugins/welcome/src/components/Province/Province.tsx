@@ -33,6 +33,51 @@ import  { DefaultApi }  from '../../api/apis';
 import { EntRegion, EntContinent, EntCountry} from '../../api/models/';
 import { Cookies } from '../../Cookie';
 
+interface ControllersProvince {
+  /**
+   * 
+   * @type {number}
+   * @memberof ControllersProvince
+   */
+  cont?: number;
+  /**
+   * 
+   * @type {number}
+   * @memberof ControllersProvince
+   */
+  coun?: number;
+  /**
+   * 
+   * @type {string}
+   * @memberof ControllersProvince
+   */
+  dist?: string;
+  /**
+   * 
+   * @type {string}
+   * @memberof ControllersProvince
+   */
+  post?: string;
+  /**
+   * 
+   * @type {string}
+   * @memberof ControllersProvince
+   */
+  prov?: string;
+  /**
+   * 
+   * @type {number}
+   * @memberof ControllersProvince
+   */
+  regi?: number;
+  /**
+   * 
+   * @type {string}
+   * @memberof ControllersProvince
+   */
+  subd?: string;
+}
+
 
 const ProvinceUI: FC<{}> = () => {
   const api = new DefaultApi();
@@ -58,34 +103,7 @@ const ProvinceUI: FC<{}> = () => {
       getconti();
   }, []);
 
-  const [p,setp]=useState(String)
-  const ph = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setp(event.target.value as string);
-  };
-  const [d,setd]=useState(String)
-  const dh = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setd(event.target.value as string);
-  };
-  const [s,sets]=useState(String)
-  const sh = (event: React.ChangeEvent<{ value: unknown }>) => {
-    sets(event.target.value as string);
-  };
-  const [n,setn]=useState(String)
-  const nh = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setn(event.target.value as string);
-  };
-  const [r,setr]=useState(Number)
-  const rh = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setr(event.target.value as number);
-  };
-  const [u,setu]=useState(Number)
-  const uh = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setu(event.target.value as number);
-  };
-  const [t,sett]=useState(Number)
-  const th = (event: React.ChangeEvent<{ value: unknown }>) => {
-    sett(event.target.value as number);
-  };
+  
 
   const Toast = Swal.mixin({
     toast: true,
@@ -99,29 +117,44 @@ const ProvinceUI: FC<{}> = () => {
     },
   });
 
-  const Create = async () => {
-    const nnn = {
-      cont:t,
-      coun:u,
-      dist:d,
-      post:n,
-      prov:p,
-      regi:r,
-      subd:s,
-    }
-    const res1: any = await api.createProvince({ province : nnn });
-    if (res1.id != '') {
-      Toast.fire({
-        icon: 'success',
-        title: 'successful',
+  const [P, setP] = React.useState< Partial<ControllersProvince>>({});
+
+  const h = (
+    event: React.ChangeEvent<{ name?: string; value: any }>,
+  ) => {
+    const name = event.target.name as keyof typeof P;
+    const { value } = event.target;
+    setP({ ...P, [name]: value });
+    console.log(P);
+  };
+
+  function save() {
+    const apiUrl = 'http://localhost:8080/api/v1/provinces';
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(P),
+    };
+    console.log(P);
+
+    fetch(apiUrl, requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.status);
+        if (data.status === true) {
+          Toast.fire({
+            icon: 'success',
+            title: 'บันทึกข้อมูลสำเร็จ',
+          });
+        } else {
+          Toast.fire({
+            icon: 'error',
+            title: 'บันทึกข้อมูลไม่สำเร็จ',
+          });
+        }
       });
-    } else {
-      Toast.fire({
-        icon: 'error',
-        title: 'failure',
-      });
-    }
   }
+  
  
   //cookie logout
   var cook = new Cookies()
@@ -150,8 +183,8 @@ const ProvinceUI: FC<{}> = () => {
                     <b>Continent</b>
                     <div>
                 <FormControl variant="outlined" fullWidth>
-                <Select name="ct" value={t||''}
-                    onChange={th}>
+                <Select name="cont" value={P.cont||''}
+                    onChange={h}>
                 {continent.map((item) => {
                   return (
                     <MenuItem key={item.id} value={item.id}>
@@ -167,8 +200,8 @@ const ProvinceUI: FC<{}> = () => {
                     <b>Country</b>
                     <div>
                 <FormControl variant="outlined" fullWidth>
-                <Select name="cn" value={u||''}
-                    onChange={uh}>
+                <Select name="coun" value={P.coun||''}
+                    onChange={h}>
                 {country.map((item) => {
                   return (
                     <MenuItem key={item.id} value={item.id}>
@@ -184,8 +217,8 @@ const ProvinceUI: FC<{}> = () => {
                     <b>Region</b>
                     <div>
                 <FormControl variant="outlined" fullWidth>
-                <Select name="re" value={r||''}
-                    onChange={rh}>
+                <Select name="regi" value={P.regi||''}
+                    onChange={h}>
                 {region.map((item) => {
                   return (
                     <MenuItem key={item.id} value={item.id}>
@@ -203,31 +236,31 @@ const ProvinceUI: FC<{}> = () => {
                   <Grid item xs={2}>
                     <b>Province</b>
                     <div>
-               <TextField name='p' type='string' value={p||''} onChange={ph}/>
+               <TextField name='prov' type='string' value={P.prov||''} onChange={h}/>
                 </div>
                   </Grid>
                   <Grid item xs={2}>
                     <b>District</b>
                     <div>
-                <TextField name='d' type='string' value={d||''} onChange={dh}/>
+                <TextField name='dist' type='string' value={P.dist||''} onChange={h}/>
                 </div>
                   </Grid>
                   <Grid item xs={2}>
                     <b>Subdistrict</b>
                     <div>
-                <TextField name='s' type='string' value={s||''} onChange={sh}/>
+                <TextField name='subd' type='string' value={P.subd||''} onChange={h}/>
                 </div>
                   </Grid>
                   <Grid item xs={2}>
                     <b>Post Code</b>
                     <div>
-                <TextField name='p' type='string' value={n||''} onChange={nh}/>
+                <TextField name='post' type='string' value={P.post||''} onChange={h}/>
                 </div>
                   </Grid>
                 </Grid>
 
                 <Button variant="contained" color="primary" disableElevation  onClick={() => {
-                    Create(); 
+                    save();
                 }} > Save </Button>
           </TableContainer>
           </Content>
