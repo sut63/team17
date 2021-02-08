@@ -12,6 +12,7 @@ import {
     TextField,
     Avatar,
     Button,
+    FormHelperText,
   } from '@material-ui/core';
   import { EntYear } from '../../api/models/EntYear';
   import { EntResults } from '../../api/models/EntResults';
@@ -64,12 +65,15 @@ const useStyles = makeStyles(theme => ({
 
  
 
+
+
+
 const Results: FC<{}> = () => {
 
   const classes = useStyles();
   //const************************************************
   const api = new DefaultApi();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = React.useState(false);
   const [years, setYears] = React.useState<EntYear[]>([]);
   const [resultss, setResultss] = React.useState<EntResults[]>([]);
   const [terms, setTerms] = React.useState<EntTerm[]>([]);
@@ -77,59 +81,60 @@ const Results: FC<{}> = () => {
   const [students, setStudents] = React.useState<EntStudent[]>([]);
  
 
+  
 
   //Hook********************************************
   useEffect(() => {
     const getYears = async () => {
         const res = await api.listYear({ limit: 100, offset: 0 });
-        setLoading(true);
+        //setLoading(true);
         setYears(res);
       };
     getYears();
-  }, [loading]);
+  }, []);
 
   useEffect(() => {
     const getResultss = async () => {
         const res = await api.listResults({ limit: 100, offset: 0 });
-        setLoading(true);
+        //setLoading(true);
         setResultss(res);
       };
     getResultss();
-  }, [loading]);
+  }, []);
 
   useEffect(() => {
     const getTerms = async () => {
         const res = await api.listTerm({ limit: 100, offset: 0 });
-        setLoading(true);
+        //setLoading(true);
         setTerms(res);
       };
     getTerms();
-  }, [loading]);
+  }, []);
 
   useEffect(() => {
     const getSubjects = async () => {
         const res = await api.listSubject({ limit: 100, offset: 0 });
-        setLoading(true);
+        //setLoading(true);
         setSubjects(res);
       };
     getSubjects();
-  }, [loading]);
+  }, []);
 
   useEffect(() => {
     const getStudents = async () => {
         const res = await api.listStudent({ limit: 100, offset: 0 });
-        setLoading(true);
+        //setLoading(true);
         setStudents(res);
       };
     getStudents();
-  }, [loading]);
+  }, []);
    
   //Get Data By Textfile and ComboBox ************************************************
-  const [yearx, setYearx] = React.useState();
-  const [gradex, setGradex] = React.useState();
-  const [studentx, setStudentx] = React.useState();
-  const [subx, setSubx] = React.useState();
-  const [termx, setTermx] = React.useState();
+  const [yearx, setYearx] = React.useState('');
+  const [gradex, setGradex] = React.useState('');
+  const [studentx, setStudentx] = React.useState('');
+  const [subx, setSubx] = React.useState('');
+  const [termx, setTermx] = React.useState('');
   
 
   let yearID = Number(yearx)
@@ -201,9 +206,66 @@ const Results: FC<{}> = () => {
     }
   }
 
+
+
+  //Validate Select 
+  const ResultFieldValidate = {
+    grade1111: false,
+    term1111: false,
+    year1111: false,
+    subject1111: false,
+    student1111: false,
+  };
+  const [resultValidate, setResultValidate] = useState(ResultFieldValidate); //Select Validate
+  const checkValidateData = () => {
+    setResultValidate({
+      grade1111: gradex == '',
+      term1111: termx == '',
+      year1111: yearx == '',
+      subject1111: subx == '',
+      student1111: studentx == '',
+    });
+  };
+
+  //validate TaxtField
+  const [GradeError, setGradeError] = React.useState('');
+
+  const validateTextfield = (val: number) => {
+    if(val > 4)
+    return false;
+    else if (val < 0)
+    return false;
+    else
+    return true;
+  }
+
+  const checkPattern  = (id: any, value: string) => {
+    switch(id) {
+      case 'grade':
+        validateTextfield(Number(value)) ? setGradeError('') : setGradeError('0-4 เท่านั้น');
+        return;
+      default:
+        return;
+    }
+  }
+
+  const g = (event: React.ChangeEvent<{ id?: string; value: any }>) => {
+    const id = event.target.id as keyof typeof gradex;
+    const { value } = event.target;
+    const validateValue = value.toString()
+    checkPattern(id, validateValue)
+    setGradex( value );
+  };
+
+
+
+
+  
   //seve**********************************************************
    // function save data
    function save() {
+     setLoading(true);
+     checkValidateData();
     const apiUrl = 'http://localhost:8080/api/v1/resultss';
     const requestOptions = {
       method: 'POST',
@@ -271,9 +333,10 @@ const Results: FC<{}> = () => {
               <div className={classes.paper}>รหัสนักศึกษา</div>
             </Grid>
             <Grid item xs={9}>
-              <FormControl variant="outlined" className={classes.formControl}>
+              <FormControl  error={resultValidate.student1111} variant="outlined" className={classes.formControl}>
                 <InputLabel>เลือกรหัสนักศึกษา</InputLabel>
                 <Select
+                  error={resultValidate.student1111}
                   name="StudentID"
                   value={results.studentID || ''} // (undefined || '') = ''
                   onChange={handleInputStudent}
@@ -286,6 +349,9 @@ const Results: FC<{}> = () => {
                     );
                   })}
                 </Select>
+                {resultValidate.student1111 ? (
+                  <FormHelperText>กรุณาเลือกรหัสนักศึกษา</FormHelperText>
+                ) : null}
               </FormControl>
             </Grid>
 
@@ -297,9 +363,10 @@ const Results: FC<{}> = () => {
               <div className={classes.paper}>ปีการศึกษา</div>
             </Grid>
             <Grid item xs={9}>
-              <FormControl variant="outlined" className={classes.formControl}>
+              <FormControl error={resultValidate.year1111} variant="outlined" className={classes.formControl}>
                 <InputLabel>เลือกปีการศึกษา</InputLabel>
                 <Select
+                  error={resultValidate.year1111}
                   name="YearID"
                   value={results.yearID || ''} // (undefined || '') = ''
                   onChange={handleInputYear}
@@ -312,6 +379,9 @@ const Results: FC<{}> = () => {
                     );
                   })}
                 </Select>
+                {resultValidate.year1111 ? (
+                  <FormHelperText>กรุณาเลือกปีการศึกษา</FormHelperText>
+                ) : null}
               </FormControl>
             </Grid>
 
@@ -320,9 +390,10 @@ const Results: FC<{}> = () => {
               <div className={classes.paper}>ภาคการศึกษา</div>
             </Grid>
             <Grid item xs={9}>
-              <FormControl variant="outlined" className={classes.formControl}>
+              <FormControl error={resultValidate.term1111} variant="outlined" className={classes.formControl}>
                 <InputLabel>เลือกภาคการศึกษา</InputLabel>
                 <Select
+                error={resultValidate.term1111}
                   name="TermID"
                   value={results.termID || ''} // (undefined || '') = ''
                   onChange={handleInputTerm}
@@ -335,6 +406,9 @@ const Results: FC<{}> = () => {
                     );
                   })}
                 </Select>
+                {resultValidate.term1111 ? (
+                  <FormHelperText>กรุณาเลือกภาคการศึกษา</FormHelperText>
+                ) : null}
               </FormControl>
             </Grid>
 
@@ -345,9 +419,10 @@ const Results: FC<{}> = () => {
               <div className={classes.paper}>วิชา</div>
             </Grid>
             <Grid item xs={9}>
-              <FormControl variant="outlined" className={classes.formControl}>
+              <FormControl error={resultValidate.subject1111} variant="outlined" className={classes.formControl}>
                 <InputLabel>เลือกวิชา</InputLabel>
                 <Select
+                error={resultValidate.subject1111}
                   name="SubjectID"
                   value={results.subjectID || ''} // (undefined || '') = ''
                   onChange={handleInputSubject}
@@ -360,6 +435,9 @@ const Results: FC<{}> = () => {
                     );
                   })}
                 </Select>
+                {resultValidate.subject1111 ? (
+                  <FormHelperText>กรุณาเลือกวิชา</FormHelperText>
+                ) : null}
               </FormControl>
             </Grid>
 
@@ -369,11 +447,15 @@ const Results: FC<{}> = () => {
                   <div className={classes.paper}>เกรด</div>
                 </Grid>
                 <Grid item xs={9}>
-                  <TextField variant="outlined" className={classes.textField} 
+                  <TextField variant="outlined" className={classes.textField}
+                      helperText= {loading? GradeError:""} 
+                      error= {GradeError ? true:false }
+                  
+                      id="grade" 
                       type="Number" 
                       name="grade"
                       value={results.grade || ''} // (undefined || '') = ''
-                      onChange={handleInputGrade}>
+                      onChange={g}>
                                                                             
                   </TextField>
                 </Grid>
