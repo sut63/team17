@@ -70,10 +70,10 @@ export interface EntStudent {
     schoolname?: string;
     /**
      * Telephone holds the value of the "telephone" field.
-     * @type {number}
+     * @type {string}
      * @memberof EntStudent
      */
-    telephone?: number;
+    telephone?: string;
 }
 
 export function EntStudentFromJSON(json: any): EntStudent {
