@@ -70,6 +70,7 @@ const SearchCoursePage = () => {
   const [searchText, setSearchText] = useState('');
   const [filterCourses, setFilterCourse] = useState<EntCourse[]>([]);
   const [isFound, setIsFound] = useState<boolean>(true);
+  const [isSearchComplete, setIsSearchComplete] = useState(false);
 
   const api = new DefaultApi();
 
@@ -99,11 +100,15 @@ const SearchCoursePage = () => {
     let temp = courses.filter(item => checkIsFound(item));
     setIsFound(temp.length > 0);
     setFilterCourse(temp);
+    if (temp.length > 0) {
+      setIsSearchComplete(true);
+    }
   };
 
   const onClearSearch = () => {
     setFilterCourse(courses);
     setIsFound(true);
+    setIsSearchComplete(false);
     setSearchText('');
   };
   return (
@@ -115,6 +120,11 @@ const SearchCoursePage = () => {
         ></Header>
         <Content>
           <div className={classes.root}>
+            {isSearchComplete ? (
+              <Alert severity="success">
+                ค้นหาสำเร็จ พบข้อมูลจำนวน {filterCourses.length} รายการ
+              </Alert>
+            ) : null}
             {isFound == false ? (
               <Alert severity="error">ไม่พบข้อมูลหลักสูตรนี้</Alert>
             ) : null}
