@@ -55,7 +55,7 @@ export function EntInstitutionEdgesFromJSONTyped(json: any, ignoreDiscriminator:
     return {
         
         'instCour': !exists(json, 'instCour') ? undefined : ((json['instCour'] as Array<any>).map(EntCourseFromJSON)),
-        'instFacu': !exists(json, 'instFacu') ? undefined : EntFacultyFromJSON(json['instFacu']),
+        'instFacu': !exists(json, 'InstFacu') ? undefined : EntFacultyFromJSON(json['InstFacu']),
     };
 }
 
