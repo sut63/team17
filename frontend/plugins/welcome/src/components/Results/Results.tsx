@@ -1,27 +1,27 @@
-import React, { FC,useState,useEffect } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Content, Header, Page, pageTheme } from '@backstage/core';
 import SaveIcon from '@material-ui/icons/Save'; // icon save
 import {
-    Container,
-    Grid,
-    FormControl,
-    Select,
-    InputLabel,
-    MenuItem,
-    TextField,
-    Avatar,
-    Button,
-    FormHelperText,
-  } from '@material-ui/core';
-  import { EntYear } from '../../api/models/EntYear';
-  import { EntResults } from '../../api/models/EntResults';
-  import { EntTerm } from '../../api/models/EntTerm';
-  import { EntSubject } from '../../api/models/EntSubject';
-  import { EntStudent } from '../../api/models/EntStudent';
-  import { DefaultApi } from '../../api/apis/DefaultApi'; // Api Gennerate From Command
-  import Swal from 'sweetalert2'; // alert
-  import { Cookies } from '../../Cookie';
+  Container,
+  Grid,
+  FormControl,
+  Select,
+  InputLabel,
+  MenuItem,
+  TextField,
+  Avatar,
+  Button,
+  FormHelperText,
+} from '@material-ui/core';
+import { EntYear } from '../../api/models/EntYear';
+import { EntResults } from '../../api/models/EntResults';
+import { EntTerm } from '../../api/models/EntTerm';
+import { EntSubject } from '../../api/models/EntSubject';
+import { EntStudent } from '../../api/models/EntStudent';
+import { DefaultApi } from '../../api/apis/DefaultApi'; // Api Gennerate From Command
+import Swal from 'sweetalert2'; // alert
+import { Cookies } from '../../Cookie';
 // alert setting
 const Toast = Swal.mixin({
   toast: true,
@@ -63,7 +63,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
- 
+
 
 
 
@@ -75,53 +75,53 @@ const Results: FC<{}> = () => {
   const api = new DefaultApi();
   const [loading, setLoading] = React.useState(false);
   const [years, setYears] = React.useState<EntYear[]>([]);
-  
+
   const [terms, setTerms] = React.useState<EntTerm[]>([]);
   const [subjects, setSubjects] = React.useState<EntSubject[]>([]);
   const [students, setStudents] = React.useState<EntStudent[]>([]);
- 
 
-  
+
+
 
   //Hook********************************************
   useEffect(() => {
     const getYears = async () => {
-        const res = await api.listYear({ limit: 100, offset: 0 });
-        //setLoading(true);
-        setYears(res);
-      };
+      const res = await api.listYear({ limit: 100, offset: 0 });
+      //setLoading(true);
+      setYears(res);
+    };
     getYears();
   }, []);
 
-  
+
 
   useEffect(() => {
     const getTerms = async () => {
-        const res = await api.listTerm({ limit: 100, offset: 0 });
-        //setLoading(true);
-        setTerms(res);
-      };
+      const res = await api.listTerm({ limit: 100, offset: 0 });
+      //setLoading(true);
+      setTerms(res);
+    };
     getTerms();
   }, []);
 
   useEffect(() => {
     const getSubjects = async () => {
-        const res = await api.listSubject({ limit: 100, offset: 0 });
-        //setLoading(true);
-        setSubjects(res);
-      };
+      const res = await api.listSubject({ limit: 100, offset: 0 });
+      //setLoading(true);
+      setSubjects(res);
+    };
     getSubjects();
   }, []);
 
   useEffect(() => {
     const getStudents = async () => {
-        const res = await api.listStudent({ limit: 100, offset: 0 });
-        //setLoading(true);
-        setStudents(res);
-      };
+      const res = await api.listStudent({ limit: 100, offset: 0 });
+      //setLoading(true);
+      setStudents(res);
+    };
     getStudents();
   }, []);
-   
+
   //Get Data By Textfile and ComboBox ************************************************
   const [yearx, setYearx] = React.useState('');
   const [gradex, setGradex] = React.useState('');
@@ -130,7 +130,7 @@ const Results: FC<{}> = () => {
   const [termx, setTermx] = React.useState('');
   const [timex, setTimex] = React.useState('');
   const [groupx, setGroupx] = React.useState('');
-  
+
 
   let yearID = Number(yearx)
   let grade = Number(gradex)
@@ -139,46 +139,46 @@ const Results: FC<{}> = () => {
   let termID = Number(termx)
   let group = Number(groupx)
   let timed = timex + ":00+07:00"
-  
+
 
   let results = {
-	grade,    
-	studentID,
-	yearID,
-  subjectID,
-  termID,
-  group,
-  timed,
-    };
+    grade,
+    studentID,
+    yearID,
+    subjectID,
+    termID,
+    group,
+    timed,
+  };
 
   //Handle chang********************************************************************
   const handleInputYear = (event: any) => {
     setYearx(event.target.value);
-    
+
   };
   const handleInputGrade = (event: any) => {
     setGradex(event.target.value);
-    
+
   };
   const handleInputStudent = (event: any) => {
     setStudentx(event.target.value);
-    
+
   };
   const handleInputSubject = (event: any) => {
     setSubx(event.target.value);
-    
+
   };
   const handleInputTerm = (event: any) => {
     setTermx(event.target.value);
-    
+
   };
   const handleInputTime = (event: any) => {
     setTimex(event.target.value);
-    
+
   };
-  
-  
-  
+
+
+
   ////--------------------------------------------
   const alertMessage = (icon: any, title: any) => {
     Toast.fire({
@@ -187,34 +187,34 @@ const Results: FC<{}> = () => {
     });
   }
   //Check Save Error Function text field
-  const CheckSaveError = (field:string) =>{
-    switch(field) {
+  const CheckSaveError = (field: string) => {
+    switch (field) {
       case 'grade':
-      alertMessage("error","เกรดต้องมากกว่า0 และมากสุด=4")
-      return
+        alertMessage("error", "เกรดต้องมากกว่า0 และมากสุด=4")
+        return
       case 'group':
-      alertMessage("error","กลุ่มมีแค่1-4")
-      return
+        alertMessage("error", "กลุ่มมีแค่1-4")
+        return
     }
   }
   //Check Save Error Function combobox
-  const CheckComboboxError = (field:string) =>{
-    switch(field){
+  const CheckComboboxError = (field: string) => {
+    switch (field) {
       case "Year not found":
-      alertMessage("error","กรุณาใส่ข้อมูลปี")
-      return
+        alertMessage("error", "กรุณาใส่ข้อมูลปี")
+        return
       case "Term not found":
-      alertMessage("error","กรุณาใส่ข้อมูลเทอม")
-      return
+        alertMessage("error", "กรุณาใส่ข้อมูลเทอม")
+        return
       case "Subject not found":
-      alertMessage("error","กรุณาใส่ข้อมูลวิชา")
-      return
+        alertMessage("error", "กรุณาใส่ข้อมูลวิชา")
+        return
       case "Student not found":
-      alertMessage("error","กรุณาใส่ข้อมูลนักศึกษา")
-      return
+        alertMessage("error", "กรุณาใส่ข้อมูลนักศึกษา")
+        return
       case "time null":
-      alertMessage("error","กรุณาเลือกวันเวลาที่ออกเกรด")
-      return
+        alertMessage("error", "กรุณาเลือกวันเวลาที่ออกเกรด")
+        return
     }
   }
 
@@ -248,30 +248,30 @@ const Results: FC<{}> = () => {
   const [GroupError, setGroupError] = React.useState('');
 
   const validateTextfield = (val: number) => {
-    if(val > 4)
-    return false;
+    if (val > 4)
+      return false;
     else if (val < 0)
-    return false;
+      return false;
     else
-    return true;
+      return true;
   }
   const validateTextfieldgruop = (val: number) => {
-    if(val > 4)
-    return false;
+    if (val > 4)
+      return false;
     else if (val < 1)
-    return false;
+      return false;
     else
-    return true;
+      return true;
   }
 
-  const checkPattern  = (id: any, value: string) => {
-    switch(id) {
+  const checkPattern = (id: any, value: string) => {
+    switch (id) {
       case 'grade':
         validateTextfield(Number(value)) ? setGradeError('') : setGradeError('0-4 เท่านั้น');
         return;
-        case 'group':
-          validateTextfieldgruop(Number(value)) ? setGroupError('') : setGroupError('1-4 เท่านั้น');
-          return;
+      case 'group':
+        validateTextfieldgruop(Number(value)) ? setGroupError('') : setGroupError('1-4 เท่านั้น');
+        return;
       default:
         return;
     }
@@ -282,7 +282,7 @@ const Results: FC<{}> = () => {
     const { value } = event.target;
     const validateValue = value.toString()
     checkPattern(id, validateValue)
-    setGradex( value );
+    setGradex(value);
   };
 
   const ggruop = (event: React.ChangeEvent<{ id?: string; value: any }>) => {
@@ -290,18 +290,18 @@ const Results: FC<{}> = () => {
     const { value } = event.target;
     const validateValue = value.toString()
     checkPattern(id, validateValue)
-    setGroupx( value );
+    setGroupx(value);
   };
 
 
 
 
-  
+
   //seve**********************************************************
-   // function save data
-   function save() {
-     setLoading(true);
-     checkValidateData();
+  // function save data
+  function save() {
+    setLoading(true);
+    checkValidateData();
     const apiUrl = 'http://localhost:8080/api/v1/resultss';
     const requestOptions = {
       method: 'POST',
@@ -315,8 +315,8 @@ const Results: FC<{}> = () => {
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        if (data.status === true ) {
-          
+        if (data.status === true) {
+
           Toast.fire({
             icon: 'success',
             title: 'บันทึกข้อมูลสำเร็จ',
@@ -327,11 +327,11 @@ const Results: FC<{}> = () => {
         }
       });
   }
-  
+
 
   //console log****************************************************************
   console.log(years);
-  
+
   console.log(terms);
   console.log(subjects);
   console.log(students);
@@ -349,14 +349,14 @@ const Results: FC<{}> = () => {
   return (
     <Page theme={pageTheme.home}>
       <Header
-      title={'Results'}
-      subtitle=''
-    >
-        <Avatar alt="Remy Sharp"/>
+        title={'Results'}
+        subtitle=''
+      >
+        <Avatar alt="Remy Sharp" />
         <div style={{ marginLeft: 10, marginRight: 20 }}>{cookieName}</div>
         <Button variant="text" color="secondary" size="large"
           onClick={Clears} > Logout </Button>
-    </Header>
+      </Header>
       <Content>
         <Container maxWidth="sm">
           <Grid container spacing={3}>
@@ -369,7 +369,7 @@ const Results: FC<{}> = () => {
               <div className={classes.paper}>รหัสนักศึกษา</div>
             </Grid>
             <Grid item xs={9}>
-              <FormControl  error={resultValidate.student1111} variant="outlined" className={classes.formControl}>
+              <FormControl error={resultValidate.student1111} variant="outlined" className={classes.formControl}>
                 <InputLabel>เลือกรหัสนักศึกษา</InputLabel>
                 <Select
                   error={resultValidate.student1111}
@@ -393,7 +393,7 @@ const Results: FC<{}> = () => {
 
 
 
-            
+
 
             <Grid item xs={3}>
               <div className={classes.paper}>ปีการศึกษา</div>
@@ -429,7 +429,7 @@ const Results: FC<{}> = () => {
               <FormControl error={resultValidate.term1111} variant="outlined" className={classes.formControl}>
                 <InputLabel>เลือกภาคการศึกษา</InputLabel>
                 <Select
-                error={resultValidate.term1111}
+                  error={resultValidate.term1111}
                   name="TermID"
                   value={results.termID || ''} // (undefined || '') = ''
                   onChange={handleInputTerm}
@@ -458,7 +458,7 @@ const Results: FC<{}> = () => {
               <FormControl error={resultValidate.subject1111} variant="outlined" className={classes.formControl}>
                 <InputLabel>เลือกวิชา</InputLabel>
                 <Select
-                error={resultValidate.subject1111}
+                  error={resultValidate.subject1111}
                   name="SubjectID"
                   value={results.subjectID || ''} // (undefined || '') = ''
                   onChange={handleInputSubject}
@@ -480,50 +480,50 @@ const Results: FC<{}> = () => {
 
 
             <Grid item xs={3}>
-                  <div className={classes.paper}>เกรด</div>
-                </Grid>
-                <Grid item xs={9}>
-                  <TextField variant="outlined" className={classes.textField}
-                      helperText= {loading? GradeError:""} 
-                      error= {GradeError ? true:false }
-                  
-                      id="grade" 
-                      type="Number" 
-                      name="grade"
-                      value={results.grade || ''} // (undefined || '') = ''
-                      onChange={g}>
-                                                                            
-                  </TextField>
-                </Grid>
+              <div className={classes.paper}>เกรด</div>
+            </Grid>
+            <Grid item xs={9}>
+              <TextField variant="outlined" className={classes.textField}
+                helperText={loading ? GradeError : ""}
+                error={GradeError ? true : false}
 
-            
+                id="grade"
+                type="Number"
+                name="grade"
+                value={results.grade || ''} // (undefined || '') = ''
+                onChange={g}>
 
-                <Grid item xs={3}>
-                  <div className={classes.paper}>กลุ่ม</div>
-                </Grid>
-                <Grid item xs={9}>
-                  <TextField variant="outlined" className={classes.textField}
-                      helperText= {loading? GroupError:""} 
-                      error= {GroupError ? true:false }
-                  
-                      id="group" 
-                      type="Number" 
-                      name="group"
-                      value={results.group || ''} // (undefined || '') = ''
-                      onChange={ggruop}>
-                                                                            
-                  </TextField>
-                </Grid>
+              </TextField>
+            </Grid>
 
 
 
-                <Grid item xs={3}>
+            <Grid item xs={3}>
+              <div className={classes.paper}>กลุ่ม</div>
+            </Grid>
+            <Grid item xs={9}>
+              <TextField variant="outlined" className={classes.textField}
+                helperText={loading ? GroupError : ""}
+                error={GroupError ? true : false}
+
+                id="group"
+                type="Number"
+                name="group"
+                value={results.group || ''} // (undefined || '') = ''
+                onChange={ggruop}>
+
+              </TextField>
+            </Grid>
+
+
+
+            <Grid item xs={3}>
               <div className={classes.paper}>วันที่ออกเกรด</div>
             </Grid>
             <Grid item xs={9}>
               <FormControl error={resultValidate.time1111} variant="outlined" className={classes.formControl}>
                 <TextField
-                error={resultValidate.time1111}
+                  error={resultValidate.time1111}
                   name="timex"
                   type="datetime-local"
                   defaultValue="2020-12-31"
@@ -532,18 +532,18 @@ const Results: FC<{}> = () => {
                     shrink: true,
                   }}
                 />
-                 {resultValidate.time1111 ? (
+                {resultValidate.time1111 ? (
                   <FormHelperText>กรุณาเลือกวันที่ออกเกรด</FormHelperText>
                 ) : null}
               </FormControl>
             </Grid>
 
-          
+
 
             <Grid item xs={3}></Grid>
             <Grid item xs={9}>
               <Button
-                style={{width: 300 , marginTop: 20}}
+                style={{ width: 300, marginTop: 20 }}
                 variant="contained"
                 color="primary"
                 size="large"
