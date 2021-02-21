@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+	<title>TestSearchProvince</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">ค้นหาสำเร็จ</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>http://localhost:3000/pv<datalist><option>http://localhost:3000/pv</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>name=search<datalist><option>name=search</option><option>//input[@name='search']</option><option>//div[@id='root']/div/div[2]/article/div/table/tbody/tr/td/div/div/input</option><option>//input</option><option>css=input[name="search"]</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>name=search<datalist><option>name=search</option><option>//input[@name='search']</option><option>//div[@id='root']/div/div[2]/article/div/table/tbody/tr/td/div/div/input</option><option>//input</option><option>css=input[name="search"]</option></datalist></td><td>นครราชสีมา</td>
+</tr>
+<tr><td>click</td><td>//div[@id='root']/div/div[2]/article/div/table/tbody/tr/td[2]/button/span<datalist><option>//div[@id='root']/div/div[2]/article/div/table/tbody/tr/td[2]/button/span</option><option>//td[2]/button/span</option><option>css=button.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary &gt; span.MuiButton-label</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">ค้นหาไม่สำเร็จ</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>http://localhost:3000/pv<datalist><option>http://localhost:3000/pv</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='root']/div<datalist><option>//div[@id='root']/div</option><option>//div/div</option><option>css=div.makeStyles-root-1.makeStyles-root-2</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>name=search<datalist><option>name=search</option><option>//input[@name='search']</option><option>//div[@id='root']/div/div[2]/article/div/table/tbody/tr/td/div/div/input</option><option>//input</option><option>css=input[name="search"]</option></datalist></td><td>ชัยภูมิ</td>
+</tr>
+<tr><td>click</td><td>//div[@id='root']/div/div[2]/article/div/table/tbody/tr/td[2]/button/span<datalist><option>//div[@id='root']/div/div[2]/article/div/table/tbody/tr/td[2]/button/span</option><option>//td[2]/button/span</option><option>css=button.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary &gt; span.MuiButton-label</option></datalist></td><td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

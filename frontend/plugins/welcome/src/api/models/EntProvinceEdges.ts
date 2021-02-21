@@ -92,13 +92,13 @@ export function EntProvinceEdgesFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'distStud': !exists(json, 'distStud') ? undefined : ((json['distStud'] as Array<any>).map(EntStudentFromJSON)),
-        'postStud': !exists(json, 'postStud') ? undefined : ((json['postStud'] as Array<any>).map(EntStudentFromJSON)),
-        'provCont': !exists(json, 'provCont') ? undefined : EntContinentFromJSON(json['provCont']),
-        'provCoun': !exists(json, 'provCoun') ? undefined : EntCountryFromJSON(json['provCoun']),
-        'provRegi': !exists(json, 'provRegi') ? undefined : EntRegionFromJSON(json['provRegi']),
-        'provStud': !exists(json, 'provStud') ? undefined : ((json['provStud'] as Array<any>).map(EntStudentFromJSON)),
-        'subdStud': !exists(json, 'subdStud') ? undefined : ((json['subdStud'] as Array<any>).map(EntStudentFromJSON)),
+        'distStud': !exists(json, 'DistStud') ? undefined : ((json['DistStud'] as Array<any>).map(EntStudentFromJSON)),
+        'postStud': !exists(json, 'PostStud') ? undefined : ((json['PostStud'] as Array<any>).map(EntStudentFromJSON)),
+        'provCont': !exists(json, 'ProvCont') ? undefined : EntContinentFromJSON(json['ProvCont']),
+        'provCoun': !exists(json, 'ProvCoun') ? undefined : EntCountryFromJSON(json['ProvCoun']),
+        'provRegi': !exists(json, 'ProvRegi') ? undefined : EntRegionFromJSON(json['ProvRegi']),
+        'provStud': !exists(json, 'ProvStud') ? undefined : ((json['ProvStud'] as Array<any>).map(EntStudentFromJSON)),
+        'subdStud': !exists(json, 'SubdStud') ? undefined : ((json['SubdStud'] as Array<any>).map(EntStudentFromJSON)),
     };
 }
 

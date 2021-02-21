@@ -7,6 +7,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Alert from '@material-ui/lab/Alert';
+import Swal from 'sweetalert2'; // alert
 import {
     Container,
     Grid,
@@ -21,7 +22,7 @@ import {
     Avatar,
   } from '@material-ui/core';
 import{
-    Content,
+  Content,
     InfoCard,
     Header,
     Page,
@@ -29,260 +30,240 @@ import{
     ContentHeader,
 } from '@backstage/core';
 import  { DefaultApi }  from '../../api/apis';
-import {EntRegion, EntProvince, EntCountry, EntContinent} from '../../api/models/';
+import { EntRegion, EntContinent, EntCountry} from '../../api/models/';
 import { Cookies } from '../../Cookie';
 
-interface Province {
-  province:string,
-  postal:number,
-  district:string,
-  subdistrict:string,
-  continent:string,
-  country:string,
-  name:string,
+interface ControllersProvince {
+  /**
+   * 
+   * @type {number}
+   * @memberof ControllersProvince
+   */
+  cont?: number;
+  /**
+   * 
+   * @type {number}
+   * @memberof ControllersProvince
+   */
+  coun?: number;
+  /**
+   * 
+   * @type {string}
+   * @memberof ControllersProvince
+   */
+  dist?: string;
+  /**
+   * 
+   * @type {string}
+   * @memberof ControllersProvince
+   */
+  post?: string;
+  /**
+   * 
+   * @type {string}
+   * @memberof ControllersProvince
+   */
+  prov?: string;
+  /**
+   * 
+   * @type {number}
+   * @memberof ControllersProvince
+   */
+  regi?: number;
+  /**
+   * 
+   * @type {string}
+   * @memberof ControllersProvince
+   */
+  subd?: string;
 }
 
-  const ProvinceUI: FC<{}> = () => {
 
-    const handleClose = (event: React.SyntheticEvent | React.MouseEvent, reason?: string) => {
-      if (reason === 'clickaway') {
-        return;
-      }
-      setSuccess(false);
-      setFail(false);
-    };
-
-  const [status, setStatus] = useState(false);
-  const [alert, setAlert] = useState(false);
-  const [loading, setLoading] = useState(true);
+const ProvinceUI: FC<{}> = () => {
   const api = new DefaultApi();
+  const [region,Setregion] = useState<EntRegion[]>([]);
+  const [country,Setcountry] = useState<EntCountry[]>([]);
+  const [continent,Setcontinent] = useState<EntContinent[]>([]);
 
-  const [success, setSuccess] =useState(false);
-  const [fail, setFail] =useState(false);
-
-  const [coun,Setcoun] = useState<EntCountry[]>([]);
-  const [cont,Setcont] = useState<EntContinent[]>([]);
-  const [regi,Setregi] = useState<EntRegion[]>([]);
-
-  const getCoun = async () => {
-    const res = await api.listCountry({ limit: 10, offset: 0 });
-    Setcoun(res);
-  };
-  const getCont = async () => {
-    const res = await api.listContinent({ limit: 10, offset: 0 });
-    Setcont(res);
-  };
-  const getRegi = async () => {
-    const res = await api.listRegion({ limit: 10, offset: 0 });
-    Setregi(res);
-  };
-
-  useEffect(() => {
-    getCoun();
-    getCont();
-    getRegi();
-    }, []);
-  
-  const [Province, setProvince] = React.useState<Partial<Province>>({});
-
-  const handleChange = (
-      event: React.ChangeEvent<{ province?: string; value: any }>,
-    ) => {
-      const province = event.target.province as keyof typeof Province;
-      const { value } = event.target;
-      setProvince({ ...Province, [province]: value });
-      console.log(Province);
+  const getRegion = async () => {
+      const res = await api.listRegion({ limit: 10, offset: 0 });
+      Setregion(res);
     };
+  const getCount = async () => {
+      const res = await api.listCountry({ limit: 10, offset: 0 });
+      Setcountry(res);
+    };
+  const getconti = async () => {
+      const res = await api.listContinent({ limit: 10, offset: 0 });
+      Setcontinent(res);
+    };
+  useEffect(() => {
+      getCount();
+      getRegion();
+      getconti();
+  }, []);
 
-    function clear() {
-      setProvince({});
-      getCoun();
-      getCont();
-      getRegi();
-    }
   
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: toast => {
+      toast.addEventListener('mouseenter', Swal.stopTimer);
+      toast.addEventListener('mouseleave', Swal.resumeTimer);
+    },
+  });
+
+  const [P, setP] = React.useState< Partial<ControllersProvince>>({});
+
+  const h = (
+    event: React.ChangeEvent<{ name?: string; value: any }>,
+  ) => {
+    const name = event.target.name as keyof typeof P;
+    const { value } = event.target;
+    setP({ ...P, [name]: value });
+    console.log(P);
+  };
+
   function save() {
     const apiUrl = 'http://localhost:8080/api/v1/provinces';
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(Province),
+      body: JSON.stringify(P),
     };
-
-    console.log(Province);
+    console.log(P);
 
     fetch(apiUrl, requestOptions)
       .then(response => response.json())
       .then(data => {
         console.log(data.status);
         if (data.status === true) {
-          clear();
-          setSuccess(true);
+          Toast.fire({
+            icon: 'success',
+            title: 'บันทึกข้อมูลสำเร็จ',
+          });
         } else {
-          setFail(true);
+          Toast.fire({
+            icon: 'error',
+            title: 'บันทึกข้อมูลไม่สำเร็จ',
+          });
         }
       });
   }
-   
-    //cookie logout
-    var cook = new Cookies()
-    var cookieName = cook.GetCookie()
+  
+ 
+  //cookie logout
+  var cook = new Cookies()
+  var cookieName = cook.GetCookie()
 
-    function Clears() {
+  function Clears() {
       cook.ClearCookie()
       window.location.reload(false)
   }
 
-
-   return ( 
-      <Page theme={pageTheme.home}>
-       <Header
-      title={'Province Management'}
-      subtitle='Province Registration Department'
-    >
-        <Avatar alt="Remy Sharp"/>
-        <div style={{ marginLeft: 10, marginRight: 20 }}>{cookieName}</div>
-        <Button variant="text" color="secondary" size="large"
-          onClick={Clears} > Logout </Button>
-    </Header>
-      <Content>
-        <ContentHeader title="Province Background"></ContentHeader>
-        <TableContainer component={Paper}>
-         <Table>
-           <TableBody>
-             <TableCell>
-
-
-                  <Grid container spacing={1}>
-                    <Grid item xs={2}>
-                      <b>Continent</b>
-                      <div>
-                      <FormControl variant="outlined" fullWidth>
-                      <Select name="cotinent" id='title'  
-                      value={Province.continent}
-                      onChange={handleChange}>
-                        {cont.map((item) => {
-                        return (
-                          <MenuItem key={item.id} value={item.id}>
-                          {item.continent}
-                          </MenuItem>
-                        );
-                        })}
-                      </Select>
-                      </FormControl>
-                      </div>
-                    </Grid>
+    return ( 
+        <Page theme={pageTheme.home}>
+        <Header
+          title={'Student Management'}
+          subtitle='Student Registration Department'>
+            <Avatar alt="Remy Sharp"/>
+            <div style={{ marginLeft: 10, marginRight: 20 }}>{cookieName}</div>
+            <Button variant="text" color="secondary" size="large"
+              onClick={Clears} > Logout </Button>
+        </Header>
+        <Content>
+          <ContentHeader title="Student Background"></ContentHeader>
+          <TableContainer component={Paper}>
+          <Grid container spacing={1}>
+                  <Grid item xs={2}>
+                    <b>Continent</b>
+                    <div>
+                <FormControl variant="outlined" fullWidth>
+                <Select name="cont" value={P.cont||''}
+                    onChange={h}>
+                {continent.map((item) => {
+                  return (
+                    <MenuItem key={item.id} value={item.id}>
+                      {item.continent}
+                    </MenuItem>
+                  );
+                })}
+                </Select>
+                </FormControl>
+                </div>
                   </Grid>
-
-                  <Grid container spacing={1}>
-                    <Grid item xs={2}>
-                      <b>Country</b>
-                      <div>
-                      <FormControl variant="outlined" fullWidth>
-                      <Select name="country" id='title'  
-                      value={Province.country}
-                      onChange={handleChange}>
-                        {coun.map((item) => {
-                        return (
-                          <MenuItem key={item.id} value={item.id}>
-                          {item.country}
-                          </MenuItem>
-                        );
-                        })}
-                      </Select>
-                      </FormControl>
-                      </div>
-                    </Grid>
+                  <Grid item xs={2}>
+                    <b>Country</b>
+                    <div>
+                <FormControl variant="outlined" fullWidth>
+                <Select name="coun" value={P.coun||''}
+                    onChange={h}>
+                {country.map((item) => {
+                  return (
+                    <MenuItem key={item.id} value={item.id}>
+                      {item.country}
+                    </MenuItem>
+                  );
+                })}
+                </Select>
+                </FormControl>
+                </div>
                   </Grid>
-
-                  <Grid container spacing={1}>
-                    <Grid item xs={2}>
-                      <b>Region</b>
-                      <div>
-                      <FormControl variant="outlined" fullWidth>
-                      <Select name="name" id='title'  
-                      value={Province.name}
-                      onChange={handleChange}>
-                        {regi.map((item) => {
-                        return (
-                          <MenuItem key={item.id} value={item.id}>
-                          {item.name}
-                          </MenuItem>
-                        );
-                        })}
-                      </Select>
-                      </FormControl>
-                      </div>
-                    </Grid>
+                  <Grid item xs={2}>
+                    <b>Region</b>
+                    <div>
+                <FormControl variant="outlined" fullWidth>
+                <Select name="regi" value={P.regi||''}
+                    onChange={h}>
+                {region.map((item) => {
+                  return (
+                    <MenuItem key={item.id} value={item.id}>
+                      {item.name}
+                    </MenuItem>
+                  );
+                })}
+                </Select>
+                </FormControl>
+                </div>
                   </Grid>
-
-                  <Grid container spacing={1}>
-                      <Grid item xs={4}>
-                        <b>Province</b>
-                        <div>
-                        <TextField variant='outlined' type='string' value={Province.province}
-                            onChange={handleChange}/>
-                        </div>
-                      </Grid>
-                  </Grid>
-
-                  <Grid container spacing={1}>
-                      <Grid item xs={4}>
-                        <b>District</b>
-                        <div>
-                        <TextField variant='outlined' type='string' value={Province.district}
-                            onChange={handleChange}/>
-                        </div>
-                      </Grid>
-                  </Grid>
-
-                  <Grid container spacing={1}>
-                      <Grid item xs={4}>
-                        <b>Subdistrict</b>
-                        <div>
-                        <TextField variant='outlined' type='string' value={Province.subdistrict}
-                            onChange={handleChange}/>
-                        </div>
-                      </Grid>
-                  </Grid>
-
-                  <Grid container spacing={1}>
-                      <Grid item xs={4}>
-                        <b>Postal</b>
-                        <div>
-                        <TextField variant='outlined' type='int' value={Province.postal}
-                            onChange={handleChange}/>
-                        </div>
-                      </Grid>
-                  </Grid>
-
-             </TableCell>
-           </TableBody>
-              <Grid container spacing={1}>
-                <Grid item xs={4}>
-
                 </Grid>
-              </Grid>
-           <TableBody>
-             <TableCell></TableCell>
-             <TableCell>
-              <Button variant='contained' color='primary' onClick={save}>Save</Button>
-              <Snackbar open={fail} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-                <Alert onClose={handleClose} severity="error">
-                  This is a error message!
-                </Alert>
-              </Snackbar>
-              <Snackbar open={success} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-                <Alert onClose={handleClose} severity="success">
-                  This is a success message!
-                </Alert>
-              </Snackbar>
-             </TableCell>
-           </TableBody>
-           </Table>
-       </TableContainer>
-       </Content>
-    </Page>
-  );
+
+                <Grid container spacing={1}>
+                  <Grid item xs={2}>
+                    <b>Province</b>
+                    <div>
+               <TextField name='prov' type='string' value={P.prov||''} onChange={h}/>
+                </div>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <b>District</b>
+                    <div>
+                <TextField name='dist' type='string' value={P.dist||''} onChange={h}/>
+                </div>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <b>Subdistrict</b>
+                    <div>
+                <TextField name='subd' type='string' value={P.subd||''} onChange={h}/>
+                </div>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <b>Post Code</b>
+                    <div>
+                <TextField name='post' type='string' value={P.post||''} onChange={h}/>
+                </div>
+                  </Grid>
+                </Grid>
+
+                <Button variant="contained" color="primary" disableElevation  onClick={() => {
+                    save();
+                }} > Save </Button>
+          </TableContainer>
+          </Content>
+        </Page>
+    );
 };export default ProvinceUI;
-  

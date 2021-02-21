@@ -98,64 +98,41 @@ const SearchProvince: FC<{}> = () => {
 
     const classes = useStyles();
     const api = new DefaultApi();
-    const [province, setProvince] = React.useState<EntProvince[]>([]);
-    const [continent, setContinent] = React.useState();
-    const [country, setCountry] = React.useState();
-    const [region, setRegion] = React.useState();
+    const [province, setProvince] = useState<EntProvince[]>([]);
+    const [search,setsearch] = useState("");
 
+    const sh = (event: React.ChangeEvent<{ value: unknown }>) => {
+        setsearch(event.target.value as string);
+        Clear();
+      };
 
+      const getSt = async () => {
+        const res = await api.listProvince({limit: 10, offset: 0})
+        setProvince(res)
+        var boo = false
+        var arr = ""
+        for(let i = 0; i < res.length ; i++){
+          if(res[i].province === search){ 
+            boo = true
+            arr += "f"
+            console.log(res[i].id)
+            console.log(res[i].edges)
+          }
+          else{
+            boo = false
+          }
+        }
+        if(boo!=false||arr!=""){
+          alertMessage("success","ค้นหาสำเร็จ")
+        }else{
+          alertMessage("error","ค้นหาไม่พบ")
+        }
+      }
 
-  // handle chang 
-    const handleProvince = (event: any) => {
-        setProvince(event.target.value);
-        Clear();
-    };
-    const handleContinent = (event: any) => {
-        setContinent(event.target.value);
-        Clear();
-    };
-    const handleCountry = (event: any) => {
-        setCountry(event.target.value);
-        Clear();
-    };
-    const handleRegion = (event: any) => {
-        setRegion(event.target.value);
-        Clear();
-    };
-
-
-    function ss2 (){
-        Clear();
-    }
 
     // function clear
     function Clear (){
         setProvince([])
-    }
-
-    //function get 
-    const getProvince = async () => {
-        const res = await api.listProvince({ limit: 10, offset: 0});
-        setProvince(res);
-        var check = false
-        var chpap = ""
-        for(let i = 0; i<res.length ;i++){
-            if(res[i].edges?.provCont?.id == continent && res[i].edges?.provCoun?.id == country && res[i].edges?.provRegi?.id == region){
-                check = true
-                chpap += "f"
-                console.log(res[i].id)
-                console.log(res[i].edges)
-            }
-            else{
-                check = false
-            }
-        }
-        if(check!=false||chpap!=""){
-            alertMessage("success","ค้นหาสำเร็จ")
-        }else{
-            alertMessage("error","ค้นหาไม่พบ")
-        }
-
     }
 
     //cookie logout
@@ -170,91 +147,35 @@ const SearchProvince: FC<{}> = () => {
     return(
         <Page theme={pageTheme.home}>
         <Header
-            title={'Student Management'}
-            subtitle='Student Registration Department'>
+            title={'Province Management'}
+            subtitle='Province Registration Department'>
                 <Avatar alt="Remy Sharp"/>
                 <div style={{ marginLeft: 10, marginRight: 20 }}>{cookieName}</div>
                 <Button variant="text" color="secondary" size="large"
                     onClick={Clears} > Logout </Button>
         </Header>
         <Content>
-            <Container maxWidth="sm">
-                    <Grid item xs={12}></Grid>
-                    <Grid item xs={9}>
-                        <form className={classes.container} noValidate>
-                            <TextField
-                                id="continent"
-                                value={continent}
-                                onChange = {handleContinent}
-                                multiline
-                                variant="outlined"
-                                fullWidth
-                            />
-                        </form>
-                    </Grid>
-                    <Grid item xs={4}></Grid>
-
-                    <Grid item xs={9}>
-                        <form className={classes.container} noValidate>
-                            <TextField
-                                id="country"
-                                value={country}
-                                onChange = {handleCountry}
-                                multiline
-                                variant="outlined"
-                                fullWidth
-                            />
-                        </form>
-                    </Grid>
-                    <Grid item xs={4}></Grid>
-
-                    <Grid item xs={9}>
-                        <form className={classes.container} noValidate>
-                            <TextField
-                                id="region"
-                                value={region}
-                                onChange = {handleRegion}
-                                multiline
-                                variant="outlined"
-                                fullWidth
-                            />
-                        </form>
-                    </Grid>
-                    <Grid item xs={4}></Grid>
-
-                    <Grid item xs={9}>
-                        <form className={classes.container} noValidate>
-                            <TextField
-                                id="province"
-                                value={province}
-                                onChange = {handleProvince}
-                                multiline
-                                variant="outlined"
-                                fullWidth
-                            />
-                        </form>
-                    </Grid>
-                
-                <Button  
-                    onClick={() => {
-                        getProvince();
-                    }}
-                    variant="contained" 
-                    color="primary" 
-                    > 
-                    Search
-                    </Button>
-                        <TableCell>
-                        <Button  
-                    onClick={() => {
-                        Clear();
-                    }}
-                    variant="contained" 
-                    color="primary" 
-                    > 
-                    Clear 
-                    </Button>
-                        </TableCell>
+        <TableContainer component={Paper}>
+            <Table>
+         <TableBody>
+           <TableRow>
+             <TableCell>
+                <TextField value={search||''} type='string' name='search' label="Enter province" onChange={sh}/>
+              </TableCell>
+              <TableCell>
+      <Button  
+          onClick={() => {
+            getSt();
+          }}
+          variant="contained" 
+          color="primary" 
+          > 
+          Search
+          </Button>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+       </Table>
 
             <Table className={classes.table}>
                 <TableRow>
@@ -266,18 +187,18 @@ const SearchProvince: FC<{}> = () => {
                     <TableCell align='center'><b>Subdistrict</b></TableCell>
                     <TableCell align='center'><b>Postal</b></TableCell>
                 </TableRow>
-                    {province.filter((filter)=> (filter.edges?.provCont?.id == continent && filter.edges?.provCoun?.id == country && filter.edges?.provRegi?.id == region)).map((item: any) => (
+                    {province.filter((filter)=> (filter.province === search)).map((item) => (
                 <TableRow key={item.id}>
-                    <TableCell align='center'><b>{item.province}</b></TableCell>
                     <TableCell align='center'><b>{item.edges?.provCont?.continent}</b></TableCell>
                     <TableCell align='center'><b>{item.edges?.provCoun?.country}</b></TableCell>
-                    <TableCell align='center'><b>{item.edges?.provRegi?.region}</b></TableCell>
+                    <TableCell align='center'><b>{item.edges?.provRegi?.name}</b></TableCell>
+                    <TableCell align='center'><b>{item.province}</b></TableCell>
                     <TableCell align='center'><b>{item.district}</b></TableCell>
                     <TableCell align='center'><b>{item.subdistrict}</b></TableCell>
                     <TableCell align='center'><b>{item.postal}</b></TableCell>
                 </TableRow>))}
             </Table>
-            </Container>
+            </TableContainer>
         </Content>
     </Page>
     

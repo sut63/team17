@@ -285,10 +285,10 @@ var (
 	// ProvincesColumns holds the columns for the "provinces" table.
 	ProvincesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "province", Type: field.TypeString, Unique: true},
+		{Name: "province", Type: field.TypeString},
 		{Name: "district", Type: field.TypeString},
 		{Name: "subdistrict", Type: field.TypeString},
-		{Name: "postal", Type: field.TypeInt},
+		{Name: "postal", Type: field.TypeString, Size: 5},
 		{Name: "continent_cont_prov", Type: field.TypeInt, Nullable: true},
 		{Name: "country_coun_prov", Type: field.TypeInt, Nullable: true},
 		{Name: "region_regi_prov", Type: field.TypeInt, Nullable: true},

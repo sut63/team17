@@ -244,7 +244,7 @@ export default function SearchActivity() {
              {status ? (
                         <div>
                             {alerttype != "" ? (
-                                <Alert severity={alerttype} style={{ width: 400 ,marginTop: 20, marginLeft:6 }} onClose={() => { setStatus(false) }}>
+                                <Alert severity="error" style={{ width: 400 ,marginTop: 20, marginLeft:6 }} onClose={() => { setStatus(false) }}>
                                     {errormessege}
                                 </Alert>
                             ) : null}
