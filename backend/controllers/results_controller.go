@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sut63/team17/app/ent"
@@ -28,6 +29,8 @@ type Results struct {
 	YearID    int
 	SubjectID int
 	TermID    int
+	Group     int
+	Timed     string
 }
 
 // CreateResults handles POST requests for adding results entities
@@ -43,6 +46,7 @@ type Results struct {
 // @Router /resultss [post]
 func (ctl *ResultsController) CreateResults(c *gin.Context) {
 	obj := Results{}
+
 	if err := c.ShouldBind(&obj); err != nil {
 		c.JSON(400, gin.H{
 			"error": "results binding failed",
@@ -101,6 +105,16 @@ func (ctl *ResultsController) CreateResults(c *gin.Context) {
 		})
 		return
 	}
+
+	timereserv, err := time.Parse(time.RFC3339, obj.Timed)
+	t2 := timereserv.Format("2006-01-02T15:04:05Z07:00")
+	if t2 == "0001-01-01T00:00:00Z" {
+		c.JSON(400, gin.H{
+			"status": false,
+			"error":  "time null",
+		})
+		return
+	}
 	t, err := ctl.client.Results.
 		Create().
 		SetGrade(obj.Grade).
@@ -108,6 +122,8 @@ func (ctl *ResultsController) CreateResults(c *gin.Context) {
 		SetResuYear(yea).
 		SetResuSubj(subj).
 		SetResuTerm(term).
+		SetTime(timereserv).
+		SetGroup(obj.Group).
 		Save(context.Background())
 
 	if err != nil {
@@ -159,34 +175,39 @@ func (ctl *ResultsController) GetResults(c *gin.Context) {
 	c.JSON(200, u)
 }
 
-// ListResults handles request to get a list of results entities
-// @Summary List results entities
-// @Description list results entities
-// @ID list-results
+// ListResultssomting handles request to get a list of Resultssomting entities
+// @Summary List Resultssomting entities by id
+// @Description list Resultssomting entities by id
+// @ID list-Resultssomting
 // @Produce json
-// @Param limit  query int false "Limit"
-// @Param offset query int false "Offset"
+// @Param year  query int false "year"
+// @Param term query int false "term"
+// @Param id path int true "Resultssomting ID"
 // @Success 200 {array} ent.Results
 // @Failure 400 {object} gin.H
 // @Failure 500 {object} gin.H
-// @Router /resultss [get]
-func (ctl *ResultsController) ListResults(c *gin.Context) {
-	limitQuery := c.Query("limit")
-	limit := 100
-	if limitQuery != "" {
-		limit64, err := strconv.ParseInt(limitQuery, 10, 64)
-		if err == nil {
-			limit = int(limit64)
-		}
+// @Router /resultss111/{id} [get]
+func (ctl *ResultsController) ListResultssomting(c *gin.Context) {
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
 	}
-
-	offsetQuery := c.Query("offset")
-	offset := 0
-	if offsetQuery != "" {
-		offset64, err := strconv.ParseInt(offsetQuery, 10, 64)
-		if err == nil {
-			offset = int(offset64)
-		}
+	id1, err := strconv.ParseInt(c.Query("year"), 10, 64)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	id2, err := strconv.ParseInt(c.Query("term"), 10, 64)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
 	}
 
 	resultss, err := ctl.client.Results.
@@ -195,8 +216,7 @@ func (ctl *ResultsController) ListResults(c *gin.Context) {
 		WithResuYear().
 		WithResuSubj().
 		WithResuTerm().
-		Limit(limit).
-		Offset(offset).
+		Where(results.HasResuStudWith(student.IDEQ(int(id))), results.HasResuYearWith(year.IDEQ(int(id1))), results.HasResuTermWith(term.IDEQ(int(id2)))).
 		All(context.Background())
 	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
@@ -292,8 +312,9 @@ func NewResultsController(router gin.IRouter, client *ent.Client) *ResultsContro
 // InitResultsController registers routes to the main engine
 func (ctl *ResultsController) register() {
 	resultss := ctl.router.Group("/resultss")
+	resultss111 := ctl.router.Group("/resultss111")
 
-	resultss.GET("", ctl.ListResults)
+	resultss111.GET(":id", ctl.ListResultssomting)
 
 	// CRUD
 	resultss.POST("", ctl.CreateResults)

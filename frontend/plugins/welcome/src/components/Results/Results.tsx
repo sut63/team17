@@ -135,6 +135,8 @@ const Results: FC<{}> = () => {
   const [studentx, setStudentx] = React.useState('');
   const [subx, setSubx] = React.useState('');
   const [termx, setTermx] = React.useState('');
+  const [timex, setTimex] = React.useState('');
+  const [groupx, setGroupx] = React.useState('');
   
 
   let yearID = Number(yearx)
@@ -142,6 +144,9 @@ const Results: FC<{}> = () => {
   let studentID = Number(studentx)
   let subjectID = Number(subx)
   let termID = Number(termx)
+  let group = Number(groupx)
+  let timed = timex + ":00+07:00"
+  
 
   let results = {
 	grade,    
@@ -149,6 +154,8 @@ const Results: FC<{}> = () => {
 	yearID,
   subjectID,
   termID,
+  group,
+  timed,
     };
 
   //Handle chang********************************************************************
@@ -172,6 +179,12 @@ const Results: FC<{}> = () => {
     setTermx(event.target.value);
     
   };
+  const handleInputTime = (event: any) => {
+    setTimex(event.target.value);
+    
+  };
+  
+  
   
   ////--------------------------------------------
   const alertMessage = (icon: any, title: any) => {
@@ -185,6 +198,9 @@ const Results: FC<{}> = () => {
     switch(field) {
       case 'grade':
       alertMessage("error","เกรดต้องมากกว่า0 และมากสุด=4")
+      return
+      case 'group':
+      alertMessage("error","กลุ่มมีแค่1-4")
       return
     }
   }
@@ -203,6 +219,9 @@ const Results: FC<{}> = () => {
       case "Student not found":
       alertMessage("error","กรุณาใส่ข้อมูลนักศึกษา")
       return
+      case "time null":
+      alertMessage("error","กรุณาเลือกวันเวลาที่ออกเกรด")
+      return
     }
   }
 
@@ -215,6 +234,8 @@ const Results: FC<{}> = () => {
     year1111: false,
     subject1111: false,
     student1111: false,
+    group1111: false,
+    time1111: false,
   };
   const [resultValidate, setResultValidate] = useState(ResultFieldValidate); //Select Validate
   const checkValidateData = () => {
@@ -224,16 +245,27 @@ const Results: FC<{}> = () => {
       year1111: yearx == '',
       subject1111: subx == '',
       student1111: studentx == '',
+      group1111: groupx == '',
+      time1111: timex == '',
     });
   };
 
   //validate TaxtField
   const [GradeError, setGradeError] = React.useState('');
+  const [GroupError, setGroupError] = React.useState('');
 
   const validateTextfield = (val: number) => {
     if(val > 4)
     return false;
     else if (val < 0)
+    return false;
+    else
+    return true;
+  }
+  const validateTextfieldgruop = (val: number) => {
+    if(val > 4)
+    return false;
+    else if (val < 1)
     return false;
     else
     return true;
@@ -244,6 +276,9 @@ const Results: FC<{}> = () => {
       case 'grade':
         validateTextfield(Number(value)) ? setGradeError('') : setGradeError('0-4 เท่านั้น');
         return;
+        case 'group':
+          validateTextfieldgruop(Number(value)) ? setGroupError('') : setGroupError('1-4 เท่านั้น');
+          return;
       default:
         return;
     }
@@ -255,6 +290,14 @@ const Results: FC<{}> = () => {
     const validateValue = value.toString()
     checkPattern(id, validateValue)
     setGradex( value );
+  };
+
+  const ggruop = (event: React.ChangeEvent<{ id?: string; value: any }>) => {
+    const id = event.target.id as keyof typeof groupx;
+    const { value } = event.target;
+    const validateValue = value.toString()
+    checkPattern(id, validateValue)
+    setGroupx( value );
   };
 
 
@@ -459,6 +502,48 @@ const Results: FC<{}> = () => {
                                                                             
                   </TextField>
                 </Grid>
+
+            
+
+                <Grid item xs={3}>
+                  <div className={classes.paper}>กลุ่ม</div>
+                </Grid>
+                <Grid item xs={9}>
+                  <TextField variant="outlined" className={classes.textField}
+                      helperText= {loading? GroupError:""} 
+                      error= {GroupError ? true:false }
+                  
+                      id="group" 
+                      type="Number" 
+                      name="group"
+                      value={results.group || ''} // (undefined || '') = ''
+                      onChange={ggruop}>
+                                                                            
+                  </TextField>
+                </Grid>
+
+
+
+                <Grid item xs={3}>
+              <div className={classes.paper}>วันที่ออกเกรด</div>
+            </Grid>
+            <Grid item xs={9}>
+              <FormControl error={resultValidate.time1111} variant="outlined" className={classes.formControl}>
+                <TextField
+                error={resultValidate.time1111}
+                  name="timex"
+                  type="datetime-local"
+                  defaultValue="2020-12-31"
+                  onChange={handleInputTime}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+                 {resultValidate.time1111 ? (
+                  <FormHelperText>กรุณาเลือกวันที่ออกเกรด</FormHelperText>
+                ) : null}
+              </FormControl>
+            </Grid>
 
           
 

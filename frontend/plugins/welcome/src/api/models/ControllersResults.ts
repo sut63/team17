@@ -30,6 +30,12 @@ export interface ControllersResults {
      * @type {number}
      * @memberof ControllersResults
      */
+    group?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ControllersResults
+     */
     studentID?: number;
     /**
      * 
@@ -43,6 +49,12 @@ export interface ControllersResults {
      * @memberof ControllersResults
      */
     termID?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersResults
+     */
+    timed?: string;
     /**
      * 
      * @type {number}
@@ -62,9 +74,11 @@ export function ControllersResultsFromJSONTyped(json: any, ignoreDiscriminator: 
     return {
         
         'grade': !exists(json, 'grade') ? undefined : json['grade'],
+        'group': !exists(json, 'group') ? undefined : json['group'],
         'studentID': !exists(json, 'studentID') ? undefined : json['studentID'],
         'subjectID': !exists(json, 'subjectID') ? undefined : json['subjectID'],
         'termID': !exists(json, 'termID') ? undefined : json['termID'],
+        'timed': !exists(json, 'timed') ? undefined : json['timed'],
         'yearID': !exists(json, 'yearID') ? undefined : json['yearID'],
     };
 }
@@ -79,9 +93,11 @@ export function ControllersResultsToJSON(value?: ControllersResults | null): any
     return {
         
         'grade': value.grade,
+        'group': value.group,
         'studentID': value.studentID,
         'subjectID': value.subjectID,
         'termID': value.termID,
+        'timed': value.timed,
         'yearID': value.yearID,
     };
 }

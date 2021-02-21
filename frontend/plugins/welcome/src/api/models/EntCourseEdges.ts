@@ -64,9 +64,9 @@ export function EntCourseEdgesFromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'courDegr': !exists(json, 'CourDegr') ? undefined : EntDegreeFromJSON(json['CourDegr']),
-        'courFacu': !exists(json, 'CourFacu') ? undefined : EntFacultyFromJSON(json['CourFacu']),
-        'courInst': !exists(json, 'CourInst') ? undefined : EntInstitutionFromJSON(json['CourInst']),
+        'courDegr': !exists(json, 'courDegr') ? undefined : EntDegreeFromJSON(json['courDegr']),
+        'courFacu': !exists(json, 'courFacu') ? undefined : EntFacultyFromJSON(json['courFacu']),
+        'courInst': !exists(json, 'courInst') ? undefined : EntInstitutionFromJSON(json['courInst']),
     };
 }
 

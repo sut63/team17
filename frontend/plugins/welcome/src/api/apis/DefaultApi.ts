@@ -286,9 +286,10 @@ export interface ListRegionRequest {
     offset?: number;
 }
 
-export interface ListResultsRequest {
-    limit?: number;
-    offset?: number;
+export interface ListResultssomtingRequest {
+    id: number;
+    year?: number;
+    term?: number;
 }
 
 export interface ListStudentRequest {
@@ -1207,10 +1208,16 @@ export class DefaultApi extends runtime.BaseAPI {
      * list activity entities
      * List activity entities
      */
-    async listActivityRaw(): Promise<runtime.ApiResponse<Array<EntActivity>>> {
+    async listActivityRaw(requestParameters: ListActivityRequest): Promise<runtime.ApiResponse<Array<EntActivity>>> {
         const queryParameters: runtime.HTTPQuery = {};
 
-        
+        if (requestParameters.limit !== undefined) {
+            queryParameters['limit'] = requestParameters.limit;
+        }
+
+        if (requestParameters.offset !== undefined) {
+            queryParameters['offset'] = requestParameters.offset;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -1228,8 +1235,8 @@ export class DefaultApi extends runtime.BaseAPI {
      * list activity entities
      * List activity entities
      */
-    async listActivity(): Promise<Array<EntActivity>> {
-        const response = await this.listActivityRaw();
+    async listActivity(requestParameters: ListActivityRequest): Promise<Array<EntActivity>> {
+        const response = await this.listActivityRaw(requestParameters);
         return await response.value();
     }
 
@@ -1774,24 +1781,28 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * list results entities
-     * List results entities
+     * list Resultssomting entities by id
+     * List Resultssomting entities by id
      */
-    async listResultsRaw(requestParameters: ListResultsRequest): Promise<runtime.ApiResponse<Array<EntResults>>> {
-        const queryParameters: runtime.HTTPQuery = {};
-
-        if (requestParameters.limit !== undefined) {
-            queryParameters['limit'] = requestParameters.limit;
+    async listResultssomtingRaw(requestParameters: ListResultssomtingRequest): Promise<runtime.ApiResponse<Array<EntResults>>> {
+        if (requestParameters.id === null || requestParameters.id === undefined) {
+            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling listResultssomting.');
         }
 
-        if (requestParameters.offset !== undefined) {
-            queryParameters['offset'] = requestParameters.offset;
+        const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.year !== undefined) {
+            queryParameters['year'] = requestParameters.year;
+        }
+
+        if (requestParameters.term !== undefined) {
+            queryParameters['term'] = requestParameters.term;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/resultss`,
+            path: `/resultss111/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -1801,11 +1812,11 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * list results entities
-     * List results entities
+     * list Resultssomting entities by id
+     * List Resultssomting entities by id
      */
-    async listResults(requestParameters: ListResultsRequest): Promise<Array<EntResults>> {
-        const response = await this.listResultsRaw(requestParameters);
+    async listResultssomting(requestParameters: ListResultssomtingRequest): Promise<Array<EntResults>> {
+        const response = await this.listResultssomtingRaw(requestParameters);
         return await response.value();
     }
 

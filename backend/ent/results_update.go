@@ -5,6 +5,7 @@ package ent
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
@@ -41,6 +42,25 @@ func (ru *ResultsUpdate) SetGrade(f float64) *ResultsUpdate {
 // AddGrade adds f to grade.
 func (ru *ResultsUpdate) AddGrade(f float64) *ResultsUpdate {
 	ru.mutation.AddGrade(f)
+	return ru
+}
+
+// SetGroup sets the group field.
+func (ru *ResultsUpdate) SetGroup(i int) *ResultsUpdate {
+	ru.mutation.ResetGroup()
+	ru.mutation.SetGroup(i)
+	return ru
+}
+
+// AddGroup adds i to group.
+func (ru *ResultsUpdate) AddGroup(i int) *ResultsUpdate {
+	ru.mutation.AddGroup(i)
+	return ru
+}
+
+// SetTime sets the time field.
+func (ru *ResultsUpdate) SetTime(t time.Time) *ResultsUpdate {
+	ru.mutation.SetTime(t)
 	return ru
 }
 
@@ -156,6 +176,11 @@ func (ru *ResultsUpdate) Save(ctx context.Context) (int, error) {
 			return 0, &ValidationError{Name: "grade", err: fmt.Errorf("ent: validator failed for field \"grade\": %w", err)}
 		}
 	}
+	if v, ok := ru.mutation.Group(); ok {
+		if err := results.GroupValidator(v); err != nil {
+			return 0, &ValidationError{Name: "group", err: fmt.Errorf("ent: validator failed for field \"group\": %w", err)}
+		}
+	}
 
 	var (
 		err      error
@@ -236,6 +261,27 @@ func (ru *ResultsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Type:   field.TypeFloat64,
 			Value:  value,
 			Column: results.FieldGrade,
+		})
+	}
+	if value, ok := ru.mutation.Group(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: results.FieldGroup,
+		})
+	}
+	if value, ok := ru.mutation.AddedGroup(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: results.FieldGroup,
+		})
+	}
+	if value, ok := ru.mutation.Time(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: results.FieldTime,
 		})
 	}
 	if ru.mutation.ResuYearCleared() {
@@ -409,6 +455,25 @@ func (ruo *ResultsUpdateOne) AddGrade(f float64) *ResultsUpdateOne {
 	return ruo
 }
 
+// SetGroup sets the group field.
+func (ruo *ResultsUpdateOne) SetGroup(i int) *ResultsUpdateOne {
+	ruo.mutation.ResetGroup()
+	ruo.mutation.SetGroup(i)
+	return ruo
+}
+
+// AddGroup adds i to group.
+func (ruo *ResultsUpdateOne) AddGroup(i int) *ResultsUpdateOne {
+	ruo.mutation.AddGroup(i)
+	return ruo
+}
+
+// SetTime sets the time field.
+func (ruo *ResultsUpdateOne) SetTime(t time.Time) *ResultsUpdateOne {
+	ruo.mutation.SetTime(t)
+	return ruo
+}
+
 // SetResuYearID sets the resu_year edge to Year by id.
 func (ruo *ResultsUpdateOne) SetResuYearID(id int) *ResultsUpdateOne {
 	ruo.mutation.SetResuYearID(id)
@@ -521,6 +586,11 @@ func (ruo *ResultsUpdateOne) Save(ctx context.Context) (*Results, error) {
 			return nil, &ValidationError{Name: "grade", err: fmt.Errorf("ent: validator failed for field \"grade\": %w", err)}
 		}
 	}
+	if v, ok := ruo.mutation.Group(); ok {
+		if err := results.GroupValidator(v); err != nil {
+			return nil, &ValidationError{Name: "group", err: fmt.Errorf("ent: validator failed for field \"group\": %w", err)}
+		}
+	}
 
 	var (
 		err  error
@@ -599,6 +669,27 @@ func (ruo *ResultsUpdateOne) sqlSave(ctx context.Context) (r *Results, err error
 			Type:   field.TypeFloat64,
 			Value:  value,
 			Column: results.FieldGrade,
+		})
+	}
+	if value, ok := ruo.mutation.Group(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: results.FieldGroup,
+		})
+	}
+	if value, ok := ruo.mutation.AddedGroup(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: results.FieldGroup,
+		})
+	}
+	if value, ok := ruo.mutation.Time(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: results.FieldTime,
 		})
 	}
 	if ruo.mutation.ResuYearCleared() {

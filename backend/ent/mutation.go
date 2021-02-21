@@ -7563,6 +7563,9 @@ type ResultsMutation struct {
 	id               *int
 	grade            *float64
 	addgrade         *float64
+	group            *int
+	addgroup         *int
+	time             *time.Time
 	clearedFields    map[string]struct{}
 	resu_year        *int
 	clearedresu_year bool
@@ -7710,6 +7713,100 @@ func (m *ResultsMutation) AddedGrade() (r float64, exists bool) {
 func (m *ResultsMutation) ResetGrade() {
 	m.grade = nil
 	m.addgrade = nil
+}
+
+// SetGroup sets the group field.
+func (m *ResultsMutation) SetGroup(i int) {
+	m.group = &i
+	m.addgroup = nil
+}
+
+// Group returns the group value in the mutation.
+func (m *ResultsMutation) Group() (r int, exists bool) {
+	v := m.group
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldGroup returns the old group value of the Results.
+// If the Results object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *ResultsMutation) OldGroup(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldGroup is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldGroup requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldGroup: %w", err)
+	}
+	return oldValue.Group, nil
+}
+
+// AddGroup adds i to group.
+func (m *ResultsMutation) AddGroup(i int) {
+	if m.addgroup != nil {
+		*m.addgroup += i
+	} else {
+		m.addgroup = &i
+	}
+}
+
+// AddedGroup returns the value that was added to the group field in this mutation.
+func (m *ResultsMutation) AddedGroup() (r int, exists bool) {
+	v := m.addgroup
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetGroup reset all changes of the "group" field.
+func (m *ResultsMutation) ResetGroup() {
+	m.group = nil
+	m.addgroup = nil
+}
+
+// SetTime sets the time field.
+func (m *ResultsMutation) SetTime(t time.Time) {
+	m.time = &t
+}
+
+// Time returns the time value in the mutation.
+func (m *ResultsMutation) Time() (r time.Time, exists bool) {
+	v := m.time
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTime returns the old time value of the Results.
+// If the Results object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *ResultsMutation) OldTime(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldTime is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldTime requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTime: %w", err)
+	}
+	return oldValue.Time, nil
+}
+
+// ResetTime reset all changes of the "time" field.
+func (m *ResultsMutation) ResetTime() {
+	m.time = nil
 }
 
 // SetResuYearID sets the resu_year edge to Year by id.
@@ -7882,9 +7979,15 @@ func (m *ResultsMutation) Type() string {
 // this mutation. Note that, in order to get all numeric
 // fields that were in/decremented, call AddedFields().
 func (m *ResultsMutation) Fields() []string {
-	fields := make([]string, 0, 1)
+	fields := make([]string, 0, 3)
 	if m.grade != nil {
 		fields = append(fields, results.FieldGrade)
+	}
+	if m.group != nil {
+		fields = append(fields, results.FieldGroup)
+	}
+	if m.time != nil {
+		fields = append(fields, results.FieldTime)
 	}
 	return fields
 }
@@ -7896,6 +7999,10 @@ func (m *ResultsMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case results.FieldGrade:
 		return m.Grade()
+	case results.FieldGroup:
+		return m.Group()
+	case results.FieldTime:
+		return m.Time()
 	}
 	return nil, false
 }
@@ -7907,6 +8014,10 @@ func (m *ResultsMutation) OldField(ctx context.Context, name string) (ent.Value,
 	switch name {
 	case results.FieldGrade:
 		return m.OldGrade(ctx)
+	case results.FieldGroup:
+		return m.OldGroup(ctx)
+	case results.FieldTime:
+		return m.OldTime(ctx)
 	}
 	return nil, fmt.Errorf("unknown Results field %s", name)
 }
@@ -7923,6 +8034,20 @@ func (m *ResultsMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetGrade(v)
 		return nil
+	case results.FieldGroup:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetGroup(v)
+		return nil
+	case results.FieldTime:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTime(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Results field %s", name)
 }
@@ -7934,6 +8059,9 @@ func (m *ResultsMutation) AddedFields() []string {
 	if m.addgrade != nil {
 		fields = append(fields, results.FieldGrade)
 	}
+	if m.addgroup != nil {
+		fields = append(fields, results.FieldGroup)
+	}
 	return fields
 }
 
@@ -7944,6 +8072,8 @@ func (m *ResultsMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case results.FieldGrade:
 		return m.AddedGrade()
+	case results.FieldGroup:
+		return m.AddedGroup()
 	}
 	return nil, false
 }
@@ -7959,6 +8089,13 @@ func (m *ResultsMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddGrade(v)
+		return nil
+	case results.FieldGroup:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddGroup(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Results numeric field %s", name)
@@ -7990,6 +8127,12 @@ func (m *ResultsMutation) ResetField(name string) error {
 	switch name {
 	case results.FieldGrade:
 		m.ResetGrade()
+		return nil
+	case results.FieldGroup:
+		m.ResetGroup()
+		return nil
+	case results.FieldTime:
+		m.ResetTime()
 		return nil
 	}
 	return fmt.Errorf("unknown Results field %s", name)

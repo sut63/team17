@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
@@ -26,6 +27,18 @@ type ResultsCreate struct {
 // SetGrade sets the grade field.
 func (rc *ResultsCreate) SetGrade(f float64) *ResultsCreate {
 	rc.mutation.SetGrade(f)
+	return rc
+}
+
+// SetGroup sets the group field.
+func (rc *ResultsCreate) SetGroup(i int) *ResultsCreate {
+	rc.mutation.SetGroup(i)
+	return rc
+}
+
+// SetTime sets the time field.
+func (rc *ResultsCreate) SetTime(t time.Time) *ResultsCreate {
+	rc.mutation.SetTime(t)
 	return rc
 }
 
@@ -120,6 +133,17 @@ func (rc *ResultsCreate) Save(ctx context.Context) (*Results, error) {
 			return nil, &ValidationError{Name: "grade", err: fmt.Errorf("ent: validator failed for field \"grade\": %w", err)}
 		}
 	}
+	if _, ok := rc.mutation.Group(); !ok {
+		return nil, &ValidationError{Name: "group", err: errors.New("ent: missing required field \"group\"")}
+	}
+	if v, ok := rc.mutation.Group(); ok {
+		if err := results.GroupValidator(v); err != nil {
+			return nil, &ValidationError{Name: "group", err: fmt.Errorf("ent: validator failed for field \"group\": %w", err)}
+		}
+	}
+	if _, ok := rc.mutation.Time(); !ok {
+		return nil, &ValidationError{Name: "time", err: errors.New("ent: missing required field \"time\"")}
+	}
 	var (
 		err  error
 		node *Results
@@ -187,6 +211,22 @@ func (rc *ResultsCreate) createSpec() (*Results, *sqlgraph.CreateSpec) {
 			Column: results.FieldGrade,
 		})
 		r.Grade = value
+	}
+	if value, ok := rc.mutation.Group(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: results.FieldGroup,
+		})
+		r.Group = value
+	}
+	if value, ok := rc.mutation.Time(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: results.FieldTime,
+		})
+		r.Time = value
 	}
 	if nodes := rc.mutation.ResuYearIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
