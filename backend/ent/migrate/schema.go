@@ -338,6 +338,8 @@ var (
 	ResultsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "grade", Type: field.TypeFloat64},
+		{Name: "group", Type: field.TypeInt},
+		{Name: "time", Type: field.TypeTime},
 		{Name: "student_stud_resu", Type: field.TypeInt, Nullable: true},
 		{Name: "subject_subj_resu", Type: field.TypeInt, Nullable: true},
 		{Name: "term_term_resu", Type: field.TypeInt, Nullable: true},
@@ -351,28 +353,28 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:  "results_students_stud_resu",
-				Columns: []*schema.Column{ResultsColumns[2]},
+				Columns: []*schema.Column{ResultsColumns[4]},
 
 				RefColumns: []*schema.Column{StudentsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:  "results_subjects_subj_resu",
-				Columns: []*schema.Column{ResultsColumns[3]},
+				Columns: []*schema.Column{ResultsColumns[5]},
 
 				RefColumns: []*schema.Column{SubjectsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:  "results_terms_term_resu",
-				Columns: []*schema.Column{ResultsColumns[4]},
+				Columns: []*schema.Column{ResultsColumns[6]},
 
 				RefColumns: []*schema.Column{TermsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:  "results_years_year_resu",
-				Columns: []*schema.Column{ResultsColumns[5]},
+				Columns: []*schema.Column{ResultsColumns[7]},
 
 				RefColumns: []*schema.Column{YearsColumns[0]},
 				OnDelete:   schema.SetNull,

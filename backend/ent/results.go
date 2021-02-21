@@ -5,6 +5,7 @@ package ent
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/sut63/team17/app/ent/results"
@@ -21,6 +22,10 @@ type Results struct {
 	ID int `json:"id,omitempty"`
 	// Grade holds the value of the "grade" field.
 	Grade float64 `json:"grade,omitempty"`
+	// Group holds the value of the "group" field.
+	Group int `json:"group,omitempty"`
+	// Time holds the value of the "time" field.
+	Time time.Time `json:"time,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ResultsQuery when eager-loading is set.
 	Edges             ResultsEdges `json:"edges"`
@@ -106,6 +111,8 @@ func (*Results) scanValues() []interface{} {
 	return []interface{}{
 		&sql.NullInt64{},   // id
 		&sql.NullFloat64{}, // grade
+		&sql.NullInt64{},   // group
+		&sql.NullTime{},    // time
 	}
 }
 
@@ -136,7 +143,17 @@ func (r *Results) assignValues(values ...interface{}) error {
 	} else if value.Valid {
 		r.Grade = value.Float64
 	}
-	values = values[1:]
+	if value, ok := values[1].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field group", values[1])
+	} else if value.Valid {
+		r.Group = int(value.Int64)
+	}
+	if value, ok := values[2].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field time", values[2])
+	} else if value.Valid {
+		r.Time = value.Time
+	}
+	values = values[3:]
 	if len(values) == len(results.ForeignKeys) {
 		if value, ok := values[0].(*sql.NullInt64); !ok {
 			return fmt.Errorf("unexpected type %T for edge-field student_stud_resu", value)
@@ -211,6 +228,10 @@ func (r *Results) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", r.ID))
 	builder.WriteString(", grade=")
 	builder.WriteString(fmt.Sprintf("%v", r.Grade))
+	builder.WriteString(", group=")
+	builder.WriteString(fmt.Sprintf("%v", r.Group))
+	builder.WriteString(", time=")
+	builder.WriteString(r.Time.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

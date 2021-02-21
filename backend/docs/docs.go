@@ -1629,51 +1629,6 @@ var doc = `{
             }
         },
         "/resultss": {
-            "get": {
-                "description": "list results entities",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "List results entities",
-                "operationId": "list-results",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Limit",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Offset",
-                        "name": "offset",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/ent.Results"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    }
-                }
-            },
             "post": {
                 "description": "Create results",
                 "consumes": [
@@ -1841,6 +1796,60 @@ var doc = `{
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/resultss111/{id}": {
+            "get": {
+                "description": "list Resultssomting entities by id",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "List Resultssomting entities by id",
+                "operationId": "list-Resultssomting",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "year",
+                        "name": "year",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "term",
+                        "name": "term",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Resultssomting ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ent.Results"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/gin.H"
                         }
@@ -2367,6 +2376,9 @@ var doc = `{
                 "grade": {
                     "type": "number"
                 },
+                "group": {
+                    "type": "integer"
+                },
                 "studentID": {
                     "type": "integer"
                 },
@@ -2375,6 +2387,9 @@ var doc = `{
                 },
                 "termID": {
                     "type": "integer"
+                },
+                "timed": {
+                    "type": "string"
                 },
                 "yearID": {
                     "type": "integer"
@@ -3039,9 +3054,17 @@ var doc = `{
                     "description": "Grade holds the value of the \"grade\" field.",
                     "type": "number"
                 },
+                "group": {
+                    "description": "Group holds the value of the \"group\" field.",
+                    "type": "integer"
+                },
                 "id": {
                     "description": "ID of the ent.",
                     "type": "integer"
+                },
+                "time": {
+                    "description": "Time holds the value of the \"time\" field.",
+                    "type": "string"
                 }
             }
         },
@@ -3307,7 +3330,6 @@ var doc = `{
         "OAuth2Application": {
             "type": "oauth2",
             "flow": "application",
-            "authorizationUrl": "",
             "tokenUrl": "https://example.com/oauth/token",
             "scopes": {
                 "admin": " Grants read and write access to administrative information",
@@ -3326,7 +3348,6 @@ var doc = `{
         "OAuth2Password": {
             "type": "oauth2",
             "flow": "password",
-            "authorizationUrl": "",
             "tokenUrl": "https://example.com/oauth/token",
             "scopes": {
                 "admin": " Grants read and write access to administrative information",

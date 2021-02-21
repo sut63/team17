@@ -193,6 +193,25 @@ func init() {
 			return nil
 		}
 	}()
+	// resultsDescGroup is the schema descriptor for group field.
+	resultsDescGroup := resultsFields[1].Descriptor()
+	// results.GroupValidator is a validator for the "group" field. It is called by the builders before save.
+	results.GroupValidator = func() func(int) error {
+		validators := resultsDescGroup.Validators
+		fns := [...]func(int) error{
+			validators[0].(func(int) error),
+			validators[1].(func(int) error),
+			validators[2].(func(int) error),
+		}
+		return func(group int) error {
+			for _, fn := range fns {
+				if err := fn(group); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	studentFields := schema.Student{}.Fields()
 	_ = studentFields
 	// studentDescFname is the schema descriptor for fname field.

@@ -9,6 +9,10 @@ const (
 	FieldID = "id"
 	// FieldGrade holds the string denoting the grade field in the database.
 	FieldGrade = "grade"
+	// FieldGroup holds the string denoting the group field in the database.
+	FieldGroup = "group"
+	// FieldTime holds the string denoting the time field in the database.
+	FieldTime = "time"
 
 	// EdgeResuYear holds the string denoting the resu_year edge name in mutations.
 	EdgeResuYear = "resu_year"
@@ -55,6 +59,8 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldGrade,
+	FieldGroup,
+	FieldTime,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the Results type.
@@ -68,4 +74,6 @@ var ForeignKeys = []string{
 var (
 	// GradeValidator is a validator for the "grade" field. It is called by the builders before save.
 	GradeValidator func(float64) error
+	// GroupValidator is a validator for the "group" field. It is called by the builders before save.
+	GroupValidator func(int) error
 )

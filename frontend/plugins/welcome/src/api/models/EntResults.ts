@@ -39,15 +39,23 @@ export interface EntResults {
      */
     grade?: number;
     /**
+     * Group holds the value of the "group" field.
+     * @type {number}
+     * @memberof EntResults
+     */
+    group?: number;
+    /**
      * ID of the ent.
      * @type {number}
      * @memberof EntResults
      */
     id?: number;
-    subjectID?: number;
-    yearID?: number;
-    termID?: number;
-    studentID?: number;
+    /**
+     * Time holds the value of the "time" field.
+     * @type {string}
+     * @memberof EntResults
+     */
+    time?: string;
 }
 
 export function EntResultsFromJSON(json: any): EntResults {
@@ -62,7 +70,9 @@ export function EntResultsFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         
         'edges': !exists(json, 'edges') ? undefined : EntResultsEdgesFromJSON(json['edges']),
         'grade': !exists(json, 'grade') ? undefined : json['grade'],
+        'group': !exists(json, 'group') ? undefined : json['group'],
         'id': !exists(json, 'id') ? undefined : json['id'],
+        'time': !exists(json, 'time') ? undefined : json['time'],
     };
 }
 
@@ -77,11 +87,9 @@ export function EntResultsToJSON(value?: EntResults | null): any {
         
         'edges': EntResultsEdgesToJSON(value.edges),
         'grade': value.grade,
+        'group': value.group,
         'id': value.id,
-        'YearID': value.yearID,
-        'TermID': value.termID,
-        'SubjectID': value.subjectID,
-        'StudentID': value.studentID,
+        'time': value.time,
     };
 }
 

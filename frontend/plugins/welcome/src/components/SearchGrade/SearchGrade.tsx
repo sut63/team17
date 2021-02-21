@@ -30,6 +30,9 @@ import {
 } from '@material-ui/core';
 import { DefaultApi } from '../../api/apis'; // Api Gennerate From Command
 import { EntResults } from '../../api';
+import { EntStudent } from '../../api';
+import { EntYear } from '../../api';
+import { EntTerm } from '../../api';
 
 
 
@@ -42,19 +45,19 @@ const Toast = Swal.mixin({
     timer: 3000,
     timerProgressBar: true,
     didOpen: toast => {
-      toast.addEventListener('mouseenter', Swal.stopTimer);
-      toast.addEventListener('mouseleave', Swal.resumeTimer);
+        toast.addEventListener('mouseenter', Swal.stopTimer);
+        toast.addEventListener('mouseleave', Swal.resumeTimer);
     },
-  });
+});
 ////--------------------------------------------
 const alertMessage = (icon: any, title: any) => {
     Toast.fire({
-      icon: icon,
-      title: title,
+        icon: icon,
+        title: title,
     });
-  }
- 
-  
+}
+
+
 
 
 // header css
@@ -72,7 +75,7 @@ const useStyles = makeStyles(theme => ({
         marginBottom: theme.spacing(2),
     },
     formControl: {
-        width: 300,
+        width: 200,
         marginLeft: -70,
     },
     selectEmpty: {
@@ -105,20 +108,60 @@ const SearchGrade: FC<{}> = () => {
     const classes = useStyles();
     //const************************************************
     const api = new DefaultApi();
-    const [results, setResults] = React.useState<EntResults[]>([]);
     //const [results, setResults] = React.useState(Array);
- 
+    const [years, setYears] = React.useState<EntYear[]>([]);
+    const [terms, setTerms] = React.useState<EntTerm[]>([]);
+    const [students, setStudents] = React.useState<EntStudent[]>([]);
+    const [result111, setResult111] = React.useState<EntResults[]>([]);
 
 
+
+    //Hook********************************************
+    useEffect(() => {
+        const getYears = async () => {
+            const res = await api.listYear({ limit: 100, offset: 0 });
+            //setLoading(true);
+            setYears(res);
+        };
+        getYears();
+    }, []);
+    useEffect(() => {
+        const getTerms = async () => {
+            const res = await api.listTerm({ limit: 100, offset: 0 });
+            //setLoading(true);
+            setTerms(res);
+        };
+        getTerms();
+    }, []);
+    useEffect(() => {
+        const getStudents = async () => {
+            const res = await api.listStudent({ limit: 100, offset: 0 });
+            //setLoading(true);
+            setStudents(res);
+        };
+        getStudents();
+    }, []);
+
+
+
+    //Get Data By Textfile and ComboBox ************************************************
+  const [yearx, setYearx] = React.useState('');
+  const [studentx, setStudentx] = React.useState('');
+  const [termx, setTermx] = React.useState('');
   
-    
-    
-
-  //Get Data By Textfile and ComboBox ************************************************
-  const [yearx, setYearx] = React.useState();
-  const [studentx, setStudentx] = React.useState();
-  const [termx, setTermx] = React.useState();
   
+
+  let yearID = Number(yearx)
+  let studentID = Number(studentx)
+  let termID = Number(termx)
+  
+
+  let results = {   
+	studentID,
+	yearID,
+    termID,
+    };
+
 
 
 
@@ -126,108 +169,131 @@ const SearchGrade: FC<{}> = () => {
    //Handle chang********************************************************************
   const handleInputYear = (event: any) => {
     setYearx(event.target.value);
-    clear();
+    
   };
   const handleInputStudent = (event: any) => {
     setStudentx(event.target.value);
-    clear();
+    
   };
   const handleInputTerm = (event: any) => {
     setTermx(event.target.value);
-    clear();
+    
   };
 
+
+
+
+
+    //clear
+    //function clear() {
+     //   setResults([])
+
+    //}
+    const getResult = async () => {
+        const res = await api.listResultssomting({ id:results.studentID,year:results.yearID,term:results.termID });
+        //setLoading(true);
+        let temp = res.length
+        if (temp > 0 ) {
+          
+            Toast.fire({
+              icon: 'success',
+              title: 'ค้นหาสำเร็จ',
+            });
+          } else {
+            Toast.fire({
+                icon: 'error',
+                title: 'ค้นหาไม่สำเร็จ',
+              });
+          }
+          console.log(res)
+        setResult111(res);
+    };
+
+  //ค้นหา**********************************************************
+   // function save data
+   function search() {
+    getResult()
+   }
  
+   
 
-  //function ต่อเนิ่อง
-  function ss2 (){
-      clear();
-  }
 
- //clear
-  function clear (){
-      setResults([])
-      
-  }
-    
-
-  
-  //get
-  const getResultss = async () => {
-    const res = await api.listResults({ limit: 10, offset: 0 });
-    setResults(res);
-    var check = false
-    var chpap = ""
-    for(let i = 0; i < res.length ; i++){
-        if(res[i].edges?.resuTerm?.semester == termx && res[i].edges?.resuYear?.years == yearx && res[i].edges?.resuStud?.id == studentx){
-            check = true
-            chpap += "s"
-        }
-    }
-    if(check == true || chpap != ""){
-        alertMessage("success","ค้นหาสำเร็จ")
-    }else{
-        alertMessage("error","ค้นหาไม่พบ")
-    }
-    
-  };
-
-  
-
-  
 
     return (
         <Page theme={pageTheme.home}>
             <Header style={HeaderCustom} title={`ระบบค้นหาประวัติผลการศึกษา`}>
                 <div style={{ marginLeft: 10, marginRight: 20 }}></div>
-                
+
             </Header>
             <Content>
                 <Grid container spacing={1}>
+
+
                     <Grid item xs={1}>
                         <div className={classes.paper}>รหัสนักศึกษา</div>
                     </Grid>
                     <Grid item xs={1}>
                         <FormControl variant="outlined" className={classes.formControl}>
-                        <TextField variant="outlined" className={classes.textField} 
-                        type="String" 
-                        name="grade"
-                        value={studentx} // (undefined || '') = ''
-                        onChange={handleInputStudent}
-                        >                                                   
-                        </TextField>                          
+                            <InputLabel>เลือกรหัสนักศึกษา</InputLabel>
+                            <Select
+                                name="StudentID"
+                                value={results.studentID || ''} // (undefined || '') = ''
+                                onChange={handleInputStudent}
+                            >
+                                {students.map(item => {
+                                    return (
+                                        <MenuItem key={item.id} value={item.id}>
+                                            {item.id}
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
                         </FormControl>
                     </Grid>
-                    
+
 
                     <Grid item xs={1}>
                         <div className={classes.paper}>ปีการศึกษา</div>
                     </Grid>
                     <Grid item xs={1}>
                         <FormControl variant="outlined" className={classes.formControl}>
-                        <TextField variant="outlined" className={classes.textField} 
-                        type="Number" 
-                        name="grade"
-                        value={yearx} // (undefined || '') = ''
-                        onChange={handleInputYear}
-                        >                                                   
-                        </TextField>   
+                            <InputLabel>เลือกปีภาคการศึกษา</InputLabel>
+                            <Select
+                                name="YearID"
+                                value={results.yearID || ''} // (undefined || '') = ''
+                                onChange={handleInputYear}
+                            >
+                                {years.map(item => {
+                                    return (
+                                        <MenuItem key={item.id} value={item.id}>
+                                            {item.years}
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
                         </FormControl>
                     </Grid>
 
 
                     <Grid item xs={1}>
-                        <div className={classes.paper}>เทอม</div>
+                        <div className={classes.paper}>ภาคการศึกษา</div>
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={1}>
                         <FormControl variant="outlined" className={classes.formControl}>
-                        <TextField variant="outlined" className={classes.textField} 
-                        type="Number" 
-                        name="grade"
-                        value={termx} // (undefined || '') = ''
-                        onChange={handleInputTerm}
-                        >                                                   
-                        </TextField>   
+                            <InputLabel>เลือกภาคการศึกษา</InputLabel>
+                            <Select
+                                name="TermID"
+                                value={results.termID || ''} // (undefined || '') = ''
+                                onChange={handleInputTerm}
+                            >
+                                {terms.map(item => {
+                                    return (
+                                        <MenuItem key={item.id} value={item.id}>
+                                            {item.semester}
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
                         </FormControl>
                     </Grid>
 
@@ -237,16 +303,16 @@ const SearchGrade: FC<{}> = () => {
                             variant="contained"
                             color="primary"
                             size="large"
-                            onClick={getResultss}
+                            onClick={search}
                         >
                             ค้นหา
                         </Button>
                     </Grid>
-                    
-                    
+
+
 
                 </Grid>
-                
+
 
                 <Grid item xs={12}>
                     <Divider className={classes.divider} />
@@ -263,9 +329,9 @@ const SearchGrade: FC<{}> = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                        {results.filter((filter: any) => filter.edges?.resuTerm?.semester == termx && filter.edges?.resuYear?.years == yearx && filter.edges?.resuStud?.id == studentx).map((item: any) => (
+                            {result111.map((item: any) => (
                                 <TableRow key={item.id}>
-                                    <TableCell align="center">{item.edges.resuSubj.subjects}</TableCell>
+                                    <TableCell align="center">{item.edges?.resuSubj.subjects}</TableCell>
                                     <TableCell align="center">{item.grade}</TableCell>
                                 </TableRow>
                             ))}

@@ -66,12 +66,16 @@ definitions:
     properties:
       grade:
         type: number
+      group:
+        type: integer
       studentID:
         type: integer
       subjectID:
         type: integer
       termID:
         type: integer
+      timed:
+        type: string
       yearID:
         type: integer
     type: object
@@ -576,9 +580,15 @@ definitions:
       grade:
         description: Grade holds the value of the "grade" field.
         type: number
+      group:
+        description: Group holds the value of the "group" field.
+        type: integer
       id:
         description: ID of the ent.
         type: integer
+      time:
+        description: Time holds the value of the "time" field.
+        type: string
     type: object
   ent.ResultsEdges:
     properties:
@@ -1836,36 +1846,6 @@ paths:
             $ref: '#/definitions/gin.H'
       summary: Get a region entity by ID
   /resultss:
-    get:
-      description: list results entities
-      operationId: list-results
-      parameters:
-      - description: Limit
-        in: query
-        name: limit
-        type: integer
-      - description: Offset
-        in: query
-        name: offset
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/ent.Results'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/gin.H'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/gin.H'
-      summary: List results entities
     post:
       consumes:
       - application/json
@@ -1986,6 +1966,42 @@ paths:
           schema:
             $ref: '#/definitions/gin.H'
       summary: Update a results entity by ID
+  /resultss111/{id}:
+    get:
+      description: list Resultssomting entities by id
+      operationId: list-Resultssomting
+      parameters:
+      - description: year
+        in: query
+        name: year
+        type: integer
+      - description: term
+        in: query
+        name: term
+        type: integer
+      - description: Resultssomting ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Results'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List Resultssomting entities by id
   /students:
     get:
       description: list student entities
@@ -2273,7 +2289,6 @@ securityDefinitions:
     tokenUrl: https://example.com/oauth/token
     type: oauth2
   OAuth2Application:
-    authorizationUrl: ""
     flow: application
     scopes:
       admin: ' Grants read and write access to administrative information'
@@ -2288,7 +2303,6 @@ securityDefinitions:
       write: ' Grants write access'
     type: oauth2
   OAuth2Password:
-    authorizationUrl: ""
     flow: password
     scopes:
       admin: ' Grants read and write access to administrative information'

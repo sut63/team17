@@ -14,7 +14,6 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-
 type Terms struct {
 	Term []Term
 }
@@ -504,7 +503,6 @@ func main() {
 			SetPostal(pv.Postal).
 			Save(context.Background())
 	}
-
 
 	// Set degree Data
 	degrees := Degrees{

@@ -15,6 +15,8 @@ type Results struct {
 func (Results) Fields() []ent.Field {
 	return []ent.Field{
 		field.Float("grade").Min(0).Max(4).Positive(),
+		field.Int("group").Min(1).Max(4).Positive(),
+		field.Time("time"),
 	}
 }
 
