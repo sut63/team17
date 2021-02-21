@@ -74,10 +74,10 @@ export function EntResultsEdgesFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'resuStud': !exists(json, 'resuStud') ? undefined : EntStudentFromJSON(json['resuStud']),
+        'resuStud': !exists(json, 'ResuStud') ? undefined : EntStudentFromJSON(json['ResuStud']),
         'resuSubj': !exists(json, 'ResuSubj') ? undefined : EntSubjectFromJSON(json['ResuSubj']),
-        'resuTerm': !exists(json, 'resuTerm') ? undefined : EntTermFromJSON(json['resuTerm']),
-        'resuYear': !exists(json, 'resuYear') ? undefined : EntYearFromJSON(json['resuYear']),
+        'resuTerm': !exists(json, 'ResuTerm') ? undefined : EntTermFromJSON(json['ResuTerm']),
+        'resuYear': !exists(json, 'ResuYear') ? undefined : EntYearFromJSON(json['ResuYear']),
     };
 }
 
