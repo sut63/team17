@@ -75,7 +75,7 @@ const Results: FC<{}> = () => {
   const api = new DefaultApi();
   const [loading, setLoading] = React.useState(false);
   const [years, setYears] = React.useState<EntYear[]>([]);
-  const [resultss, setResultss] = React.useState<EntResults[]>([]);
+  
   const [terms, setTerms] = React.useState<EntTerm[]>([]);
   const [subjects, setSubjects] = React.useState<EntSubject[]>([]);
   const [students, setStudents] = React.useState<EntStudent[]>([]);
@@ -93,14 +93,7 @@ const Results: FC<{}> = () => {
     getYears();
   }, []);
 
-  useEffect(() => {
-    const getResultss = async () => {
-        const res = await api.listResults({ limit: 100, offset: 0 });
-        //setLoading(true);
-        setResultss(res);
-      };
-    getResultss();
-  }, []);
+  
 
   useEffect(() => {
     const getTerms = async () => {
@@ -338,7 +331,7 @@ const Results: FC<{}> = () => {
 
   //console log****************************************************************
   console.log(years);
-  console.log(resultss);
+  
   console.log(terms);
   console.log(subjects);
   console.log(students);
