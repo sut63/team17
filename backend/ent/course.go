@@ -20,6 +20,12 @@ type Course struct {
 	ID int `json:"id,omitempty"`
 	// Course holds the value of the "course" field.
 	Course string `json:"course,omitempty"`
+	// Annotation holds the value of the "annotation" field.
+	Annotation string `json:"annotation,omitempty"`
+	// Credit holds the value of the "credit" field.
+	Credit int `json:"credit,omitempty"`
+	// CourseID holds the value of the "course_id" field.
+	CourseID int `json:"course_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the CourseQuery when eager-loading is set.
 	Edges                 CourseEdges `json:"edges"`
@@ -88,6 +94,9 @@ func (*Course) scanValues() []interface{} {
 	return []interface{}{
 		&sql.NullInt64{},  // id
 		&sql.NullString{}, // course
+		&sql.NullString{}, // annotation
+		&sql.NullInt64{},  // credit
+		&sql.NullInt64{},  // course_id
 	}
 }
 
@@ -117,7 +126,22 @@ func (c *Course) assignValues(values ...interface{}) error {
 	} else if value.Valid {
 		c.Course = value.String
 	}
-	values = values[1:]
+	if value, ok := values[1].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field annotation", values[1])
+	} else if value.Valid {
+		c.Annotation = value.String
+	}
+	if value, ok := values[2].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field credit", values[2])
+	} else if value.Valid {
+		c.Credit = int(value.Int64)
+	}
+	if value, ok := values[3].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field course_id", values[3])
+	} else if value.Valid {
+		c.CourseID = int(value.Int64)
+	}
+	values = values[4:]
 	if len(values) == len(course.ForeignKeys) {
 		if value, ok := values[0].(*sql.NullInt64); !ok {
 			return fmt.Errorf("unexpected type %T for edge-field degree_degr_cour", value)
@@ -181,6 +205,12 @@ func (c *Course) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", c.ID))
 	builder.WriteString(", course=")
 	builder.WriteString(c.Course)
+	builder.WriteString(", annotation=")
+	builder.WriteString(c.Annotation)
+	builder.WriteString(", credit=")
+	builder.WriteString(fmt.Sprintf("%v", c.Credit))
+	builder.WriteString(", course_id=")
+	builder.WriteString(fmt.Sprintf("%v", c.CourseID))
 	builder.WriteByte(')')
 	return builder.String()
 }

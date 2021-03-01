@@ -24,6 +24,9 @@ type Course struct {
 	Degree      int
 	Institution int
 	Faculty     int
+	CourseID    int
+	Credit      int
+	Annotation  string
 }
 
 // CreateCourse handles POST requests for adding course entities
@@ -85,6 +88,9 @@ func (ctl *CourseController) CreateCourse(c *gin.Context) {
 	save, err := ctl.client.Course.
 		Create().
 		SetCourse(obj.Coursename).
+		SetCourseID(obj.CourseID).
+		SetCredit(obj.Credit).
+		SetAnnotation(obj.Annotation).
 		SetCourFacu(fa).
 		SetCourDegr(de).
 		SetCourInst(in).

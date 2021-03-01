@@ -9,6 +9,12 @@ const (
 	FieldID = "id"
 	// FieldCourse holds the string denoting the course field in the database.
 	FieldCourse = "course"
+	// FieldAnnotation holds the string denoting the annotation field in the database.
+	FieldAnnotation = "annotation"
+	// FieldCredit holds the string denoting the credit field in the database.
+	FieldCredit = "credit"
+	// FieldCourseID holds the string denoting the course_id field in the database.
+	FieldCourseID = "course_id"
 
 	// EdgeCourFacu holds the string denoting the cour_facu edge name in mutations.
 	EdgeCourFacu = "cour_facu"
@@ -46,6 +52,9 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldCourse,
+	FieldAnnotation,
+	FieldCredit,
+	FieldCourseID,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the Course type.
@@ -58,4 +67,10 @@ var ForeignKeys = []string{
 var (
 	// CourseValidator is a validator for the "course" field. It is called by the builders before save.
 	CourseValidator func(string) error
+	// AnnotationValidator is a validator for the "annotation" field. It is called by the builders before save.
+	AnnotationValidator func(string) error
+	// CreditValidator is a validator for the "credit" field. It is called by the builders before save.
+	CreditValidator func(int) error
+	// CourseIDValidator is a validator for the "course_id" field. It is called by the builders before save.
+	CourseIDValidator func(int) error
 )

@@ -27,11 +27,29 @@ import {
  */
 export interface EntCourse {
     /**
+     * Annotation holds the value of the "annotation" field.
+     * @type {string}
+     * @memberof EntCourse
+     */
+    annotation?: string;
+    /**
      * Course holds the value of the "course" field.
      * @type {string}
      * @memberof EntCourse
      */
     course?: string;
+    /**
+     * CourseID holds the value of the "course_id" field.
+     * @type {number}
+     * @memberof EntCourse
+     */
+    courseId?: number;
+    /**
+     * Credit holds the value of the "credit" field.
+     * @type {number}
+     * @memberof EntCourse
+     */
+    credit?: number;
     /**
      * 
      * @type {EntCourseEdges}
@@ -56,7 +74,10 @@ export function EntCourseFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     }
     return {
         
+        'annotation': !exists(json, 'annotation') ? undefined : json['annotation'],
         'course': !exists(json, 'course') ? undefined : json['course'],
+        'courseId': !exists(json, 'course_id') ? undefined : json['course_id'],
+        'credit': !exists(json, 'credit') ? undefined : json['credit'],
         'edges': !exists(json, 'edges') ? undefined : EntCourseEdgesFromJSON(json['edges']),
         'id': !exists(json, 'id') ? undefined : json['id'],
     };
@@ -71,7 +92,10 @@ export function EntCourseToJSON(value?: EntCourse | null): any {
     }
     return {
         
+        'annotation': value.annotation,
         'course': value.course,
+        'course_id': value.courseId,
+        'credit': value.credit,
         'edges': EntCourseEdgesToJSON(value.edges),
         'id': value.id,
     };

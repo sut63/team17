@@ -1921,6 +1921,11 @@ type CourseMutation struct {
 	typ              string
 	id               *int
 	course           *string
+	annotation       *string
+	credit           *int
+	addcredit        *int
+	course_id        *int
+	addcourse_id     *int
 	clearedFields    map[string]struct{}
 	cour_facu        *int
 	clearedcour_facu bool
@@ -2046,6 +2051,157 @@ func (m *CourseMutation) OldCourse(ctx context.Context) (v string, err error) {
 // ResetCourse reset all changes of the "course" field.
 func (m *CourseMutation) ResetCourse() {
 	m.course = nil
+}
+
+// SetAnnotation sets the annotation field.
+func (m *CourseMutation) SetAnnotation(s string) {
+	m.annotation = &s
+}
+
+// Annotation returns the annotation value in the mutation.
+func (m *CourseMutation) Annotation() (r string, exists bool) {
+	v := m.annotation
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAnnotation returns the old annotation value of the Course.
+// If the Course object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *CourseMutation) OldAnnotation(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldAnnotation is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldAnnotation requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAnnotation: %w", err)
+	}
+	return oldValue.Annotation, nil
+}
+
+// ResetAnnotation reset all changes of the "annotation" field.
+func (m *CourseMutation) ResetAnnotation() {
+	m.annotation = nil
+}
+
+// SetCredit sets the credit field.
+func (m *CourseMutation) SetCredit(i int) {
+	m.credit = &i
+	m.addcredit = nil
+}
+
+// Credit returns the credit value in the mutation.
+func (m *CourseMutation) Credit() (r int, exists bool) {
+	v := m.credit
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCredit returns the old credit value of the Course.
+// If the Course object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *CourseMutation) OldCredit(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldCredit is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldCredit requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCredit: %w", err)
+	}
+	return oldValue.Credit, nil
+}
+
+// AddCredit adds i to credit.
+func (m *CourseMutation) AddCredit(i int) {
+	if m.addcredit != nil {
+		*m.addcredit += i
+	} else {
+		m.addcredit = &i
+	}
+}
+
+// AddedCredit returns the value that was added to the credit field in this mutation.
+func (m *CourseMutation) AddedCredit() (r int, exists bool) {
+	v := m.addcredit
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetCredit reset all changes of the "credit" field.
+func (m *CourseMutation) ResetCredit() {
+	m.credit = nil
+	m.addcredit = nil
+}
+
+// SetCourseID sets the course_id field.
+func (m *CourseMutation) SetCourseID(i int) {
+	m.course_id = &i
+	m.addcourse_id = nil
+}
+
+// CourseID returns the course_id value in the mutation.
+func (m *CourseMutation) CourseID() (r int, exists bool) {
+	v := m.course_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCourseID returns the old course_id value of the Course.
+// If the Course object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *CourseMutation) OldCourseID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldCourseID is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldCourseID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCourseID: %w", err)
+	}
+	return oldValue.CourseID, nil
+}
+
+// AddCourseID adds i to course_id.
+func (m *CourseMutation) AddCourseID(i int) {
+	if m.addcourse_id != nil {
+		*m.addcourse_id += i
+	} else {
+		m.addcourse_id = &i
+	}
+}
+
+// AddedCourseID returns the value that was added to the course_id field in this mutation.
+func (m *CourseMutation) AddedCourseID() (r int, exists bool) {
+	v := m.addcourse_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetCourseID reset all changes of the "course_id" field.
+func (m *CourseMutation) ResetCourseID() {
+	m.course_id = nil
+	m.addcourse_id = nil
 }
 
 // SetCourFacuID sets the cour_facu edge to Faculty by id.
@@ -2179,9 +2335,18 @@ func (m *CourseMutation) Type() string {
 // this mutation. Note that, in order to get all numeric
 // fields that were in/decremented, call AddedFields().
 func (m *CourseMutation) Fields() []string {
-	fields := make([]string, 0, 1)
+	fields := make([]string, 0, 4)
 	if m.course != nil {
 		fields = append(fields, course.FieldCourse)
+	}
+	if m.annotation != nil {
+		fields = append(fields, course.FieldAnnotation)
+	}
+	if m.credit != nil {
+		fields = append(fields, course.FieldCredit)
+	}
+	if m.course_id != nil {
+		fields = append(fields, course.FieldCourseID)
 	}
 	return fields
 }
@@ -2193,6 +2358,12 @@ func (m *CourseMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case course.FieldCourse:
 		return m.Course()
+	case course.FieldAnnotation:
+		return m.Annotation()
+	case course.FieldCredit:
+		return m.Credit()
+	case course.FieldCourseID:
+		return m.CourseID()
 	}
 	return nil, false
 }
@@ -2204,6 +2375,12 @@ func (m *CourseMutation) OldField(ctx context.Context, name string) (ent.Value, 
 	switch name {
 	case course.FieldCourse:
 		return m.OldCourse(ctx)
+	case course.FieldAnnotation:
+		return m.OldAnnotation(ctx)
+	case course.FieldCredit:
+		return m.OldCredit(ctx)
+	case course.FieldCourseID:
+		return m.OldCourseID(ctx)
 	}
 	return nil, fmt.Errorf("unknown Course field %s", name)
 }
@@ -2220,6 +2397,27 @@ func (m *CourseMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetCourse(v)
 		return nil
+	case course.FieldAnnotation:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAnnotation(v)
+		return nil
+	case course.FieldCredit:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCredit(v)
+		return nil
+	case course.FieldCourseID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCourseID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Course field %s", name)
 }
@@ -2227,13 +2425,26 @@ func (m *CourseMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented
 // or decremented during this mutation.
 func (m *CourseMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addcredit != nil {
+		fields = append(fields, course.FieldCredit)
+	}
+	if m.addcourse_id != nil {
+		fields = append(fields, course.FieldCourseID)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was in/decremented
 // from a field with the given name. The second value indicates
 // that this field was not set, or was not define in the schema.
 func (m *CourseMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case course.FieldCredit:
+		return m.AddedCredit()
+	case course.FieldCourseID:
+		return m.AddedCourseID()
+	}
 	return nil, false
 }
 
@@ -2242,6 +2453,20 @@ func (m *CourseMutation) AddedField(name string) (ent.Value, bool) {
 // type mismatch the field type.
 func (m *CourseMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case course.FieldCredit:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCredit(v)
+		return nil
+	case course.FieldCourseID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCourseID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Course numeric field %s", name)
 }
@@ -2272,6 +2497,15 @@ func (m *CourseMutation) ResetField(name string) error {
 	switch name {
 	case course.FieldCourse:
 		m.ResetCourse()
+		return nil
+	case course.FieldAnnotation:
+		m.ResetAnnotation()
+		return nil
+	case course.FieldCredit:
+		m.ResetCredit()
+		return nil
+	case course.FieldCourseID:
+		m.ResetCourseID()
 		return nil
 	}
 	return fmt.Errorf("unknown Course field %s", name)

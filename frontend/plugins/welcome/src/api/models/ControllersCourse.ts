@@ -43,6 +43,12 @@ export interface ControllersCourse {
      * @memberof ControllersCourse
      */
     institution?: number;
+
+    credit: number;
+
+    annotation: string;
+
+    courseID: number;
 }
 
 export function ControllersCourseFromJSON(json: any): ControllersCourse {
@@ -55,6 +61,9 @@ export function ControllersCourseFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
+        'courseID': !exists(json, 'courseID') ? undefined : json['courseID'],
+        'credit': !exists(json, 'credit') ? undefined : json['credit'],
+        'annotation': !exists(json, 'annotation') ? undefined : json['annotation'],
         'coursename': !exists(json, 'coursename') ? undefined : json['coursename'],
         'degree': !exists(json, 'degree') ? undefined : json['degree'],
         'faculty': !exists(json, 'faculty') ? undefined : json['faculty'],
@@ -71,6 +80,9 @@ export function ControllersCourseToJSON(value?: ControllersCourse | null): any {
     }
     return {
         
+        'courseID': value.courseID,
+        'credit': value.credit,
+        'annotation': value.annotation,
         'coursename': value.coursename,
         'degree': value.degree,
         'faculty': value.faculty,

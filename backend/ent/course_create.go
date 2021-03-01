@@ -28,6 +28,24 @@ func (cc *CourseCreate) SetCourse(s string) *CourseCreate {
 	return cc
 }
 
+// SetAnnotation sets the annotation field.
+func (cc *CourseCreate) SetAnnotation(s string) *CourseCreate {
+	cc.mutation.SetAnnotation(s)
+	return cc
+}
+
+// SetCredit sets the credit field.
+func (cc *CourseCreate) SetCredit(i int) *CourseCreate {
+	cc.mutation.SetCredit(i)
+	return cc
+}
+
+// SetCourseID sets the course_id field.
+func (cc *CourseCreate) SetCourseID(i int) *CourseCreate {
+	cc.mutation.SetCourseID(i)
+	return cc
+}
+
 // SetCourFacuID sets the cour_facu edge to Faculty by id.
 func (cc *CourseCreate) SetCourFacuID(id int) *CourseCreate {
 	cc.mutation.SetCourFacuID(id)
@@ -100,6 +118,30 @@ func (cc *CourseCreate) Save(ctx context.Context) (*Course, error) {
 			return nil, &ValidationError{Name: "course", err: fmt.Errorf("ent: validator failed for field \"course\": %w", err)}
 		}
 	}
+	if _, ok := cc.mutation.Annotation(); !ok {
+		return nil, &ValidationError{Name: "annotation", err: errors.New("ent: missing required field \"annotation\"")}
+	}
+	if v, ok := cc.mutation.Annotation(); ok {
+		if err := course.AnnotationValidator(v); err != nil {
+			return nil, &ValidationError{Name: "annotation", err: fmt.Errorf("ent: validator failed for field \"annotation\": %w", err)}
+		}
+	}
+	if _, ok := cc.mutation.Credit(); !ok {
+		return nil, &ValidationError{Name: "credit", err: errors.New("ent: missing required field \"credit\"")}
+	}
+	if v, ok := cc.mutation.Credit(); ok {
+		if err := course.CreditValidator(v); err != nil {
+			return nil, &ValidationError{Name: "credit", err: fmt.Errorf("ent: validator failed for field \"credit\": %w", err)}
+		}
+	}
+	if _, ok := cc.mutation.CourseID(); !ok {
+		return nil, &ValidationError{Name: "course_id", err: errors.New("ent: missing required field \"course_id\"")}
+	}
+	if v, ok := cc.mutation.CourseID(); ok {
+		if err := course.CourseIDValidator(v); err != nil {
+			return nil, &ValidationError{Name: "course_id", err: fmt.Errorf("ent: validator failed for field \"course_id\": %w", err)}
+		}
+	}
 	var (
 		err  error
 		node *Course
@@ -167,6 +209,30 @@ func (cc *CourseCreate) createSpec() (*Course, *sqlgraph.CreateSpec) {
 			Column: course.FieldCourse,
 		})
 		c.Course = value
+	}
+	if value, ok := cc.mutation.Annotation(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: course.FieldAnnotation,
+		})
+		c.Annotation = value
+	}
+	if value, ok := cc.mutation.Credit(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: course.FieldCredit,
+		})
+		c.Credit = value
+	}
+	if value, ok := cc.mutation.CourseID(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: course.FieldCourseID,
+		})
+		c.CourseID = value
 	}
 	if nodes := cc.mutation.CourFacuIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

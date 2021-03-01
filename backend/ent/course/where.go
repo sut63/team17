@@ -98,6 +98,27 @@ func Course(v string) predicate.Course {
 	})
 }
 
+// Annotation applies equality check predicate on the "annotation" field. It's identical to AnnotationEQ.
+func Annotation(v string) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldAnnotation), v))
+	})
+}
+
+// Credit applies equality check predicate on the "credit" field. It's identical to CreditEQ.
+func Credit(v int) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCredit), v))
+	})
+}
+
+// CourseID applies equality check predicate on the "course_id" field. It's identical to CourseIDEQ.
+func CourseID(v int) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCourseID), v))
+	})
+}
+
 // CourseEQ applies the EQ predicate on the "course" field.
 func CourseEQ(v string) predicate.Course {
 	return predicate.Course(func(s *sql.Selector) {
@@ -206,6 +227,269 @@ func CourseEqualFold(v string) predicate.Course {
 func CourseContainsFold(v string) predicate.Course {
 	return predicate.Course(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldCourse), v))
+	})
+}
+
+// AnnotationEQ applies the EQ predicate on the "annotation" field.
+func AnnotationEQ(v string) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldAnnotation), v))
+	})
+}
+
+// AnnotationNEQ applies the NEQ predicate on the "annotation" field.
+func AnnotationNEQ(v string) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldAnnotation), v))
+	})
+}
+
+// AnnotationIn applies the In predicate on the "annotation" field.
+func AnnotationIn(vs ...string) predicate.Course {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Course(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldAnnotation), v...))
+	})
+}
+
+// AnnotationNotIn applies the NotIn predicate on the "annotation" field.
+func AnnotationNotIn(vs ...string) predicate.Course {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Course(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldAnnotation), v...))
+	})
+}
+
+// AnnotationGT applies the GT predicate on the "annotation" field.
+func AnnotationGT(v string) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldAnnotation), v))
+	})
+}
+
+// AnnotationGTE applies the GTE predicate on the "annotation" field.
+func AnnotationGTE(v string) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldAnnotation), v))
+	})
+}
+
+// AnnotationLT applies the LT predicate on the "annotation" field.
+func AnnotationLT(v string) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldAnnotation), v))
+	})
+}
+
+// AnnotationLTE applies the LTE predicate on the "annotation" field.
+func AnnotationLTE(v string) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldAnnotation), v))
+	})
+}
+
+// AnnotationContains applies the Contains predicate on the "annotation" field.
+func AnnotationContains(v string) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldAnnotation), v))
+	})
+}
+
+// AnnotationHasPrefix applies the HasPrefix predicate on the "annotation" field.
+func AnnotationHasPrefix(v string) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldAnnotation), v))
+	})
+}
+
+// AnnotationHasSuffix applies the HasSuffix predicate on the "annotation" field.
+func AnnotationHasSuffix(v string) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldAnnotation), v))
+	})
+}
+
+// AnnotationEqualFold applies the EqualFold predicate on the "annotation" field.
+func AnnotationEqualFold(v string) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldAnnotation), v))
+	})
+}
+
+// AnnotationContainsFold applies the ContainsFold predicate on the "annotation" field.
+func AnnotationContainsFold(v string) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldAnnotation), v))
+	})
+}
+
+// CreditEQ applies the EQ predicate on the "credit" field.
+func CreditEQ(v int) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCredit), v))
+	})
+}
+
+// CreditNEQ applies the NEQ predicate on the "credit" field.
+func CreditNEQ(v int) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldCredit), v))
+	})
+}
+
+// CreditIn applies the In predicate on the "credit" field.
+func CreditIn(vs ...int) predicate.Course {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Course(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldCredit), v...))
+	})
+}
+
+// CreditNotIn applies the NotIn predicate on the "credit" field.
+func CreditNotIn(vs ...int) predicate.Course {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Course(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldCredit), v...))
+	})
+}
+
+// CreditGT applies the GT predicate on the "credit" field.
+func CreditGT(v int) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldCredit), v))
+	})
+}
+
+// CreditGTE applies the GTE predicate on the "credit" field.
+func CreditGTE(v int) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldCredit), v))
+	})
+}
+
+// CreditLT applies the LT predicate on the "credit" field.
+func CreditLT(v int) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldCredit), v))
+	})
+}
+
+// CreditLTE applies the LTE predicate on the "credit" field.
+func CreditLTE(v int) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldCredit), v))
+	})
+}
+
+// CourseIDEQ applies the EQ predicate on the "course_id" field.
+func CourseIDEQ(v int) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCourseID), v))
+	})
+}
+
+// CourseIDNEQ applies the NEQ predicate on the "course_id" field.
+func CourseIDNEQ(v int) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldCourseID), v))
+	})
+}
+
+// CourseIDIn applies the In predicate on the "course_id" field.
+func CourseIDIn(vs ...int) predicate.Course {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Course(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldCourseID), v...))
+	})
+}
+
+// CourseIDNotIn applies the NotIn predicate on the "course_id" field.
+func CourseIDNotIn(vs ...int) predicate.Course {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Course(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldCourseID), v...))
+	})
+}
+
+// CourseIDGT applies the GT predicate on the "course_id" field.
+func CourseIDGT(v int) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldCourseID), v))
+	})
+}
+
+// CourseIDGTE applies the GTE predicate on the "course_id" field.
+func CourseIDGTE(v int) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldCourseID), v))
+	})
+}
+
+// CourseIDLT applies the LT predicate on the "course_id" field.
+func CourseIDLT(v int) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldCourseID), v))
+	})
+}
+
+// CourseIDLTE applies the LTE predicate on the "course_id" field.
+func CourseIDLTE(v int) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldCourseID), v))
 	})
 }
 

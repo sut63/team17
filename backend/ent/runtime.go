@@ -78,6 +78,18 @@ func init() {
 	courseDescCourse := courseFields[0].Descriptor()
 	// course.CourseValidator is a validator for the "course" field. It is called by the builders before save.
 	course.CourseValidator = courseDescCourse.Validators[0].(func(string) error)
+	// courseDescAnnotation is the schema descriptor for annotation field.
+	courseDescAnnotation := courseFields[1].Descriptor()
+	// course.AnnotationValidator is a validator for the "annotation" field. It is called by the builders before save.
+	course.AnnotationValidator = courseDescAnnotation.Validators[0].(func(string) error)
+	// courseDescCredit is the schema descriptor for credit field.
+	courseDescCredit := courseFields[2].Descriptor()
+	// course.CreditValidator is a validator for the "credit" field. It is called by the builders before save.
+	course.CreditValidator = courseDescCredit.Validators[0].(func(int) error)
+	// courseDescCourseID is the schema descriptor for course_id field.
+	courseDescCourseID := courseFields[3].Descriptor()
+	// course.CourseIDValidator is a validator for the "course_id" field. It is called by the builders before save.
+	course.CourseIDValidator = courseDescCourseID.Validators[0].(func(int) error)
 	degreeFields := schema.Degree{}.Fields()
 	_ = degreeFields
 	// degreeDescDegree is the schema descriptor for degree field.

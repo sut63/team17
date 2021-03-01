@@ -103,6 +103,9 @@ var (
 	CoursesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "course", Type: field.TypeString},
+		{Name: "annotation", Type: field.TypeString},
+		{Name: "credit", Type: field.TypeInt},
+		{Name: "course_id", Type: field.TypeInt},
 		{Name: "degree_degr_cour", Type: field.TypeInt, Nullable: true},
 		{Name: "faculty_facu_cour", Type: field.TypeInt, Nullable: true},
 		{Name: "institution_inst_cour", Type: field.TypeInt, Nullable: true},
@@ -115,21 +118,21 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:  "courses_degrees_degr_cour",
-				Columns: []*schema.Column{CoursesColumns[2]},
+				Columns: []*schema.Column{CoursesColumns[5]},
 
 				RefColumns: []*schema.Column{DegreesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:  "courses_faculties_facu_cour",
-				Columns: []*schema.Column{CoursesColumns[3]},
+				Columns: []*schema.Column{CoursesColumns[6]},
 
 				RefColumns: []*schema.Column{FacultiesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:  "courses_institutions_inst_cour",
-				Columns: []*schema.Column{CoursesColumns[4]},
+				Columns: []*schema.Column{CoursesColumns[7]},
 
 				RefColumns: []*schema.Column{InstitutionsColumns[0]},
 				OnDelete:   schema.SetNull,

@@ -36,6 +36,38 @@ func (cu *CourseUpdate) SetCourse(s string) *CourseUpdate {
 	return cu
 }
 
+// SetAnnotation sets the annotation field.
+func (cu *CourseUpdate) SetAnnotation(s string) *CourseUpdate {
+	cu.mutation.SetAnnotation(s)
+	return cu
+}
+
+// SetCredit sets the credit field.
+func (cu *CourseUpdate) SetCredit(i int) *CourseUpdate {
+	cu.mutation.ResetCredit()
+	cu.mutation.SetCredit(i)
+	return cu
+}
+
+// AddCredit adds i to credit.
+func (cu *CourseUpdate) AddCredit(i int) *CourseUpdate {
+	cu.mutation.AddCredit(i)
+	return cu
+}
+
+// SetCourseID sets the course_id field.
+func (cu *CourseUpdate) SetCourseID(i int) *CourseUpdate {
+	cu.mutation.ResetCourseID()
+	cu.mutation.SetCourseID(i)
+	return cu
+}
+
+// AddCourseID adds i to course_id.
+func (cu *CourseUpdate) AddCourseID(i int) *CourseUpdate {
+	cu.mutation.AddCourseID(i)
+	return cu
+}
+
 // SetCourFacuID sets the cour_facu edge to Faculty by id.
 func (cu *CourseUpdate) SetCourFacuID(id int) *CourseUpdate {
 	cu.mutation.SetCourFacuID(id)
@@ -123,6 +155,21 @@ func (cu *CourseUpdate) Save(ctx context.Context) (int, error) {
 			return 0, &ValidationError{Name: "course", err: fmt.Errorf("ent: validator failed for field \"course\": %w", err)}
 		}
 	}
+	if v, ok := cu.mutation.Annotation(); ok {
+		if err := course.AnnotationValidator(v); err != nil {
+			return 0, &ValidationError{Name: "annotation", err: fmt.Errorf("ent: validator failed for field \"annotation\": %w", err)}
+		}
+	}
+	if v, ok := cu.mutation.Credit(); ok {
+		if err := course.CreditValidator(v); err != nil {
+			return 0, &ValidationError{Name: "credit", err: fmt.Errorf("ent: validator failed for field \"credit\": %w", err)}
+		}
+	}
+	if v, ok := cu.mutation.CourseID(); ok {
+		if err := course.CourseIDValidator(v); err != nil {
+			return 0, &ValidationError{Name: "course_id", err: fmt.Errorf("ent: validator failed for field \"course_id\": %w", err)}
+		}
+	}
 
 	var (
 		err      error
@@ -196,6 +243,41 @@ func (cu *CourseUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Type:   field.TypeString,
 			Value:  value,
 			Column: course.FieldCourse,
+		})
+	}
+	if value, ok := cu.mutation.Annotation(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: course.FieldAnnotation,
+		})
+	}
+	if value, ok := cu.mutation.Credit(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: course.FieldCredit,
+		})
+	}
+	if value, ok := cu.mutation.AddedCredit(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: course.FieldCredit,
+		})
+	}
+	if value, ok := cu.mutation.CourseID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: course.FieldCourseID,
+		})
+	}
+	if value, ok := cu.mutation.AddedCourseID(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: course.FieldCourseID,
 		})
 	}
 	if cu.mutation.CourFacuCleared() {
@@ -327,6 +409,38 @@ func (cuo *CourseUpdateOne) SetCourse(s string) *CourseUpdateOne {
 	return cuo
 }
 
+// SetAnnotation sets the annotation field.
+func (cuo *CourseUpdateOne) SetAnnotation(s string) *CourseUpdateOne {
+	cuo.mutation.SetAnnotation(s)
+	return cuo
+}
+
+// SetCredit sets the credit field.
+func (cuo *CourseUpdateOne) SetCredit(i int) *CourseUpdateOne {
+	cuo.mutation.ResetCredit()
+	cuo.mutation.SetCredit(i)
+	return cuo
+}
+
+// AddCredit adds i to credit.
+func (cuo *CourseUpdateOne) AddCredit(i int) *CourseUpdateOne {
+	cuo.mutation.AddCredit(i)
+	return cuo
+}
+
+// SetCourseID sets the course_id field.
+func (cuo *CourseUpdateOne) SetCourseID(i int) *CourseUpdateOne {
+	cuo.mutation.ResetCourseID()
+	cuo.mutation.SetCourseID(i)
+	return cuo
+}
+
+// AddCourseID adds i to course_id.
+func (cuo *CourseUpdateOne) AddCourseID(i int) *CourseUpdateOne {
+	cuo.mutation.AddCourseID(i)
+	return cuo
+}
+
 // SetCourFacuID sets the cour_facu edge to Faculty by id.
 func (cuo *CourseUpdateOne) SetCourFacuID(id int) *CourseUpdateOne {
 	cuo.mutation.SetCourFacuID(id)
@@ -414,6 +528,21 @@ func (cuo *CourseUpdateOne) Save(ctx context.Context) (*Course, error) {
 			return nil, &ValidationError{Name: "course", err: fmt.Errorf("ent: validator failed for field \"course\": %w", err)}
 		}
 	}
+	if v, ok := cuo.mutation.Annotation(); ok {
+		if err := course.AnnotationValidator(v); err != nil {
+			return nil, &ValidationError{Name: "annotation", err: fmt.Errorf("ent: validator failed for field \"annotation\": %w", err)}
+		}
+	}
+	if v, ok := cuo.mutation.Credit(); ok {
+		if err := course.CreditValidator(v); err != nil {
+			return nil, &ValidationError{Name: "credit", err: fmt.Errorf("ent: validator failed for field \"credit\": %w", err)}
+		}
+	}
+	if v, ok := cuo.mutation.CourseID(); ok {
+		if err := course.CourseIDValidator(v); err != nil {
+			return nil, &ValidationError{Name: "course_id", err: fmt.Errorf("ent: validator failed for field \"course_id\": %w", err)}
+		}
+	}
 
 	var (
 		err  error
@@ -485,6 +614,41 @@ func (cuo *CourseUpdateOne) sqlSave(ctx context.Context) (c *Course, err error) 
 			Type:   field.TypeString,
 			Value:  value,
 			Column: course.FieldCourse,
+		})
+	}
+	if value, ok := cuo.mutation.Annotation(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: course.FieldAnnotation,
+		})
+	}
+	if value, ok := cuo.mutation.Credit(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: course.FieldCredit,
+		})
+	}
+	if value, ok := cuo.mutation.AddedCredit(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: course.FieldCredit,
+		})
+	}
+	if value, ok := cuo.mutation.CourseID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: course.FieldCourseID,
+		})
+	}
+	if value, ok := cuo.mutation.AddedCourseID(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: course.FieldCourseID,
 		})
 	}
 	if cuo.mutation.CourFacuCleared() {

@@ -223,9 +223,18 @@ definitions:
     type: object
   ent.Course:
     properties:
+      annotation:
+        description: Annotation holds the value of the "annotation" field.
+        type: string
       course:
         description: Course holds the value of the "course" field.
         type: string
+      course_id:
+        description: CourseID holds the value of the "course_id" field.
+        type: integer
+      credit:
+        description: Credit holds the value of the "credit" field.
+        type: integer
       edges:
         $ref: '#/definitions/ent.CourseEdges'
         description: |-

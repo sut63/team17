@@ -15,6 +15,9 @@ type Course struct {
 func (Course) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("course").NotEmpty(),
+		field.String("annotation").NotEmpty(),
+		field.Int("credit").Positive(),
+		field.Int("course_id").Positive(),
 	}
 }
 

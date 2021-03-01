@@ -157,21 +157,27 @@ const SearchCoursePage = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell align="center">No.</TableCell>
+                    <TableCell>Course Id</TableCell>
                     <TableCell>Course Name</TableCell>
                     <TableCell>Degree</TableCell>
                     <TableCell>Faculty</TableCell>
                     <TableCell>Institution</TableCell>
+                    <TableCell>Annotation</TableCell>
+                    <TableCell>Credit</TableCell>
                   </TableRow>
                 </TableHead>
 
                 <TableBody>
                   {filterCourses.map((item, index) => (
                     <TableRow key={item.id}>
+                      <TableCell>{item.courseId}</TableCell>
                       <TableCell align="center">{index + 1}</TableCell>
                       <TableCell>{item.course}</TableCell>
                       <TableCell>{item.edges?.courDegr?.degree}</TableCell>
                       <TableCell>{item.edges?.courFacu?.faculty}</TableCell>
                       <TableCell>{item.edges?.courInst?.institution}</TableCell>
+                      <TableCell>{item.annotation}</TableCell>
+                      <TableCell>{item.credit}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
