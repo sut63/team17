@@ -68,7 +68,9 @@ const StudentSearchUI: FC<{}> = () => {
   const classes = useStyles();
   const [fname,setfname] = useState("")
   const [lname,setlname] = useState("")
-  const [found,setfound] = useState(false);
+  const [tf,settf] = useState("")
+  const [tl,settl] = useState("")
+  const [found,setfound] = useState(Boolean);
   const [st,setst] = useState<EntStudent[]>([]);
 
   const fnh = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -86,21 +88,8 @@ const StudentSearchUI: FC<{}> = () => {
   useEffect(() => {
     getSt();
   }, []);
-  
-  const CheckFound = async () => {
-    st.forEach((item)=>{
-      if(item.fname===fname||item.lname===lname){
-        setfound(true);
-        alertMessage('success','ค้นหาสำเร็จ')
-      }
-      else{
-        setfound(false);
-        alertMessage('error','ค้นหาไม่พบ')
-      }
-    })
-};
 
-    const Toast = Swal.mixin({
+   const Toast = Swal.mixin({
       toast: true,
       position: 'top-end',
       showConfirmButton: false,
@@ -118,6 +107,24 @@ const StudentSearchUI: FC<{}> = () => {
         title: title,
       });
     }
+
+  const CheckFound = async () => {
+    let x =''
+    st.forEach((item) =>{
+      if(item.fname===fname||item.lname===lname){
+        x += 'f'
+      }
+    })
+    if(x!=''){
+      setfound(true);
+      settf(fname);
+      settl(lname);
+      alertMessage('success','ค้นหาสำเร็จ')
+    }
+    else{
+      setfound(false);
+      alertMessage('error','ค้นหาไม่พบ')
+  }};
   
     //cookie logout
   var cook = new Cookies()
@@ -175,7 +182,7 @@ const StudentSearchUI: FC<{}> = () => {
             </TableRow>
             {found
             ?
-            st.map((item:EntStudent)=>(
+            st.filter((filter=>filter.fname===tf||filter.lname===tl)).map((item:EntStudent)=>(
           <TableRow key={item.id}>
           <TableCell align='center'><b>{item.edges?.studPref?.prefix}</b></TableCell>
           <TableCell align='center'><b>{item.fname}</b></TableCell>
