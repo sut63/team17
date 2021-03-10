@@ -112,15 +112,15 @@ export function EntStudentEdgesFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'studActi': !exists(json, 'studActi') ? undefined : ((json['studActi'] as Array<any>).map(EntActivityFromJSON)),
-        'studDegr': !exists(json, 'studDegr') ? undefined : EntDegreeFromJSON(json['studDegr']),
-        'studDist': !exists(json, 'studDist') ? undefined : EntProvinceFromJSON(json['studDist']),
-        'studGend': !exists(json, 'studGend') ? undefined : EntGenderFromJSON(json['studGend']),
-        'studPost': !exists(json, 'studPost') ? undefined : EntProvinceFromJSON(json['studPost']),
-        'studPref': !exists(json, 'studPref') ? undefined : EntPrefixFromJSON(json['studPref']),
-        'studProv': !exists(json, 'studProv') ? undefined : EntProvinceFromJSON(json['studProv']),
-        'studResu': !exists(json, 'studResu') ? undefined : ((json['studResu'] as Array<any>).map(EntResultsFromJSON)),
-        'studSubd': !exists(json, 'studSubd') ? undefined : EntProvinceFromJSON(json['studSubd']),
+        'studActi': !exists(json, 'StudActi') ? undefined : ((json['StudActi'] as Array<any>).map(EntActivityFromJSON)),
+        'studDegr': !exists(json, 'StudDegr') ? undefined : EntDegreeFromJSON(json['StudDegr']),
+        'studDist': !exists(json, 'StudDist') ? undefined : EntProvinceFromJSON(json['StudDist']),
+        'studGend': !exists(json, 'StudGend') ? undefined : EntGenderFromJSON(json['StudGend']),
+        'studPost': !exists(json, 'StudPost') ? undefined : EntProvinceFromJSON(json['StudPost']),
+        'studPref': !exists(json, 'StudPref') ? undefined : EntPrefixFromJSON(json['StudPref']),
+        'studProv': !exists(json, 'StudProv') ? undefined : EntProvinceFromJSON(json['StudProv']),
+        'studResu': !exists(json, 'StudResu') ? undefined : ((json['StudResu'] as Array<any>).map(EntResultsFromJSON)),
+        'studSubd': !exists(json, 'StudSubd') ? undefined : EntProvinceFromJSON(json['StudSubd']),
     };
 }
 
