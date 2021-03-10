@@ -3,42 +3,26 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import Alert from '@material-ui/lab/Alert';
-import { Link as RouterLink } from 'react-router-dom';
 import Swal from 'sweetalert2'; // alert
 import {
-    Container,
-    Grid,
-    FormControl,
-    Select,
-    InputLabel,
-    MenuItem,
     TextField,
     Button,
-    CardMedia,
-    Snackbar,
     Typography,
     makeStyles,
-    CssBaseline,
     Avatar,
     Link,
   } from '@material-ui/core';
 import{
-  Content,
-    InfoCard,
+    Content,
     Header,
     Page,
     pageTheme,
-    ContentHeader,
 } from '@backstage/core';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Cookies } from '../../Cookie';
 import { DefaultApi } from '../../api/apis'; 
-import { EntStudent } from '../../api';
-import Search from '@material-ui/icons/Search';
+import { EntStudent } from '../../api/models';
 
 function Copyright() {
   return (
@@ -84,40 +68,37 @@ const StudentSearchUI: FC<{}> = () => {
   const classes = useStyles();
   const [fname,setfname] = useState("")
   const [lname,setlname] = useState("")
+  const [found,setfound] = useState(false);
   const [st,setst] = useState<EntStudent[]>([]);
 
   const fnh = (event: React.ChangeEvent<{ value: unknown }>) => {
     setfname(event.target.value as string);
-    Clear();
   };
   const lnh = (event: React.ChangeEvent<{ value: unknown }>) => {
     setlname(event.target.value as string);
-    Clear();
   };
-  
+
   const getSt = async () => {
     const res = await api.listStudent({ limit: 10, offset: 0 });
     setst(res)
-    var boo = false
-    var arr = ""
-    for(let i = 0; i < res.length ; i++){
-      if(res[i].fname === fname || res[i].lname === lname){ 
-        boo = true
-        arr += "f"
-        console.log(res[i].id)
-        console.log(res[i].edges)
+  };
+
+  useEffect(() => {
+    getSt();
+  }, []);
+  
+  const CheckFound = async () => {
+    st.forEach((item)=>{
+      if(item.fname===fname||item.lname===lname){
+        setfound(true);
+        alertMessage('success','ค้นหาสำเร็จ')
       }
       else{
-        boo = false
+        setfound(false);
+        alertMessage('error','ค้นหาไม่พบ')
       }
-    }
-    if(boo!=false||arr!=""){
-      alertMessage("success","ค้นหาสำเร็จ")
-    }else{
-      alertMessage("error","ค้นหาไม่พบ")
-    }
-  }
-
+    })
+};
 
     const Toast = Swal.mixin({
       toast: true,
@@ -136,9 +117,6 @@ const StudentSearchUI: FC<{}> = () => {
         icon: icon,
         title: title,
       });
-    }
-    function Clear(){
-      setst([])
     }
   
     //cookie logout
@@ -174,7 +152,7 @@ const StudentSearchUI: FC<{}> = () => {
               <TableCell>
       <Button  
           onClick={() => {
-            getSt();
+            CheckFound();
           }}
           variant="contained" 
           color="primary" 
@@ -195,7 +173,9 @@ const StudentSearchUI: FC<{}> = () => {
              <TableCell align='center'><b>Telephone</b></TableCell>
              <TableCell align='center'><b>Email</b></TableCell>
             </TableRow>
-            {st.filter((filter)=> (filter.fname===fname || filter.lname===lname)).map((item:EntStudent)=>(
+            {found
+            ?
+            st.map((item:EntStudent)=>(
           <TableRow key={item.id}>
           <TableCell align='center'><b>{item.edges?.studPref?.prefix}</b></TableCell>
           <TableCell align='center'><b>{item.fname}</b></TableCell>
@@ -204,7 +184,10 @@ const StudentSearchUI: FC<{}> = () => {
           <TableCell align='center'><b>{item.edges?.studDegr?.degree}</b></TableCell>
           <TableCell align='center'><b>{item.telephone}</b></TableCell>
           <TableCell align='center'><b>{item.email}</b></TableCell>
-         </TableRow>))}
+         </TableRow>))
+            :
+            null
+        }
             </Table>
     </TableContainer>
     </Content>
