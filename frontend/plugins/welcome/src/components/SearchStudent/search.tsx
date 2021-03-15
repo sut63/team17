@@ -68,8 +68,10 @@ const StudentSearchUI: FC<{}> = () => {
   const classes = useStyles();
   const [fname,setfname] = useState("")
   const [lname,setlname] = useState("")
-  const [tf,settf] = useState("")
-  const [tl,settl] = useState("")
+  const [tf1,settf1] = useState("")
+  const [tl1,settl1] = useState("")
+  const [tf2,settf2] = useState("")
+  const [tl2,settl2] = useState("")
   const [found,setfound] = useState(Boolean);
   const [st,setst] = useState<EntStudent[]>([]);
 
@@ -111,14 +113,37 @@ const StudentSearchUI: FC<{}> = () => {
   const CheckFound = async () => {
     let x =''
     st.forEach((item) =>{
-      if(item.fname===fname||item.lname===lname){
-        x += 'f'
+      if(fname!=''&&lname!=''){
+        if(item.fname===fname&&item.lname===lname){
+          x += 'a'
+          settf1(fname);
+          settl1(lname);
+        }
       }
+      else if(fname!=''&&lname==''){
+        if(item.fname===fname){
+          x += 'o'
+          settf2(fname);
+          settl2('');
+        }
+      }
+      else if(fname==''&&lname!=''){
+        if(item.lname===lname){
+          x += 'o'
+          settf2('');
+          settl2(lname);
+        }
+      }
+      else{
+        settf1('');
+        settl1('');
+        settf2('');
+        settl2('');
+      }
+      
     })
     if(x!=''){
       setfound(true);
-      settf(fname);
-      settl(lname);
       alertMessage('success','ค้นหาสำเร็จ')
     }
     else{
@@ -160,11 +185,27 @@ const StudentSearchUI: FC<{}> = () => {
       <Button  
           onClick={() => {
             CheckFound();
+            setfname('');
+            setlname('');
           }}
           variant="contained" 
           color="primary" 
           > 
           Search
+          </Button>
+          </TableCell>
+          <TableCell>
+          <Button  
+          onClick={() => {
+            settf1('');
+            settl1('');
+            settf2('');
+            settl2('');
+          }}
+          variant="contained" 
+          color="primary" 
+          > 
+          Clear
           </Button>
               </TableCell>
             </TableRow>
@@ -182,7 +223,7 @@ const StudentSearchUI: FC<{}> = () => {
             </TableRow>
             {found
             ?
-            st.filter((filter=>filter.fname===tf||filter.lname===tl)).map((item:EntStudent)=>(
+            st.filter((filter=>(filter.fname===tf1&&filter.lname===tl1)||(filter.fname===tf2||filter.lname===tl2))).map((item)=>(
           <TableRow key={item.id}>
           <TableCell align='center'><b>{item.edges?.studPref?.prefix}</b></TableCell>
           <TableCell align='center'><b>{item.fname}</b></TableCell>
