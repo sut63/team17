@@ -58,7 +58,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-
 const Toast = Swal.mixin({
   //toast: true,
   position: 'center',
@@ -66,126 +65,118 @@ const Toast = Swal.mixin({
   timer: 3000,
   timerProgressBar: true,
   showCloseButton: true,
-
 });
 
-
-
-
 export default function ComponentsTable() {
-
   //--------------------------
-  ;
-
   const classes = useStyles();
   const api = new DefaultApi();
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState(false);
 
   //---------------------------
-  const [checkname, setNames] = useState(false);
-  const [professor, setProfessor] = useState<EntProfessor[]>([])
+  const [professor, setProfessor] = useState<EntProfessor[]>([]);
+  const [professorSearch, setProfessorSearch] = useState<EntProfessor[]>([]);
 
   //--------------------------
   const [name, setName] = useState(String);
   const profile = { givenName: 'ระบบค้นหาข้อมูลอาจารย์' };
+
   const alertMessage = (icon: any, title: any) => {
     Toast.fire({
       icon: icon,
       title: title,
     });
-    setSearch(false);
-  }
+  };
 
   useEffect(() => {
     const getProfessors = async () => {
       const res = await api.listProfessor({ offset: 0 });
       setLoading(false);
-      setProfessor(res);
+      setProfessorSearch(res);
     };
     getProfessors();
   }, [loading]);
 
   const PNamehandlehange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setSearch(false);
-    setNames(false);
     setName(event.target.value as string);
-
   };
 
   const cleardata = () => {
-    setName("");
+    setName('');
     setSearch(false);
-    setNames(false);
     setSearch(false);
-
-  }
-
-  const checkresearch = async () => {
-    var check = false;
-    professor.map(item => {
-      if (name != "") {
-        if (item.name?.includes(name)) {
-          setNames(true);
-          alertMessage("success", "ค้นหาสำเร็จ");
-          check = true;
-        }
-      }
-    })
-    if (!check) {
-      alertMessage("error", "ไม่พบข้อมูล");
-    }
-    console.log(checkname)
   };
 
+  const searchProfessor = async (professorId: number) => {
+    let response = await api.getProfessor({ id: professorId });
+    if (response != undefined) {
+      setProfessor([response]);
+    }
+  };
 
+  const checkresearch = async () => {
+    let found = false;
+    let professorId = 0;
+    professorSearch.map(item => {
+      if (!found && name != '') {
+        if (item.name === name && item.id != undefined) {
+          found = true;
+          setSearch(true);
+          professorId = item.id;
+        }
+      }
+    });
+
+    if (found) {
+      await searchProfessor(professorId);
+      alertMessage('success', 'ค้นหาสำเร็จ');
+    } else {
+      alertMessage('error', 'ไม่พบข้อมูล');
+    }
+  };
 
   return (
     <Page theme={pageTheme.home}>
       <Header
-      title={'Search Professor '}
-      subtitle='ค้นหาข้อมูลอาจารย์'
-    >
-    </Header>
+        title={'Search Professor '}
+        subtitle="ค้นหาข้อมูลอาจารย์"
+      ></Header>
       <Content>
-      
         <Container maxWidth="sm">
           <Grid container spacing={3}>
             <Grid item xs={12}></Grid>
-            
+
             <Grid item xs={3}>
               <div className={classes.paper}>กรอกชื่อ - นามสุกล</div>
             </Grid>
             <Grid item xs={9}>
               <form className={classes.container} noValidate>
-              <TextField
-                id="name"
-                value={name}
-                onChange = {PNamehandlehange}
-                multiline
-                variant="outlined"
-                fullWidth
-              />
+                <TextField
+                  id="name"
+                  value={name}
+                  onChange={PNamehandlehange}
+                  multiline
+                  variant="outlined"
+                  fullWidth
+                />
               </form>
             </Grid>
             <Grid item xs={4}></Grid>
             <Grid item xs={8}>
-            
               <Button
                 variant="contained"
                 color="primary"
                 size="large"
-                startIcon={<SearchIcon/>}
+                startIcon={<SearchIcon />}
                 onClick={() => {
                   checkresearch();
-                  setSearch(true);
-
                 }}
               >
                 ค้นหา
               </Button>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            
               <Button
                 variant="contained"
                 color="secondary"
@@ -193,56 +184,51 @@ export default function ComponentsTable() {
                 startIcon={<DeleteIcon />}
                 onClick={() => {
                   cleardata();
-
                 }}
-                
               >
                 ล้างข้อมูล
               </Button>
-              
             </Grid>
           </Grid>
         </Container>
-      
+
         <br></br>
         <Paper>
-              {search ? (
-                <div>
-                  {  checkname? (
-                    
-                    <TableContainer component={Paper}>
-                      <Table>
-                            <TableHead>
-                              <TableRow>
-                                <TableCell align="center">คำนำหน้า</TableCell>
-                                <TableCell align="center">ชื่อ - นามสกุล</TableCell>
-                                <TableCell align="center">ตำแหน่ง</TableCell>
-                                <TableCell align="center">สำนักวิชา</TableCell>
-                                <TableCell align="center">เบอร์มือถือ</TableCell>
-                                <TableCell align="center">E - mail</TableCell>
-                              </TableRow>
-                        </TableHead>
-                        <TableBody>
-
-                          {professor.filter((filter: any) => filter.name.includes(name)).map((item => (
-                            <TableRow key={item.id}>
-                                <TableCell align="center">{item.edges?.profPre?.prefix}</TableCell>
-                                <TableCell align="center">{item.name}</TableCell>
-                                <TableCell align="center">{item.edges?.profPros?.professorship}</TableCell>
-                                <TableCell align="center">{item.edges?.profFacu?.faculty}</TableCell>
-                                <TableCell align="center">{item.tel}</TableCell>
-                                <TableCell align="center">{item.email}</TableCell>
-                            </TableRow>
-                          )))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                    
-                  )
-                     : null}
-                </div>
-              ) : null}
-            </Paper>
+          {search ? (
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center">คำนำหน้า</TableCell>
+                    <TableCell align="center">ชื่อ - นามสกุล</TableCell>
+                    <TableCell align="center">ตำแหน่ง</TableCell>
+                    <TableCell align="center">สำนักวิชา</TableCell>
+                    <TableCell align="center">เบอร์มือถือ</TableCell>
+                    <TableCell align="center">E - mail</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {professor.map(item => (
+                    <TableRow key={item.id}>
+                      <TableCell align="center">
+                        {item.edges?.profPre?.prefix}
+                      </TableCell>
+                      <TableCell align="center">{item.name}</TableCell>
+                      <TableCell align="center">
+                        {item.edges?.profPros?.professorship}
+                      </TableCell>
+                      <TableCell align="center">
+                        {item.edges?.profFacu?.faculty}
+                      </TableCell>
+                      <TableCell align="center">{item.tel}</TableCell>
+                      <TableCell align="center">{item.email}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          ) : null}
+        </Paper>
       </Content>
     </Page>
   );
