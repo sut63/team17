@@ -178,6 +178,10 @@ export interface GetPrefixRequest {
     id: number;
 }
 
+export interface GetProfessorRequest {
+    id: number;
+}
+
 export interface GetProfessorshipRequest {
     id: number;
 }
@@ -977,6 +981,38 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async getPrefix(requestParameters: GetPrefixRequest): Promise<EntPrefix> {
         const response = await this.getPrefixRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * get professor by ID
+     * Get a professor entity by ID
+     */
+    async getProfessorRaw(requestParameters: GetProfessorRequest): Promise<runtime.ApiResponse<EntProfessor>> {
+        if (requestParameters.id === null || requestParameters.id === undefined) {
+            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling getProfessor.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/professors/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => EntProfessorFromJSON(jsonValue));
+    }
+
+    /**
+     * get professor by ID
+     * Get a professor entity by ID
+     */
+    async getProfessor(requestParameters: GetProfessorRequest): Promise<EntProfessor> {
+        const response = await this.getProfessorRaw(requestParameters);
         return await response.value();
     }
 
