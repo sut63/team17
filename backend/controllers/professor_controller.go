@@ -9,6 +9,7 @@ import (
 	"github.com/sut63/team17/app/ent"
 	"github.com/sut63/team17/app/ent/faculty"
 	"github.com/sut63/team17/app/ent/prefix"
+	"github.com/sut63/team17/app/ent/professor"
 	"github.com/sut63/team17/app/ent/professorship"
 )
 
@@ -24,6 +25,43 @@ type Professor struct {
 	Prefix        int
 	Faculty       int
 	Professorship int
+}
+
+// GetProfessor handles GET requests to retrieve a professor entity
+// @Summary Get a professor entity by ID
+// @Description get professor by ID
+// @ID get-professor
+// @Produce  json
+// @Param id path int true "Professor ID"
+// @Success 200 {object} ent.Professor
+// @Failure 400 {object} gin.H
+// @Failure 404 {object} gin.H
+// @Failure 500 {object} gin.H
+// @Router /professors/{id} [get]
+func (ctl *ProfessorController) GetProfessor(c *gin.Context) {
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	co, err := ctl.client.Professor.
+		Query().
+		WithProfPre().
+		WithProfFacu().
+		WithProfPros().
+		Where(professor.IDEQ(int(id))).
+		Only(context.Background())
+
+	if err != nil {
+		c.JSON(404, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(200, co)
 }
 
 // CreateProfessor handles POST requests for adding professor entities
@@ -93,12 +131,12 @@ func (ctl *ProfessorController) CreateProfessor(c *gin.Context) {
 		Save(context.Background())
 
 	if err != nil {
-			fmt.Println(err)
-			c.JSON(400, gin.H{
-				"status": false,
-				"error":  err,
-			})
-			return
+		fmt.Println(err)
+		c.JSON(400, gin.H{
+			"status": false,
+			"error":  err,
+		})
+		return
 	}
 
 	c.JSON(200, gin.H{
@@ -207,6 +245,7 @@ func (ctl *ProfessorController) register() {
 	professors := ctl.router.Group("/professors")
 
 	professors.POST("", ctl.CreateProfessor)
+	professors.GET(":id", ctl.GetProfessor)
 	professors.GET("", ctl.ListProfessor)
 	professors.DELETE(":id", ctl.DeleteProfessor)
 
