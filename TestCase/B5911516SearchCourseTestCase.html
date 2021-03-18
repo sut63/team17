@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+	<title>Search course test case</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">success</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>http://localhost:3000/cs<datalist><option>http://localhost:3000/cs</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//input[@value='']<datalist><option>//input[@value='']</option><option>//div[@id='root']/div/div[2]/article/div/div/div/div[2]/input</option><option>//input</option><option>css=input.MuiInputBase-input.makeStyles-inputInput-29</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>//input[@value='']<datalist><option>//input[@value='']</option><option>//div[@id='root']/div/div[2]/article/div/div/div/div[2]/input</option><option>//input</option><option>css=input.MuiInputBase-input.makeStyles-inputInput-29</option></datalist></td><td>ปริญญาโท</td>
+</tr>
+<tr><td>click</td><td>//div[@id='root']/div/div[2]/article/div/div/button/span<datalist><option>//div[@id='root']/div/div[2]/article/div/div/button/span</option><option>//div/div/button/span</option><option>css=button.MuiButtonBase-root.MuiButton-root.MuiButton-contained &gt; span.MuiButton-label</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div[@id='root']/div/div[2]/article/div/div/div[2]<datalist><option>//div[@id='root']/div/div[2]/article/div/div/div[2]</option><option>//article/div/div/div[2]</option><option>css=div.MuiAlert-message</option></datalist></td><td>ค้นหาสำเร็จ พบข้อมูลจำนวน 3 รายการ</td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">fail</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>http://localhost:3000/cs<datalist><option>http://localhost:3000/cs</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//input[@value='']<datalist><option>//input[@value='']</option><option>//div[@id='root']/div/div[2]/article/div/div/div/div[2]/input</option><option>//input</option><option>css=input.MuiInputBase-input.makeStyles-inputInput-29</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>//input[@value='']<datalist><option>//input[@value='']</option><option>//div[@id='root']/div/div[2]/article/div/div/div/div[2]/input</option><option>//input</option><option>css=input.MuiInputBase-input.makeStyles-inputInput-29</option></datalist></td><td>สำนักวิชาทันตแพทย์ศาสตร์</td>
+</tr>
+<tr><td>click</td><td>//div[@id='root']/div/div[2]/article/div/div/button/span<datalist><option>//div[@id='root']/div/div[2]/article/div/div/button/span</option><option>//div/div/button/span</option><option>css=button.MuiButtonBase-root.MuiButton-root.MuiButton-contained &gt; span.MuiButton-label</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div[@id='root']/div/div[2]/article/div/div/div[2]<datalist><option>//div[@id='root']/div/div[2]/article/div/div/div[2]</option><option>//article/div/div/div[2]</option><option>css=div.MuiAlert-message</option></datalist></td><td>ไม่พบข้อมูลหลักสูตรนี้</td>
+</tr>
+</tbody></table>
+</body>
+</html>

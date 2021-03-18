@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+	<title>Course test case</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">success</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>http://localhost:3000/course<datalist><option>http://localhost:3000/course</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=courseId<datalist><option>id=courseId</option><option>//input[@id='courseId']</option><option>//div[@id='root']/div/div[2]/article/div/form/div/div/div/input</option><option>//input</option><option>css=#courseId</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=courseId<datalist><option>id=courseId</option><option>//input[@id='courseId']</option><option>//div[@id='root']/div/div[2]/article/div/form/div/div/div/input</option><option>//input</option><option>css=#courseId</option></datalist></td><td>123654</td>
+</tr>
+<tr><td>click</td><td>id=coursename<datalist><option>id=coursename</option><option>//input[@id='coursename']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#coursename</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=coursename<datalist><option>id=coursename</option><option>//input[@id='coursename']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#coursename</option></datalist></td><td>ปริญญาตรี</td>
+</tr>
+<tr><td>click</td><td>id=annotation<datalist><option>id=annotation</option><option>//input[@id='annotation']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[3]/div/div/input</option><option>//div[3]/div/div/input</option><option>css=#annotation</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=annotation<datalist><option>id=annotation</option><option>//input[@id='annotation']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[3]/div/div/input</option><option>//div[3]/div/div/input</option><option>css=#annotation</option></datalist></td><td>2563</td>
+</tr>
+<tr><td>click</td><td>id=degree<datalist><option>id=degree</option><option>//div[@id='degree']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[4]/div/div</option><option>//div[4]/div/div</option><option>css=#degree</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='menu-']/div[3]/ul/li<datalist><option>//div[@id='menu-']/div[3]/ul/li</option><option>//li</option><option>css=li.MuiButtonBase-root.MuiListItem-root.MuiMenuItem-root.MuiMenuItem-gutters.MuiListItem-gutters.MuiListItem-button.Mui-focusVisible.Mui-focusVisible</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=faculty<datalist><option>//body</option><option>css=body</option><option>id=faculty</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='menu-']/div[3]/ul/li[8]<datalist><option>//div[@id='menu-']/div[3]/ul/li[8]</option><option>//li[8]</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=institution<datalist><option>//body</option><option>css=body</option><option>id=institution</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='menu-']/div[3]/ul/li[2]<datalist><option>//div[@id='menu-']/div[3]/ul/li[2]</option><option>//li[2]</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=credit<datalist><option>id=credit</option><option>//input[@id='credit']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[7]/div/div/input</option><option>//div[7]/div/div/input</option><option>css=#credit</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=credit<datalist><option>id=credit</option><option>//input[@id='credit']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[7]/div/div/input</option><option>//div[7]/div/div/input</option><option>css=#credit</option></datalist></td><td>180</td>
+</tr>
+<tr><td>click</td><td>//div[@id='root']/div/div[2]/article/div/form/div[8]/button[2]/span<datalist><option>//div[@id='root']/div/div[2]/article/div/form/div[8]/button[2]/span</option><option>//button[2]/span</option><option>css=button.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary &gt; span.MuiButton-label</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div[@id='root']/div/div[2]/article/div/div/div[2]<datalist><option>//div[@id='root']/div/div[2]/article/div/div/div[2]</option><option>//article/div/div/div[2]</option><option>css=div.MuiAlert-message</option></datalist></td><td>บันทึกข้อมูลหลักสูตรสำเร็จ</td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">fail credit</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>http://localhost:3000/course<datalist><option>http://localhost:3000/course</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=courseId<datalist><option>id=courseId</option><option>//input[@id='courseId']</option><option>//div[@id='root']/div/div[2]/article/div/form/div/div/div/input</option><option>//input</option><option>css=#courseId</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=courseId<datalist><option>id=courseId</option><option>//input[@id='courseId']</option><option>//div[@id='root']/div/div[2]/article/div/form/div/div/div/input</option><option>//input</option><option>css=#courseId</option></datalist></td><td>123654</td>
+</tr>
+<tr><td>click</td><td>id=coursename<datalist><option>id=coursename</option><option>//input[@id='coursename']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#coursename</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=coursename<datalist><option>id=coursename</option><option>//input[@id='coursename']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#coursename</option></datalist></td><td>ปริญญาตรี</td>
+</tr>
+<tr><td>click</td><td>id=annotation<datalist><option>id=annotation</option><option>//input[@id='annotation']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[3]/div/div/input</option><option>//div[3]/div/div/input</option><option>css=#annotation</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=annotation<datalist><option>id=annotation</option><option>//input[@id='annotation']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[3]/div/div/input</option><option>//div[3]/div/div/input</option><option>css=#annotation</option></datalist></td><td>2563</td>
+</tr>
+<tr><td>click</td><td>id=degree<datalist><option>id=degree</option><option>//div[@id='degree']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[4]/div/div</option><option>//div[4]/div/div</option><option>css=#degree</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='menu-']/div[3]/ul/li<datalist><option>//div[@id='menu-']/div[3]/ul/li</option><option>//li</option><option>css=li.MuiButtonBase-root.MuiListItem-root.MuiMenuItem-root.MuiMenuItem-gutters.MuiListItem-gutters.MuiListItem-button.Mui-focusVisible.Mui-focusVisible</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=faculty<datalist><option>id=faculty</option><option>//body</option><option>css=body</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='menu-']/div[3]/ul/li[8]<datalist><option>//div[@id='menu-']/div[3]/ul/li[8]</option><option>//li[8]</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=institution<datalist><option>id=institution</option><option>//body</option><option>css=body</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='menu-']/div[3]/ul/li[2]<datalist><option>//div[@id='menu-']/div[3]/ul/li[2]</option><option>//li[2]</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='root']/div/div[2]/article/div/form/div[8]/button[2]/span<datalist><option>//div[@id='root']/div/div[2]/article/div/form/div[8]/button[2]/span</option><option>//button[2]/span</option><option>css=button.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary &gt; span.MuiButton-label</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div[@id='root']/div/div[2]/article/div/div/div[2]<datalist><option>//div[@id='root']/div/div[2]/article/div/div/div[2]</option><option>//article/div/div/div[2]</option><option>css=div.MuiAlert-message</option></datalist></td><td>ไม่สามารถบันทึกข้อมูลหลักสูตรได้ กรุณาลองใหม่ภายหลัง</td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">fail course id</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>http://localhost:3000/course<datalist><option>http://localhost:3000/course</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=courseId<datalist><option>id=courseId</option><option>//input[@id='courseId']</option><option>//div[@id='root']/div/div[2]/article/div/form/div/div/div/input</option><option>//input</option><option>css=#courseId</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=courseId<datalist><option>id=courseId</option><option>//input[@id='courseId']</option><option>//div[@id='root']/div/div[2]/article/div/form/div/div/div/input</option><option>//input</option><option>css=#courseId</option></datalist></td><td>dd</td>
+</tr>
+<tr><td>click</td><td>id=coursename<datalist><option>id=coursename</option><option>//input[@id='coursename']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#coursename</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=coursename<datalist><option>id=coursename</option><option>//input[@id='coursename']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#coursename</option></datalist></td><td>ปริญญาตรี</td>
+</tr>
+<tr><td>click</td><td>id=annotation<datalist><option>id=annotation</option><option>//input[@id='annotation']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[3]/div/div/input</option><option>//div[3]/div/div/input</option><option>css=#annotation</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=annotation<datalist><option>id=annotation</option><option>//input[@id='annotation']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[3]/div/div/input</option><option>//div[3]/div/div/input</option><option>css=#annotation</option></datalist></td><td>2563</td>
+</tr>
+<tr><td>click</td><td>id=degree<datalist><option>//body</option><option>css=body</option><option>id=degree</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='menu-']/div[3]/ul/li[2]<datalist><option>//div[@id='menu-']/div[3]/ul/li[2]</option><option>//li[2]</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=faculty<datalist><option>//body</option><option>css=body</option><option>id=faculty</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='menu-']/div[3]/ul/li[2]<datalist><option>//div[@id='menu-']/div[3]/ul/li[2]</option><option>//li[2]</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=institution<datalist><option>//body</option><option>css=body</option><option>id=institution</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='menu-']/div[3]/ul/li<datalist><option>//div[@id='menu-']/div[3]/ul/li</option><option>//li</option><option>css=li.MuiButtonBase-root.MuiListItem-root.MuiMenuItem-root.MuiMenuItem-gutters.MuiListItem-gutters.MuiListItem-button</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=credit<datalist><option>id=credit</option><option>//input[@id='credit']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[7]/div/div/input</option><option>//div[7]/div/div/input</option><option>css=#credit</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=credit<datalist><option>id=credit</option><option>//input[@id='credit']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[7]/div/div/input</option><option>//div[7]/div/div/input</option><option>css=#credit</option></datalist></td><td>160</td>
+</tr>
+<tr><td>click</td><td>xpath=(//button[@type='button'])[3]<datalist><option>xpath=(//button[@type='button'])[3]</option><option>//div[@id='root']/div/div[2]/article/div/form/div[8]/button[2]</option><option>//button[2]</option><option>css=button.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div[@id='root']/div/div[2]/article/div/div/div[2]<datalist><option>//div[@id='root']/div/div[2]/article/div/div/div[2]</option><option>//article/div/div/div[2]</option><option>css=div.MuiAlert-message</option></datalist></td><td>ไม่สามารถบันทึกข้อมูลหลักสูตรได้ กรุณาลองใหม่ภายหลัง</td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">fail degree</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>http://localhost:3000/course<datalist><option>http://localhost:3000/course</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=courseId<datalist><option>id=courseId</option><option>//input[@id='courseId']</option><option>//div[@id='root']/div/div[2]/article/div/form/div/div/div/input</option><option>//input</option><option>css=#courseId</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=courseId<datalist><option>id=courseId</option><option>//input[@id='courseId']</option><option>//div[@id='root']/div/div[2]/article/div/form/div/div/div/input</option><option>//input</option><option>css=#courseId</option></datalist></td><td>123569</td>
+</tr>
+<tr><td>click</td><td>id=coursename<datalist><option>id=coursename</option><option>//input[@id='coursename']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#coursename</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=coursename<datalist><option>id=coursename</option><option>//input[@id='coursename']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[2]/div/div/input</option><option>//div[2]/div/div/input</option><option>css=#coursename</option></datalist></td><td>ปริญญาตรี</td>
+</tr>
+<tr><td>click</td><td>id=annotation<datalist><option>id=annotation</option><option>//input[@id='annotation']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[3]/div/div/input</option><option>//div[3]/div/div/input</option><option>css=#annotation</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=annotation<datalist><option>id=annotation</option><option>//input[@id='annotation']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[3]/div/div/input</option><option>//div[3]/div/div/input</option><option>css=#annotation</option></datalist></td><td>2555</td>
+</tr>
+<tr><td>click</td><td>id=faculty<datalist><option>//body</option><option>css=body</option><option>id=faculty</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='menu-']/div[3]/ul/li[3]<datalist><option>//div[@id='menu-']/div[3]/ul/li[3]</option><option>//li[3]</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=institution<datalist><option>//body</option><option>css=body</option><option>id=institution</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='menu-']/div[3]/ul/li[2]<datalist><option>//div[@id='menu-']/div[3]/ul/li[2]</option><option>//li[2]</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=credit<datalist><option>id=credit</option><option>//input[@id='credit']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[7]/div/div/input</option><option>//div[7]/div/div/input</option><option>css=#credit</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=credit<datalist><option>id=credit</option><option>//input[@id='credit']</option><option>//div[@id='root']/div/div[2]/article/div/form/div[7]/div/div/input</option><option>//div[7]/div/div/input</option><option>css=#credit</option></datalist></td><td>123</td>
+</tr>
+<tr><td>click</td><td>//div[@id='root']/div/div[2]/article/div/form/div[8]/button[2]/span<datalist><option>//div[@id='root']/div/div[2]/article/div/form/div[8]/button[2]/span</option><option>//button[2]/span</option><option>css=button.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary &gt; span.MuiButton-label</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div[@id='root']/div/div[2]/article/div/form/div[4]/p<datalist><option>//div[@id='root']/div/div[2]/article/div/form/div[4]/p</option><option>//p</option><option>css=p.MuiFormHelperText-root.MuiFormHelperText-contained.Mui-error</option></datalist></td><td>กรุณาเลือกระดับปริญญา</td>
+</tr>
+</tbody></table>
+</body>
+</html>
