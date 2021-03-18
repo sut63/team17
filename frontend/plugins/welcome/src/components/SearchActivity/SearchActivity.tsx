@@ -25,7 +25,22 @@ import { DefaultApi } from '../../api/apis';
 import SearchIcon from '@material-ui/icons/Search';
 import { Cookies } from '../../Cookie';
 import { EntActivity } from '../../api/models/EntActivity';
+import Swal from 'sweetalert2'; // alert
 
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'center',
+  width: '400px',
+  padding: '100px',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: toast => {
+    toast.addEventListener('mouseenter', Swal.stopTimer);
+    toast.addEventListener('mouseleave', Swal.resumeTimer);
+  },
+});
 
 // css style 
 const useStyles = makeStyles((theme: Theme) =>
@@ -98,56 +113,32 @@ export default function SearchActivity() {
     const [activitysearch, setActivitysearch] = useState(String);
     
 
-  useEffect(() => {
-    const getActivitys = async () => {
-    const res = await api.listActivity();
-      setLoading(false);
-      setActivity(res);
-    };
-    getActivitys();
-    }, [loading]);
-
     const SearchActivity = async () => {
-        const res = await api.listActivity();
-        const activitysearch = ActivitySearch(res);
-        
-        
-        setErrorMessege("ไม่พบข้อมูลที่ค้นหา");
-        setAlertType("error");
-        setActivity([]);
-        if(activitysearch.length > 0){
-            Object.entries(searchcheck).map(([key, value]) =>{
-                if (value == true){
-                    setErrorMessege("พบข้อมูลที่ค้นหา");
-                    setAlertType("success");
-                    setActivity(activitysearch);
-                }
-            })
+        const res = await api.getActivity({fname: activitysearch});
+        setActivity(res)
+        var  lenActivity: number
+        lenActivity = res.length
+        if (lenActivity > 0) {
+          //setOpen(true)
+          Toast.fire({
+            icon: 'success',
+            title: 'ค้นหาข้อมูลสำเร็จ',
+          })
+        } else {
+          //setFail(true)
+          Toast.fire({
+            icon: 'error',
+            title: 'ค้นหาข้อมูลไม่พบ',
+          })
         }
+      }
+    
 
-        setStatus(true);
-        ResetSearchCheck();
-    }
 
+  
     const ResetSearchCheck = () => {
         searchcheck.activitysearchcheck = true;
         
-    }
-    const ActivitySearch = (res: any) => {
-        const data = res.filter((filter: EntActivity) => filter.edges?.actiStud?.fname?.includes(activitysearch))
-       // console.log(data.length)
-        if (data.length != 0 && activitysearch != "") {
-            return data;
-        }
-        else {
-            searchcheck.activitysearchcheck = false;
-            if(activitysearch == ""){
-                return res;
-            }
-            else{
-                return data;
-            }
-        }
     }
 
     const ActivitySearchhandleChange = (event: any) => {
@@ -224,7 +215,7 @@ export default function SearchActivity() {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {activity.map((item:any ) => (
+                                {activity.map((item, index ) => (
                                 <TableRow key={item.id}>
                                 <TableCell align="center">{item.edges?.actiStud?.fname}</TableCell>
                                 <TableCell align="center">{item.aCTIVITYNAME}</TableCell>
