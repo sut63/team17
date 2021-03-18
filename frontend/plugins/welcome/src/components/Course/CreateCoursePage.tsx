@@ -379,6 +379,7 @@ const CreateCoursePage = () => {
               >
                 <InputLabel>Degree</InputLabel>
                 <Select
+                  id = "degree"
                   label="Degree"
                   error={courseValidate.degree}
                   variant="outlined"
@@ -403,6 +404,7 @@ const CreateCoursePage = () => {
               >
                 <InputLabel>Faculty</InputLabel>
                 <Select
+                  id = "faculty"
                   label="Faculty"
                   error={courseValidate.faculty}
                   variant="outlined"
@@ -427,6 +429,7 @@ const CreateCoursePage = () => {
               >
                 <InputLabel>Institution</InputLabel>
                 <Select
+                  id = "institution"
                   label="Institution"
                   error={courseValidate.institution}
                   variant="outlined"
