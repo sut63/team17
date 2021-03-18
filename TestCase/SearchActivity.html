@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+	<title>SearchActivity</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Ok</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>http://localhost:3000/as<datalist><option>http://localhost:3000/as</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=name<datalist><option>id=name</option><option>//input[@id='name']</option><option>//div[@id='root']/div/div[2]/article/div/div[2]/div/div[2]/div/input</option><option>//input</option><option>css=#name</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=name<datalist><option>id=name</option><option>//input[@id='name']</option><option>//div[@id='root']/div/div[2]/article/div/div[2]/div/div[2]/div/input</option><option>//input</option><option>css=#name</option></datalist></td><td>Tom</td>
+</tr>
+<tr><td>click</td><td>css=span.MuiButton-startIcon.MuiButton-iconSizeMedium &gt; svg.MuiSvgIcon-root<datalist><option>css=span.MuiButton-startIcon.MuiButton-iconSizeMedium &gt; svg.MuiSvgIcon-root</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>id=swal2-title<datalist><option>id=swal2-title</option><option>//h2[@id='swal2-title']</option><option>//h2</option><option>css=#swal2-title</option></datalist></td><td>ค้นหาข้อมูลสำเร็จ</td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Fail</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>http://localhost:3000/as<datalist><option>http://localhost:3000/as</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=name<datalist><option>id=name</option><option>//input[@id='name']</option><option>//div[@id='root']/div/div[2]/article/div/div[2]/div/div[2]/div/input</option><option>//input</option><option>css=#name</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=name<datalist><option>id=name</option><option>//input[@id='name']</option><option>//div[@id='root']/div/div[2]/article/div/div[2]/div/div[2]/div/input</option><option>//input</option><option>css=#name</option></datalist></td><td>good boy</td>
+</tr>
+<tr><td>click</td><td>css=span.MuiButton-startIcon.MuiButton-iconSizeMedium &gt; svg.MuiSvgIcon-root<datalist><option>css=span.MuiButton-startIcon.MuiButton-iconSizeMedium &gt; svg.MuiSvgIcon-root</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>id=swal2-title<datalist><option>id=swal2-title</option><option>//h2[@id='swal2-title']</option><option>//h2</option><option>css=#swal2-title</option></datalist></td><td>ค้นหาข้อมูลไม่พบ</td>
+</tr>
+</tbody></table>
+</body>
+</html>
