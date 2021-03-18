@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sut63/team17/app/ent"
+	"github.com/sut63/team17/app/ent/activity"
 	"github.com/sut63/team17/app/ent/agency"
 	"github.com/sut63/team17/app/ent/place"
 	"github.com/sut63/team17/app/ent/student"
@@ -184,6 +185,39 @@ func (ctl *ActivityController) DeleteActivity(c *gin.Context) {
 	c.JSON(200, gin.H{"result": fmt.Sprintf("ok deleted %v", id)})
 }
 
+// GetActivity handles GET requests to retrieve a activity entity
+// @Summary Get a activity entity 
+// @Description get activity 
+// @ID get-activity
+// @Produce  json
+// @Param fname  query string false "fname"
+// @Success 200 {array} ent.Activity
+// @Failure 400 {object} gin.H
+// @Failure 404 {object} gin.H
+// @Failure 500 {object} gin.H
+// @Router /name [get]
+func (ctl *ActivityController) GetActivity(c *gin.Context) {
+    t1 := c.Query("fname")
+
+    pt, err := ctl.client.Activity.
+        Query().
+        WithActiAgen().
+        WithActiPlace().
+        WithActiStud().
+		WithActiTerm().
+		WithActiYear().
+        Where(activity.HasActiStudWith(student.FnameEQ(t1))).
+        All(context.Background())
+
+    if err != nil {
+        c.JSON(404, gin.H{
+            "error": err.Error(),
+        })
+        return
+    }
+    c.JSON(200, pt)
+ }
+
 // ListActivity handles request to get a list of activity entities
 // @Summary List activity entities
 // @Description list activity entities
@@ -247,10 +281,12 @@ func NewActivityController(router gin.IRouter, client *ent.Client) *ActivityCont
 // InitActivityController registers routes to the main engine
 func (ctl *ActivityController) register() {
 	activitys := ctl.router.Group("/activitys")
+	fname := ctl.router.Group("/name")
 	activitys.GET("", ctl.ListActivity)
 
 	// CRUD
 	activitys.POST("", ctl.CreateActivity)
+	fname.GET("", ctl.GetActivity)
 	activitys.DELETE(":id", ctl.DeleteActivity)
 
 }
