@@ -134,6 +134,10 @@ export interface DeleteResultsRequest {
     id: number;
 }
 
+export interface GetActivityRequest {
+    fname?: string;
+}
+
 export interface GetAgencyRequest {
     id: number;
 }
@@ -183,6 +187,10 @@ export interface GetProfessorRequest {
 }
 
 export interface GetProfessorshipRequest {
+    id: number;
+}
+
+export interface GetProvinceRequest {
     id: number;
 }
 
@@ -633,6 +641,38 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * get activity
+     * Get a activity entity
+     */
+    async getActivityRaw(requestParameters: GetActivityRequest): Promise<runtime.ApiResponse<Array<EntActivity>>> {
+        const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.fname !== undefined) {
+            queryParameters['fname'] = requestParameters.fname;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/name`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(EntActivityFromJSON));
+    }
+
+    /**
+     * get activity
+     * Get a activity entity
+     */
+    async getActivity(requestParameters: GetActivityRequest): Promise<Array<EntActivity>> {
+        const response = await this.getActivityRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
      * get agency by ID
      * Get a agency entity by ID
      */
@@ -1045,6 +1085,38 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async getProfessorship(requestParameters: GetProfessorshipRequest): Promise<EntProfessorship> {
         const response = await this.getProfessorshipRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * get province by ID
+     * Get a province entity by ID
+     */
+    async getProvinceRaw(requestParameters: GetProvinceRequest): Promise<runtime.ApiResponse<EntProvince>> {
+        if (requestParameters.id === null || requestParameters.id === undefined) {
+            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling getProvince.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/provinces/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => EntProvinceFromJSON(jsonValue));
+    }
+
+    /**
+     * get province by ID
+     * Get a province entity by ID
+     */
+    async getProvince(requestParameters: GetProvinceRequest): Promise<EntProvince> {
+        const response = await this.getProvinceRaw(requestParameters);
         return await response.value();
     }
 
