@@ -12,11 +12,14 @@ import {
   makeStyles,
   fade,
   Button,
+  Avatar,
   InputBase,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { EntCourse, DefaultApi } from '../../api';
 import SearchIcon from '@material-ui/icons/Search';
+import { Cookies } from '../../Cookie';
+
 const useStyles = makeStyles(theme => ({
   table: {
     minWidth: 650,
@@ -111,13 +114,36 @@ const SearchCoursePage = () => {
     setIsSearchComplete(false);
     setSearchText('');
   };
+
+  //cookie logout
+  var cook = new Cookies();
+  var cookieName = cook.GetCookie();
+
+  function Clears() {
+    cook.ClearCookie();
+    window.location.reload(false);
+  }
+
   return (
     <>
       <Page theme={pageTheme.home}>
         <Header
           title="ระบบค้นหาข้อมูลหลักสูตร"
           subtitle="เพื่อค้นหาข้อมูลหลักสูตรต่างๆภายในมหาลัย"
-        ></Header>
+        >
+          <Avatar alt="Remy Sharp" />
+          <div style={{ marginLeft: 10, marginRight: 20 }}>{cookieName}</div>
+          <Button
+            variant="text"
+            color="secondary"
+            size="large"
+            onClick={Clears}
+          >
+            {' '}
+            Logout{' '}
+          </Button>
+        </Header>
+        
         <Content>
           <div className={classes.root}>
             {isSearchComplete ? (
@@ -156,8 +182,8 @@ const SearchCoursePage = () => {
               <Table className={classes.table} aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center">No.</TableCell>
-                    <TableCell>Course Id</TableCell>
+                    <TableCell align="center">Course Id</TableCell>
+                    <TableCell>Course No.</TableCell>
                     <TableCell>Course Name</TableCell>
                     <TableCell>Degree</TableCell>
                     <TableCell>Faculty</TableCell>
