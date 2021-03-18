@@ -27,7 +27,7 @@ type DegreeController struct {
 // @Failure 500 {object} gin.H
 // @Router /degrees/{id} [get]
 func (ctl *DegreeController) GetDegree(c *gin.Context) {
-	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	id, err := strconv.ParseInt(c.Param("id"), 6, 64)
 	if err != nil {
 		c.JSON(400, gin.H{
 			"error": err.Error(),
@@ -62,9 +62,9 @@ func (ctl *DegreeController) GetDegree(c *gin.Context) {
 // @Router /degrees [get]
 func (ctl *DegreeController) ListDegree(c *gin.Context) {
 	limitQuery := c.Query("limit")
-	limit := 8
+	limit := 6
 	if limitQuery != "" {
-		limit64, err := strconv.ParseInt(limitQuery, 8, 64)
+		limit64, err := strconv.ParseInt(limitQuery, 6, 64)
 		if err == nil {
 			limit = int(limit64)
 		}
@@ -73,7 +73,7 @@ func (ctl *DegreeController) ListDegree(c *gin.Context) {
 	offsetQuery := c.Query("offset")
 	offset := 0
 	if offsetQuery != "" {
-		offset64, err := strconv.ParseInt(offsetQuery, 8, 64)
+		offset64, err := strconv.ParseInt(offsetQuery, 6, 64)
 		if err == nil {
 			offset = int(offset64)
 		}
