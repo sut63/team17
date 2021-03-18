@@ -1037,6 +1037,53 @@ var doc = `{
                 }
             }
         },
+        "/name": {
+            "get": {
+                "description": "get activity",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a activity entity",
+                "operationId": "get-activity",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "fname",
+                        "name": "fname",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ent.Activity"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
         "/places": {
             "get": {
                 "description": "list place entities",
@@ -2395,8 +2442,17 @@ var doc = `{
         "controllers.Course": {
             "type": "object",
             "properties": {
+                "annotation": {
+                    "type": "string"
+                },
+                "courseID": {
+                    "type": "integer"
+                },
                 "coursename": {
                     "type": "string"
+                },
+                "credit": {
+                    "type": "integer"
                 },
                 "degree": {
                     "type": "integer"
@@ -3430,6 +3486,7 @@ var doc = `{
         "OAuth2Application": {
             "type": "oauth2",
             "flow": "application",
+            "authorizationUrl": "",
             "tokenUrl": "https://example.com/oauth/token",
             "scopes": {
                 "admin": " Grants read and write access to administrative information",
@@ -3448,6 +3505,7 @@ var doc = `{
         "OAuth2Password": {
             "type": "oauth2",
             "flow": "password",
+            "authorizationUrl": "",
             "tokenUrl": "https://example.com/oauth/token",
             "scopes": {
                 "admin": " Grants read and write access to administrative information",
